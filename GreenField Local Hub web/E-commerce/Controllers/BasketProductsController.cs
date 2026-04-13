@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_commerce.Data;
 using E_commerce.Models;
+using System.Security.Claims;
 
 namespace E_commerce.Controllers
 {
@@ -46,30 +47,59 @@ namespace E_commerce.Controllers
             return View(basketProduct);
         }
 
-        // GET: BasketProducts/Create
-        public IActionResult Create()
-        {
-            ViewData["BasketId"] = new SelectList(_context.Basket, "BasketId", "BasketId");
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId");
-            return View();
-        }
-
         // POST: BasketProducts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BasketProductId,ProductId,BasketId,Quantity,TotalPrice")] BasketProduct basketProduct)
+        public async Task<IActionResult> Create(int productId)
         {
-            if (ModelState.IsValid)
+            var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductId == productId);
+            if (product == null)
             {
-                _context.Add(basketProduct);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["BasketId"] = new SelectList(_context.Basket, "BasketId", "BasketId", basketProduct.BasketId);
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", basketProduct.ProductId);
-            return View(basketProduct);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var basket = await _context.Basket.FirstOrDefaultAsync(b => b.UserId == userId && b.Status == true);
+            if (basket == null)
+            {
+                basket = new Basket
+                {
+                    UserId = userId,
+                    Status = true,
+                    CreatedDate = DateTime.UtcNow
+                };
+                _context.Basket.Add(basket);
+                await _context.SaveChangesAsync();
+            }
+
+            var basketProduct = await _context.BasketProduct.FirstOrDefaultAsync(bp => bp.BasketId == basket.BasketId && bp.ProductId == productId);
+            if (basketProduct != null)
+            {
+                basketProduct.Quantity ++;
+                basketProduct.TotalPrice = basketProduct.Quantity * product.Price;
+                _context.BasketProduct.Update(basketProduct);
+            }
+            else
+            {
+                basketProduct = new BasketProduct
+                {
+                    ProductId = productId,
+                    BasketId = basket.BasketId,
+                    Quantity = 1,
+                    TotalPrice = product.Price
+                };
+                _context.BasketProduct.Add(basketProduct);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Baskets");
         }
 
         // GET: BasketProducts/Edit/5

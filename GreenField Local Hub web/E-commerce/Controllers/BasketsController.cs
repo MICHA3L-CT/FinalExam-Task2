@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_commerce.Data;
 using E_commerce.Models;
+using System.Security.Claims;
 
 namespace E_commerce.Controllers
 {
@@ -22,8 +23,60 @@ namespace E_commerce.Controllers
         // GET: Baskets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Basket.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var baskets = await _context.Basket.FirstOrDefaultAsync(b => b.UserId == userId && b.Status);
+
+            if (baskets == null)
+            {
+              baskets = new Basket
+              {
+                  UserId = userId,
+                  Status = true,
+                  CreatedDate = DateTime.Now
+              };
+                _context.Basket.Add(baskets);
+                await _context.SaveChangesAsync();
+            }
+
+            var basketProducts = await _context.BasketProduct
+                .Where(bp => bp.BasketId == baskets.BasketId)
+                .Include(bp => bp.Product)
+                .ToListAsync(); 
+
+            decimal subtotal = 0m;
+
+            foreach (var basketProduct in basketProducts)
+            {
+                var productTotal =basketProduct.Product.Price * basketProduct.Quantity;
+                subtotal += productTotal;
+            }
+
+            var orderCount = await _context.Order.CountAsync(o => o.UserId == userId);
+
+            decimal discount = 0m;
+
+            if (orderCount >= 5)
+            {
+                discount = subtotal * 0.10m;
+            }
+
+            decimal total = subtotal - discount;
+
+            ViewBag.Subtotal = subtotal;
+            ViewBag.Discount = discount;
+            ViewBag.Total = total;
+            ViewBag.OrderCount = orderCount;
+
+            return View(basketProducts);
         }
+
+        
 
         // GET: Baskets/Details/5
         public async Task<IActionResult> Details(int? id)

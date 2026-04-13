@@ -40,7 +40,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model) 
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductName)
@@ -70,8 +71,26 @@
                 <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                    <form asp-controller="BasketProducts" asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+
+                        @if (item.StockQuantity > 0)
+                        {
+                            <button type="submit" class="btn btn-primary w-100">
+                                Add to Basket
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary w-100" disabled>
+                                Out of Stock
+                            </button>
+                        }
+                    </form>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
