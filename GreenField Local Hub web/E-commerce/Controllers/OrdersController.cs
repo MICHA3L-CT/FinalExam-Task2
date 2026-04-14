@@ -21,10 +21,89 @@ namespace E_commerce.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<ActionResult> Index()
         {
-            var applicationDbContext = _context.Order.Include(o => o.Discount);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            if (User.IsInRole("Admin"))
+            {
+                var allOrders = await _context.Order.Include(o => o.OrderProducts).ThenInclude(op => op.Product).ToListAsync();
+                return View(allOrders);
+            }
+            else if (User.IsInRole("Producer"))
+            {
+                // Find all products belonging to this producer
+                var producerProducts = await _context.Product
+                    .Where(p => p.ProducerId != null && p.Producer.UserId == userId)
+                    .Select(p => p.ProductId)
+                    .ToListAsync();
+
+                // Find orders that contain these products
+                var producerOrders = await _context.OrderProduct.Where(op => producerProducts.Contains(op.ProductId)).Include(op => op.Order).ThenInclude(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                    .Select(op => op.Order)
+                    .Distinct()
+                    .ToListAsync();
+
+                return View(producerOrders);
+            }
+            else // Regular user/customer
+            {
+                var userOrders = await _context.Order.Where(o => o.UserId == userId).Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                    .ToListAsync();
+                return View(userOrders);
+            }
+        }
+
+        // Order Details action for all user types
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            IQueryable<OrderProduct> orderProductsQuery = _context.OrderProduct
+                .Where(op => op.OrderId == id)
+                .Include(op => op.Order)
+                .Include(op => op.Product)
+                .ThenInclude(p => p.Producer);
+
+            // Apply different filters based on user role
+            if (User.IsInRole("Admin"))
+            {
+                // Admins can see all order details
+                // No additional filtering needed
+            }
+            else if (User.IsInRole("Producer"))
+            {
+                // Producers can only see their own products in the order
+                orderProductsQuery = orderProductsQuery
+                    .Where(op => op.Product.Producer.UserId == userId);
+            }
+            else // Regular user
+            {
+                // Regular users can only see their own orders
+                orderProductsQuery = orderProductsQuery
+                    .Where(op => op.Order.UserId == userId);
+            }
+
+            var orderProducts = await orderProductsQuery.ToListAsync();
+
+            if (orderProducts == null || !orderProducts.Any())
+            {
+                return NotFound();
+            }
+
+            return View(orderProducts);
         }
 
         // GET: Orders/Details/5
@@ -35,9 +114,12 @@ namespace E_commerce.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.Discount)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+            var order = await _context.OrderProduct
+                .Where(op => op.OrderId == id)
+                .Include(op => op.Product)
+                .Include(op => op.Order)
+                .ToListAsync();
+
             if (order == null)
             {
                 return NotFound();
@@ -59,7 +141,7 @@ namespace E_commerce.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order, int basketId)
+        public async Task<IActionResult> Create(Order order, string orderMethod, int basketId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
@@ -86,6 +168,15 @@ namespace E_commerce.Controllers
                 return View(order);
             }
 
+            // Set OrderMethod from form
+            order.OrderMethod = orderMethod;
+
+            // Validate order method is selected
+            if (string.IsNullOrEmpty(orderMethod))
+            {
+                ModelState.AddModelError("OrderMethod", "Must choose Collection or Delivery");
+            }
+
             // Safe subtotal
             decimal subtotal = basketProducts
                 .Where(bp => bp.Product != null)
@@ -101,16 +192,49 @@ namespace E_commerce.Controllers
             order.OrderStatus = "Pending";
 
             // Delivery vs Collection
-            if (order.OrderMethod == "collection")
+            if (orderMethod == "collection")
             {
-                order.DeliveryType = "Collection";
-                order.ShippingFee = 0m;
+                // Clear delivery fields
+                order.DeliveryType = null;
                 order.DeliveryAddress = null;
+                order.ShippingFee = 0m;
 
+                ModelState.Remove("DeliveryType");
                 ModelState.Remove("DeliveryAddress");
+
+                // Validate collection date
+                if (order.ScheduleDate == null)
+                {
+                    ModelState.AddModelError("ScheduleDate", "Collection date is required.");
+                }
+                else
+                {
+                    var earliestDate = DateTime.Now.Date.AddDays(2);
+                    if (order.ScheduleDate.Value.Date < earliestDate)
+                    {
+                        ModelState.AddModelError("ScheduleDate", "Collection must be at least 2 days from today.");
+                    }
+                }
             }
-            else
+            else if (orderMethod == "delivery")
             {
+                // Clear collection date
+                order.ScheduleDate = null;
+                ModelState.Remove("ScheduleDate");
+
+                // Validate delivery type
+                if (string.IsNullOrWhiteSpace(order.DeliveryType))
+                {
+                    ModelState.AddModelError("DeliveryType", "Delivery type is required.");
+                }
+
+                // Validate delivery address
+                if (string.IsNullOrWhiteSpace(order.DeliveryAddress))
+                {
+                    ModelState.AddModelError("DeliveryAddress", "Delivery address is required.");
+                }
+
+                // Set shipping fee based on delivery type
                 order.ShippingFee = order.DeliveryType switch
                 {
                     "Next Day" => 9.99m,
@@ -118,9 +242,10 @@ namespace E_commerce.Controllers
                     "Standard" => 2.99m,
                     _ => 0m
                 };
-
-                order.ScheduleDate = null;
-                ModelState.Remove("ScheduleDate");
+            }
+            else
+            {
+                ModelState.AddModelError("OrderMethod", "Invalid order method selected");
             }
 
             order.TotalAmount = (subtotal - discount) + order.ShippingFee;
@@ -136,22 +261,36 @@ namespace E_commerce.Controllers
                 return View(order);
             }
 
+            // CHECK STOCK BEFORE CREATING ORDER
+            foreach (var basketProduct in basketProducts)
+            {
+                if (basketProduct.Product.StockQuantity < basketProduct.Quantity)
+                {
+                    ModelState.AddModelError("", $"Not enough stock for {basketProduct.Product.ProductName}. Available: {basketProduct.Product.StockQuantity}");
+                    ViewBag.BasketId = basketId;
+                    return View(order);
+                }
+            }
+
             // Save order
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
-            // Save order items
-            foreach (var bp in basketProducts)
+            // Save order items and update stock
+            foreach (var basketProduct in basketProducts)
             {
-                if (bp.Product == null) continue;
+                if (basketProduct.Product == null) continue;
 
                 _context.OrderProduct.Add(new OrderProduct
                 {
                     OrderId = order.OrderId,
-                    ProductId = bp.ProductId,
-                    Quantity = bp.Quantity,
-                    UnitPrice = bp.Product.Price
+                    ProductId = basketProduct.ProductId,
+                    Quantity = basketProduct.Quantity,
+                    UnitPrice = basketProduct.Product.Price
                 });
+
+                // UPDATE STOCK QUANTITY
+                basketProduct.Product.StockQuantity -= basketProduct.Quantity;
             }
 
             // Close + clear basket
@@ -160,7 +299,7 @@ namespace E_commerce.Controllers
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Confirmation", new { id = order.OrderId });
+            return RedirectToAction("Index");
         }
 
         // GET: Orders/Edit/5
