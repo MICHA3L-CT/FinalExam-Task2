@@ -3,16 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\baskets\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\baskets\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\controllers\\basketscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\controllers\\basketscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\models\\orderproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\models\\orderproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\models\\basket.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\models\\basket.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\orders\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\orders\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,45 +30,71 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Baskets\\Index.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Baskets\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Baskets\\Index.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Baskets\\Index.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAA0AAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-13T15:21:51.262Z",
+              "DocumentIndex": 2,
+              "Title": "OrderProduct.cs",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\OrderProduct.cs",
+              "RelativeDocumentMoniker": "E-commerce\\Models\\OrderProduct.cs",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\OrderProduct.cs",
+              "RelativeToolTip": "E-commerce\\Models\\OrderProduct.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T09:39:23.592Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Basket.cs",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\Basket.cs",
-              "RelativeDocumentMoniker": "E-commerce\\Models\\Basket.cs",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\Basket.cs",
-              "RelativeToolTip": "E-commerce\\Models\\Basket.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "Order.cs",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\Order.cs",
+              "RelativeDocumentMoniker": "E-commerce\\Models\\Order.cs",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Models\\Order.cs",
+              "RelativeToolTip": "E-commerce\\Models\\Order.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-13T15:12:06.611Z",
+              "WhenOpened": "2026-04-14T09:16:58.084Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Create.cshtml",
+              "RelativeDocumentMoniker": "E-commerce\\Views\\Orders\\Create.cshtml",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Create.cshtml",
+              "RelativeToolTip": "E-commerce\\Views\\Orders\\Create.cshtml",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAAAGAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-14T09:11:15.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "E-commerce\\Controllers\\OrdersController.cs",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "E-commerce\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAgwJwAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T09:10:00.624Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "BasketsController.cs",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Controllers\\BasketsController.cs",
-              "RelativeDocumentMoniker": "E-commerce\\Controllers\\BasketsController.cs",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Controllers\\BasketsController.cs",
-              "RelativeToolTip": "E-commerce\\Controllers\\BasketsController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwEsAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-13T14:39:29.037Z",
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Baskets\\Index.cshtml",
+              "RelativeDocumentMoniker": "E-commerce\\Views\\Baskets\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Baskets\\Index.cshtml",
+              "RelativeToolTip": "E-commerce\\Views\\Baskets\\Index.cshtml",
+              "ViewState": "AgIAADwAAAAAAAAAAAAAAFkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-13T15:21:51.262Z",
               "EditorCaption": ""
             }
           ]

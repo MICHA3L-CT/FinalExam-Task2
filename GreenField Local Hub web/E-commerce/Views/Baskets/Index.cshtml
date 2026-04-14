@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<E_commerce.Models.BasketProduct>
-
 @{
     ViewData["Title"] = "Your Basket";
     var basketId = Model.FirstOrDefault()?.BasketId;
@@ -7,42 +6,85 @@
 
 <h1>Your Basket</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BasketId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BasketId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BasketId">Delete</a>
-            </td>
-        </tr>
+@if (!Model.Any())
+{
+    <div>
+        <h3>Your basket is empty</h3>
+        <p>Looks like you haven't added any products yet.</p>
+        <a asp-controller="Products" asp-action="Index">Continue Shopping</a>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+   <div>
+        <div>
+            @foreach (var item in Model)
+            {
+                <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                    <div>
+                        <h4>@item.Product.ProductName</h4>
+                        <p>Price: £@item.Product.Price.ToString("0.00")</p>
+                    </div>
+
+                    <div>
+                        <p>Qty: @item.Quantity</p>
+                    </div>
+
+                    <div>
+                        <p>
+                            Total: £@((item.Product.Price * item.Quantity).ToString("0.00"))
+                        </p>
+                    </div>
+
+                    <a asp-controller="BasketProducts"
+                       asp-action="Delete"
+                       asp-route-id="@item.BasketProductId">
+                        Remove
+                    </a>
+                </div>
+            }
+
+            <div style="border:1px solid #000; padding:15px; margin-top:20px;">
+                <h3>Order Summary</h3>
+
+                <div>
+                    <span>Subtotal: </span>
+                    <span>£@(((decimal)ViewBag.Subtotal).ToString("0.00"))</span>
+                </div>
+
+                <div>
+                    <span>Loyalty Discount: </span>
+                    <span>£@(((decimal)ViewBag.Discount).ToString("0.00"))</span>
+                </div>
+
+                <hr />
+
+                <div>
+                    <strong>Total: </strong>
+                    <strong>£@(((decimal)ViewBag.Total).ToString("0.00"))</strong>
+                </div>
+            </div>
+
+            @if (ViewBag.Discount > 0)
+            {
+                <div>
+                    <p>Your loyalty discount has been applied.</p>
+                </div>
+            }
+
+            <div>
+                <a asp-controller="Orders"
+                    asp-action="Create"
+                    asp-route-basketId="@basketId"
+                    class="btn btn-primary w-100 mb-2">
+                    Proceed to Checkout 
+                </a>
+                <a asp-controller="Products"
+                   asp-action="Index">
+                    Continue Shopping
+                </a>
+            </div>
+
+        </div>
+   </div>
+}

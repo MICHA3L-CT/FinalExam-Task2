@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_commerce.Data;
 using E_commerce.Models;
+using System.Security.Claims;
 
 namespace E_commerce.Controllers
 {
@@ -46,9 +47,10 @@ namespace E_commerce.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+
+        public IActionResult Create(int basketId)
         {
-            ViewData["DiscountId"] = new SelectList(_context.Discount, "DiscountId", "DiscountId");
+            ViewBag.BasketId = basketId;
             return View();
         }
 
@@ -57,16 +59,108 @@ namespace E_commerce.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,UserId,DiscountId,OrderDate,OrderStatus,TotalAmount,DeliveryAddress,ShippingFee,DeliveryType,ScheduleDate")] Order order)
+        public async Task<IActionResult> Create(Order order, int basketId)
         {
-            if (ModelState.IsValid)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            // Validate basket ownership
+            var basket = await _context.Basket
+                .FirstOrDefaultAsync(b => b.BasketId == basketId && b.UserId == userId && b.Status);
+
+            if (basket == null)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["DiscountId"] = new SelectList(_context.Discount, "DiscountId", "DiscountId", order.DiscountId);
-            return View(order);
+
+            // Get basket products safely
+            var basketProducts = await _context.BasketProduct
+                .Where(bp => bp.BasketId == basket.BasketId)
+                .Include(bp => bp.Product)
+                .ToListAsync();
+
+            if (!basketProducts.Any())
+            {
+                ModelState.AddModelError("", "Your basket is empty.");
+                ViewBag.BasketId = basketId;
+                return View(order);
+            }
+
+            // Safe subtotal
+            decimal subtotal = basketProducts
+                .Where(bp => bp.Product != null)
+                .Sum(bp => bp.Product.Price * bp.Quantity);
+
+            // Loyalty discount
+            var orderCount = await _context.Order.CountAsync(o => o.UserId == userId);
+            decimal discount = orderCount >= 5 ? subtotal * 0.10m : 0m;
+
+            // Order setup
+            order.UserId = userId;
+            order.OrderDate = DateTime.Now;
+            order.OrderStatus = "Pending";
+
+            // Delivery vs Collection
+            if (order.OrderMethod == "collection")
+            {
+                order.DeliveryType = "Collection";
+                order.ShippingFee = 0m;
+                order.DeliveryAddress = null;
+
+                ModelState.Remove("DeliveryAddress");
+            }
+            else
+            {
+                order.ShippingFee = order.DeliveryType switch
+                {
+                    "Next Day" => 9.99m,
+                    "First Class" => 4.99m,
+                    "Standard" => 2.99m,
+                    _ => 0m
+                };
+
+                order.ScheduleDate = null;
+                ModelState.Remove("ScheduleDate");
+            }
+
+            order.TotalAmount = (subtotal - discount) + order.ShippingFee;
+
+            ModelState.Remove("UserId");
+            ModelState.Remove("OrderStatus");
+            ModelState.Remove("OrderDate");
+            ModelState.Remove("TotalAmount");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.BasketId = basketId;
+                return View(order);
+            }
+
+            // Save order
+            _context.Order.Add(order);
+            await _context.SaveChangesAsync();
+
+            // Save order items
+            foreach (var bp in basketProducts)
+            {
+                if (bp.Product == null) continue;
+
+                _context.OrderProduct.Add(new OrderProduct
+                {
+                    OrderId = order.OrderId,
+                    ProductId = bp.ProductId,
+                    Quantity = bp.Quantity,
+                    UnitPrice = bp.Product.Price
+                });
+            }
+
+            // Close + clear basket
+            basket.Status = false;
+            _context.BasketProduct.RemoveRange(basketProducts);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Confirmation", new { id = order.OrderId });
         }
 
         // GET: Orders/Edit/5

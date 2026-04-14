@@ -1,72 +1,97 @@
 ﻿@model E_commerce.Models.Order
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Checkout";
 }
 
-<h1>Create</h1>
+<h1>Checkout</h1>
 
-<h4>Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiscountId" class="control-label"></label>
-                <select asp-for="DiscountId" class ="form-control" asp-items="ViewBag.DiscountId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderStatus" class="control-label"></label>
-                <input asp-for="OrderStatus" class="form-control" />
-                <span asp-validation-for="OrderStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeliveryAddress" class="control-label"></label>
-                <input asp-for="DeliveryAddress" class="form-control" />
-                <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ShippingFee" class="control-label"></label>
-                <input asp-for="ShippingFee" class="form-control" />
-                <span asp-validation-for="ShippingFee" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeliveryType" class="control-label"></label>
-                <input asp-for="DeliveryType" class="form-control" />
-                <span asp-validation-for="DeliveryType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ScheduleDate" class="control-label"></label>
-                <input asp-for="ScheduleDate" class="form-control" />
-                <span asp-validation-for="ScheduleDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" style="color:red;"></div>
+    <input type="hidden" name="basketId" value="@ViewBag.BasketId" />
+
+    <div style="margin-bottom:20px;">
+        <label style="font-weight:bold; display:block; margin-bottom:10px;">Order Method</label>
+
+        <div>
+            <input type="radio" name="orderMethod" id="deliveryCheck" value="delivery" />
+            <label for="deliveryCheck">Delivery</label>
+        </div>
+
+        <div>
+            <input type="radio" name="orderMethod" id="collectionCheck" value="collection" />
+            <label for="collectionCheck">Collection</label>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    {{-- Delivery options --}}
+    <div id="deliveryTypeGroup" style="display:none; margin-bottom:15px;">
+        <label asp-for="DeliveryType">Delivery Type</label>
+        <select asp-for="DeliveryType">
+            <option value="">Select Delivery Type</option>
+            <option value="Next Day">Next Day</option>
+            <option value="First Class">First Class</option>
+            <option value="Standard">Standard</option>
+        </select>
+        <span asp-validation-for="DeliveryType" style="color:red;"></span>
+
+        <div style="margin-top:10px;">
+            <label asp-for="DeliveryAddress">Delivery Address</label>
+            <input asp-for="DeliveryAddress" style="display:block; width:100%; margin-top:5px;" />
+            <span asp-validation-for="DeliveryAddress" style="color:red;"></span>
+        </div>
+    </div>
+
+    {{-- Collection date --}}
+    <div id="collectionDateGroup" style="display:none; margin-bottom:20px;">
+        <label asp-for="ScheduleDate">Collection Date</label>
+        <input asp-for="ScheduleDate" type="date" id="CollectionDate"
+               style="display:block; margin-top:5px;" />
+        <div style="color:grey; font-size:0.9em;">
+            Earliest collection date is 2 days from today.
+        </div>
+        <span asp-validation-for="ScheduleDate" style="color:red;"></span>
+    </div>
+
+    <div style="margin-top:20px;">
+        <button type="submit">Place Order</button>
+        <a asp-controller="Baskets" asp-action="Index" style="margin-left:15px;">
+            Back to Basket
+        </a>
+    </div>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const collectionDateInput = document.getElementById("CollectionDate");
+        const today = new Date();
+        today.setDate(today.getDate() + 2);
+        const minDate = today.toISOString().split("T")[0];
+        if (collectionDateInput) {
+            collectionDateInput.min = minDate;
+        }
+
+        const deliveryCheck = document.getElementById("deliveryCheck");
+        const collectionCheck = document.getElementById("collectionCheck");
+        const deliveryTypeGroup = document.getElementById("deliveryTypeGroup");
+        const collectionDateGroup = document.getElementById("collectionDateGroup");
+
+        function updateForm() {
+            deliveryTypeGroup.style.display = "none";
+            collectionDateGroup.style.display = "none";
+
+            if (deliveryCheck.checked) {
+                deliveryTypeGroup.style.display = "block";
+            } else if (collectionCheck.checked) {
+                collectionDateGroup.style.display = "block";
+            }
+        }
+
+        deliveryCheck.addEventListener("change", updateForm);
+        collectionCheck.addEventListener("change", updateForm);
+        updateForm();
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
