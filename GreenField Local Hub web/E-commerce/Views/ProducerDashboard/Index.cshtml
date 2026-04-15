@@ -1,0 +1,77 @@
+﻿@model IEnumerable<E_commerce.Models.Product>
+
+<h1>Supplier Dashboard</h1>
+
+<p>
+    <strong>Total Products:</strong> @ViewBag.TotalProducts
+</p>
+<p>
+    <strong>Low Stock Products:</strong> @ViewBag.LowStockCount
+</p>
+<p>
+    <strong>Total Stock Units:</strong> @ViewBag.TotalStock
+</p>
+
+@if (!Model.Any())
+{
+    <p>You do not have any products yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Take(5))
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Price.ToString("0.00")</td>
+                    <td>@item.StockQuantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<p>
+    <a asp-asp-controller="Product" asp-action="Index">View all your products</a>
+</p>
+
+<h2>Recent Orders</h2>
+
+@if (ViewBag.RecentOrders == null || !((List<E_commerce.Models.Order>)ViewBag.RecentOrders).Any())
+{
+    <p>No recent orders found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in ((List<E_commerce.Models.Order>)ViewBag.RecentOrders).Take(5))
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.OrderStatus</td>
+                    <td>@order.TotalAmount.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<p>
+    <a asp-asp-controller="Order" asp-action="Index">View All your orders</a>
+</p>

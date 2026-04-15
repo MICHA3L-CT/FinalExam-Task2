@@ -1,0 +1,70 @@
+﻿@model IEnumerable<E_commerce.Models.OrderProduct>
+
+@{
+    ViewData["Title"] = "Order Details";
+    var firstItem = Model.FirstOrDefault();
+}
+
+<h1>Order Details</h1>
+
+@if (firstItem != null)
+{
+    <div>
+        <p><strong>Order ID:</strong> @firstItem.Order.OrderId</p>
+        <p><strong>Order Date:</strong> @firstItem.Order.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
+        <p><strong>Status:</strong> @firstItem.Order.OrderStatus</p>
+        <p><strong>Subtotal:</strong> @firstItem.Order.TotalAmount.ToString("0.00")</p>
+
+        @if (!string.IsNullOrEmpty(firstItem.Order.DeliveryType) && firstItem.Order.DeliveryType != "Collection")
+        {
+            <p><strong>Order Method:</strong> Delivery</p>
+            <p><strong>Delivery Type:</strong> @firstItem.Order.DeliveryType</p>
+            <p><strong>Delivery Address:</strong> @firstItem.Order.DeliveryAddress</p>
+            <p><strong>Shipping Fee:</strong> @firstItem.Order.ShippingFee.ToString("0.00")</p>
+        }
+
+        @if (firstItem.Order.DeliveryType == "Collection")
+        {
+            <p><strong>Order Method:</strong> Collection</p>
+            @if (firstItem.Order.ScheduleDate.HasValue)
+            {
+                <p><strong>Collection Date:</strong> @firstItem.Order.ScheduleDate.Value.ToString("yyyy-MM-dd HH:mm")</p>
+            }
+        }
+    </div>
+
+    <hr />
+
+    <h2>Products Ordered</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="text-align:left; padding-right:20px;">Product</th>
+                <th style="text-align:left; padding-right:20px;">Price</th>
+                <th style="text-align:left; padding-right:20px;">Quantity</th>
+                <th style="text-align:left; padding-right:20px;">Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var lineTotal = item.Product.Price * item.Quantity;
+                <tr>
+                    <td style="padding-right:20px;">@item.Product.ProductName</td>
+                    <td style="padding-right:20px;">@item.Product.Price.ToString("0.00")</td>
+                    <td style="padding-right:20px;">@item.Quantity</td>
+                    <td style="padding-right:20px;">@lineTotal.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div style="margin-top:20px;">
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
+    <p>Order not found.</p>
+}
