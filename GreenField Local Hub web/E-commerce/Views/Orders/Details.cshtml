@@ -10,7 +10,6 @@
 @if (firstItem != null)
 {
     <div>
-        <p><strong>Order ID:</strong> @firstItem.Order.OrderId</p>
         <p><strong>Order Date:</strong> @firstItem.Order.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
         <p><strong>Status:</strong> @firstItem.Order.OrderStatus</p>
         <p><strong>Subtotal:</strong> @firstItem.Order.TotalAmount.ToString("0.00")</p>
