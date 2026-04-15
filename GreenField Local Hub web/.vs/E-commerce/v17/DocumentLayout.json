@@ -3,20 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\orders\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\orders\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\orders\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\orders\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\orders\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\orders\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\orders\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\data\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\data\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,58 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Edit.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Orders\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Edit.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Orders\\Edit.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-15T15:35:55.169Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Index.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Orders\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Index.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Orders\\Index.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAEAAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-15T15:33:20.947Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Details.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Orders\\Details.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Details.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Orders\\Details.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-15T15:32:59.319Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Delete.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Orders\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Orders\\Delete.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Orders\\Delete.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-15T15:32:44.927Z",
+              "Title": "SeedData.cs",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Data\\SeedData.cs",
+              "RelativeDocumentMoniker": "E-commerce\\Data\\SeedData.cs",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Data\\SeedData.cs",
+              "RelativeToolTip": "E-commerce\\Data\\SeedData.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAgwKAAAACFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T15:41:37.127Z",
               "EditorCaption": ""
             }
           ]
