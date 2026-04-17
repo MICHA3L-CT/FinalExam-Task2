@@ -1,2 +1,0 @@
-C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\wwwroot\js\site.js
-C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\wwwroot\css\site.css

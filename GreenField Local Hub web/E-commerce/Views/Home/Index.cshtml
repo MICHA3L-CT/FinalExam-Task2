@@ -1,8 +1,146 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/home.css" />
+}
+
+<!-- ── HERO ── -->
+<section class="hero fade-in">
+    <h1>Farm fresh goods delivered and provided to you</h1>
+    <p>Discover locally grown produce from producers in your community</p>
+    <div class="hero-buttons">
+        <a asp-controller="Products" asp-action="Index" class="btn-primary">Shop Now</a>
+        <button id="meet-producers-btn" class="btn-outline-white">Meet Our Producers</button>
+    </div>
+</section>
+
+<!-- ── FEATURES STRIP ── -->
+<section class="features-strip fade-in">
+    <div class="feature-item">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
+        </svg>
+        <h3>Locally Sourced</h3>
+        <p>Supporting local farmers and reducing carbon footprint</p>
+    </div>
+    <div class="feature-item">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="3" width="15" height="13" />
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+            <circle cx="5.5" cy="18.5" r="2.5" />
+            <circle cx="18.5" cy="18.5" r="2.5" />
+        </svg>
+        <h3>Flexible Delivery</h3>
+        <p>Choose delivery or click &amp; collect options</p>
+    </div>
+    <div class="feature-item">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+        </svg>
+        <h3>Easy Ordering</h3>
+        <p>Simple checkout process with secure payment</p>
+    </div>
+    <div class="feature-item">
+        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+        <h3>Loyalty Rewards</h3>
+        <p>Earn points with every purchase</p>
+    </div>
+</section>
+
+<!-- ── FRESH PICKS ── -->
+<section class="section section-alt fade-in">
+    <h2 class="section-title">This Week's Fresh Picks</h2>
+    <div class="products-grid">
+        <a asp-controller="Products" asp-action="Index" class="product-card">
+            <img src="~/images/apples.jpg" alt="Organic Red Apples" class="product-card-img" />
+            <div class="product-card-body">
+                <span class="product-tag">Fruits &amp; Veg</span>
+                <h4>Organic Red Apples</h4>
+                <p>Daniel's Farm</p>
+            </div>
+        </a>
+        <a asp-controller="Products" asp-action="Index" class="product-card">
+            <img src="~/images/carrots.jpg" alt="Organic Carrots" class="product-card-img" />
+            <div class="product-card-body">
+                <span class="product-tag">Fruits &amp; Veg</span>
+                <h4>Organic Carrots</h4>
+                <p>Sunny Fields Farm</p>
+            </div>
+        </a>
+        <a asp-controller="Products" asp-action="Index" class="product-card">
+            <img src="~/images/spinach.jpg" alt="Fresh Spinach" class="product-card-img" />
+            <div class="product-card-body">
+                <span class="product-tag">Fruits &amp; Veg</span>
+                <h4>Fresh Spinach</h4>
+                <p>Green Valley Gardens</p>
+            </div>
+        </a>
+        <a asp-controller="Products" asp-action="Index" class="product-card">
+            <img src="~/images/eggs.jpg" alt="Free Range Eggs" class="product-card-img" />
+            <div class="product-card-body">
+                <span class="product-tag">Dairy &amp; Eggs</span>
+                <h4>Free Range Eggs</h4>
+                <p>Sunny Fields Farm</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ── MEET OUR PRODUCERS ── -->
+<section class="section fade-in" id="producers-section">
+    <h2 class="section-title">Meet Our Producers</h2>
+    <div class="producers-grid">
+        <div class="producer-card">
+            <img src="~/images/carrots.jpg" alt="Daniel's Farm" class="producer-card-img" />
+            <div class="producer-card-body">
+                <h3>Daniel's Farm</h3>
+                <p>Family-owned organic farm specialising in seasonal vegetables and fruits.</p>
+                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+            </div>
+        </div>
+        <div class="producer-card">
+            <img src="~/images/spinach.jpg" alt="Green Valley Gardens" class="producer-card-img" />
+            <div class="producer-card-body">
+                <h3>Green Valley Gardens</h3>
+                <p>Sustainable farming practices for the freshest produce.</p>
+                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+            </div>
+        </div>
+        <div class="producer-card">
+            <img src="~/images/eggs.jpg" alt="Sunny Fields Farm" class="producer-card-img" />
+            <div class="producer-card-body">
+                <h3>Sunny Fields Farm</h3>
+                <p>Passionate about organic vegetables grown with love.</p>
+                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── LOYALTY CTA ── -->
+<section class="loyalty-section fade-in">
+    <h2>Join Our Loyalty Programme</h2>
+    <p>Earn points with every order and unlock exclusive discounts</p>
+    <a asp-controller="Account" asp-action="Register" class="btn-primary">Sign Up Now</a>
+</section>
+
+@section Scripts {
+    <script>
+        // Smooth Scroll for "Meet Our Producers" button
+        const meetProducersBtn = document.getElementById('meet-producers-btn');
+        if (meetProducersBtn) {
+            meetProducersBtn.addEventListener('click', () => {
+                const section = document.getElementById('producers-section');
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    </script>
+}

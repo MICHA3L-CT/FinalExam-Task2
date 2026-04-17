@@ -1,96 +1,292 @@
 ﻿@model IEnumerable<E_commerce.Models.Product>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Products";
+    var categories = Model.Select(p => p.Category).Distinct().OrderBy(c => c).ToList();
+
+    // Count per category for filter pills
+    var categoryCounts = Model.GroupBy(p => p.Category)
+                              .ToDictionary(g => g.Key, g => g.Count());
+
+    string TagClass(string cat) => (cat?.ToLower()) switch
+    {
+        "fruits & veg" or "fruits" or "veg" => "tag-fruits",
+        "meat & dairy" or "meat" => "tag-meat",
+        "bakery" => "tag-bakery",
+        "dairy" => "tag-dairy",
+        "seasonal" => "tag-seasonal",
+        _ => "tag-default"
+    };
+
+    string CategoryDot(string cat) => (cat?.ToLower()) switch
+    {
+        "fruits & veg" or "fruits" or "veg" => "#B45309",
+        "meat & dairy" or "meat" => "#991B1B",
+        "bakery" => "#92400E",
+        "dairy" => "#1E40AF",
+        "seasonal" => "#1A5C35",
+        _ => "#9A9490"
+    };
+
+    string ProductEmoji(string cat) => (cat?.ToLower()) switch
+    {
+        "fruits & veg" or "fruits" or "veg" => "🥦",
+        "meat & dairy" or "meat" => "🥩",
+        "bakery" => "🍞",
+        "dairy" => "🧀",
+        "seasonal" => "🌿",
+        _ => "🛒"
+    };
 }
 
-<h1>Index</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Products/Products.css" asp-append-version="true" />
+}
 
-<p>
-    @if (User.IsInRole("Producer"))
-    {
-        <a asp-action="Create">Create New</a>
-    }
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StockQuantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAdded)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Producer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ImagePath)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StockQuantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateAdded)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Producer.ProducerId)
-                </td>
-                <td>
-                    @if (User.IsInRole("Producer"))
+<div class="products-page">
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div>
+            <h1 class="page-header__title">
+                All Products
+                @if (User.IsInRole("Producer"))
+                {
+                    <span> — My Listings</span>
+                }
+            </h1>
+            <p class="page-header__meta" id="productCount">@Model.Count() items found</p>
+        </div>
+
+        <div class="header-actions">
+            <select class="sort-select" id="sortSelect" aria-label="Sort products">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="price-asc">Price: Low → High</option>
+                <option value="price-desc">Price: High → Low</option>
+                <option value="name-asc">Name: A → Z</option>
+                <option value="name-desc">Name: Z → A</option>
+            </select>
+
+            @if (User.IsInRole("Producer"))
+            {
+                <a asp-action="Create" class="btn-create">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add Product
+                </a>
+            }
+        </div>
+    </header>
+
+    <!-- Content Layout -->
+    <div class="content-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <p class="sidebar__title">Filters</p>
+
+            <!-- Search -->
+            <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="search"
+                       id="productSearch"
+                       class="search-input"
+                       placeholder="Search products…"
+                       autocomplete="off"
+                       aria-label="Search products" />
+            </div>
+
+            <!-- Category filters -->
+            <div class="filter-section">
+                <span class="filter-section__label">Category</span>
+                <div class="filter-pills">
+                    <button class="filter-pill active" data-category="all">
+                        <span class="filter-pill__dot" style="background:#9A9490"></span>
+                        All Products
+                        <span class="filter-pill__count">@Model.Count()</span>
+                    </button>
+
+                    @foreach (var cat in categories)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                        var count = categoryCounts.ContainsKey(cat) ? categoryCounts[cat] : 0;
+                        <button class="filter-pill"
+                                data-category="@cat?.ToLower()">
+                            <span class="filter-pill__dot"
+                                  style="background:@CategoryDot(cat)"></span>
+                            @cat
+                            <span class="filter-pill__count">@count</span>
+                        </button>
                     }
+                </div>
+            </div>
 
-                    <form asp-controller="BasketProducts" asp-action="Create" method="post">
-                        <input type="hidden" name="productId" value="@item.ProductId" />
+            <div class="filter-divider"></div>
+            <button class="btn-clear-filters" id="clearFilters">Clear all filters</button>
+        </aside>
 
-                        @if (item.StockQuantity > 0)
+        <!-- Product Grid -->
+        <main>
+            <div class="product-grid" id="productGrid" role="list">
+
+                @if (!Model.Any())
+                {
+                    <div class="empty-state">
+                        <div class="empty-state__icon">🌿</div>
+                        <div class="empty-state__title">No products yet</div>
+                        <div class="empty-state__text">Check back soon for fresh local produce.</div>
+                    </div>
+                }
+
+                @foreach (var item in Model)
+                {
+                    <article class="product-card"
+                             role="listitem"
+                             data-category="@item.Category?.ToLower()"
+                             data-name="@item.ProductName?.ToLower()"
+                             data-description="@item.Description?.ToLower()"
+                             data-producer="@(item.Producer?.ProducerId.ToString()?.ToLower() ?? "")"
+                             data-price="@item.Price"
+                             data-date="@item.DateAdded.ToString("yyyy-MM-dd")">
+
+                        <!-- Image -->
+                        <div class="card-image-wrap">
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath"
+                                     alt="@item.ProductName"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="card-image-placeholder">@ProductEmoji(item.Category)</div>
+                            }
+
+                            <!-- Category Tag -->
+                            <span class="card-category-tag @TagClass(item.Category)">
+                                @item.Category
+                            </span>
+
+                            <!-- Out of stock badge -->
+                            @if (item.StockQuantity <= 0)
+                            {
+                                <span class="card-stock-badge">Out of stock</span>
+                            }
+
+                            <!-- Wishlist button -->
+                            <button class="card-wishlist" aria-label="Save for later" type="button">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="card-body">
+                            <p class="card-producer">@item.Producer?.ProducerName ?? item.Producer?.ProducerId</p>
+                            <h2 class="card-name">@item.ProductName</h2>
+
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <p class="card-description">@item.Description</p>
+                            }
+
+                            <!-- Footer: price + basket -->
+                            <div class="card-footer">
+                                <div class="card-price">
+                                    <span class="card-price__amount">£@item.Price.ToString("0.00")</span>
+                                    <span class="card-price__unit">per unit</span>
+                                </div>
+
+                                <form asp-controller="BasketProducts"
+                                      asp-action="Create"
+                                      method="post"
+                                      class="basket-form"
+                                      data-product-name="@item.ProductName">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    @if (item.StockQuantity > 0)
+                                    {
+                                        <button type="submit" class="btn-add-basket">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                                                <line x1="3" y1="6" x2="21" y2="6" />
+                                                <path d="M16 10a4 4 0 0 1-8 0" />
+                                            </svg>
+                                            Add
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn-out-of-stock" disabled>Sold out</button>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Producer Edit/Delete actions -->
+                        @if (User.IsInRole("Producer"))
                         {
-                            <button type="submit">Add to Basket</button>
+                            <div class="card-producer-actions">
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.ProductId"
+                                   class="btn-edit">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    Edit
+                                </a>
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.ProductId"
+                                   class="btn-delete">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                        <path d="M10 11v6M14 11v6" />
+                                    </svg>
+                                    Delete
+                                </a>
+                            </div>
                         }
-                        else
-                        {
-                            <button type="button" disabled>Out of Stock</button>
-                        }
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+                    </article>
+                }
+
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+@section Scripts {
+    <script src="~/js/Products/Products.js" asp-append-version="true"></script>
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                if (window.GreenHub) {
+                    window.GreenHub.showToast('@Html.Raw(TempData["Success"])', 'success');
+                }
+            });
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                if (window.GreenHub) {
+                    window.GreenHub.showToast('@Html.Raw(TempData["Error"])', 'error');
+                }
+            });
+        </script>
+    }
+}

@@ -37,6 +37,30 @@
       "PackagePath": "staticwebassets\\Images\\spinach.jpg"
     },
     {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Basket\\Basket.css",
+      "PackagePath": "staticwebassets\\css\\Basket\\Basket.css"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Home\\Home.css",
+      "PackagePath": "staticwebassets\\css\\Home\\Home.css"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Orders\\Order.css",
+      "PackagePath": "staticwebassets\\css\\Orders\\Order.css"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Producer Dashboard\\ProducerDashboard.css",
+      "PackagePath": "staticwebassets\\css\\Producer Dashboard\\ProducerDashboard.css"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Producers\\Producers.css",
+      "PackagePath": "staticwebassets\\css\\Producers\\Producers.css"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Products\\Products.css",
+      "PackagePath": "staticwebassets\\css\\Products\\Products.css"
+    },
+    {
       "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -45,8 +69,28 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\site.js",
-      "PackagePath": "staticwebassets\\js\\site.js"
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Basket\\Basket.js",
+      "PackagePath": "staticwebassets\\js\\Basket\\Basket.js"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Home\\Home.js",
+      "PackagePath": "staticwebassets\\js\\Home\\Home.js"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Orders\\Order.js",
+      "PackagePath": "staticwebassets\\js\\Orders\\Order.js"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Producer Dashboard\\ProducerDashboard.js",
+      "PackagePath": "staticwebassets\\js\\Producer Dashboard\\ProducerDashboard.js"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Producers\\Producers.js",
+      "PackagePath": "staticwebassets\\js\\Producers\\Producers.js"
+    },
+    {
+      "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\js\\Products\\Products.js",
+      "PackagePath": "staticwebassets\\js\\Products\\Products.js"
     },
     {
       "Id": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\lib\\bootstrap\\LICENSE",

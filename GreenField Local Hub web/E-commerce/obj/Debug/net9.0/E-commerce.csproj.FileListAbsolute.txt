@@ -1177,9 +1177,7 @@ C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\nezrqnk58p-muycvpuwrr.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\v0zgfp0y55-87fc7y1x7t.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\yfc7ypekbg-mlv21k5csn.gz
-C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\9zjnny6c7m-b9sayid5wm.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\gpnhqp869k-61n19gt1b8.gz
-C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\89ofn1wekp-xtxxf3hu2r.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\6rzomuhkdu-t1cqhe9u97.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\5ze9nt8i4r-c2jlpeoesf.gz
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\xfelixozjq-sejl45xvog.gz
@@ -1258,3 +1256,16 @@ C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\E-commerce.genruntimeconfig.cache
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\ref\E-commerce.dll
 C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\x170aw729l-dyjx89twm7.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\yhbgbh5mqm-w4ov3yuobp.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\stf8mawo5j-dyjx89twm7.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\7cyinpdnpc-bgty6v6mb2.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\lln08ty2vu-qe5lxjtuxn.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\yy14ukp9fj-3r8b2a0bt1.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\ulfkr2ze7q-b9fygw35h0.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\ctn1pss1eq-3r8b2a0bt1.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\ke0abks87j-3r8b2a0bt1.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\2k0ar1zqhn-3r8b2a0bt1.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\8iu90y73ci-p4gzb780cx.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\9zjnny6c7m-lh2jhtg1ts.gz
+C:\Users\Digi-T-Y2-7\Documents\GitHub\FinalExam-Task2\GreenField Local Hub web\E-commerce\obj\Debug\net9.0\compressed\l2isu6g80k-koyhv40ict.gz
