@@ -101,6 +101,14 @@ namespace E_commerce.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Baskets");
         }
+        // GET: BasketProducts/Create
+        public IActionResult Create()
+        {
+            ViewData["BasketId"] = new SelectList(_context.Basket, "BasketId", "BasketId");
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId");
+            return View();
+        }
+
 
         // GET: BasketProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)

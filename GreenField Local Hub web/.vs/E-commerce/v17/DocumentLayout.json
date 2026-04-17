@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\data\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\data\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\producerdashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\producerdashboard\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "SeedData.cs",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Data\\SeedData.cs",
-              "RelativeDocumentMoniker": "E-commerce\\Data\\SeedData.cs",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Data\\SeedData.cs",
-              "RelativeToolTip": "E-commerce\\Data\\SeedData.cs",
-              "ViewState": "AgIAAGoAAAAAAAAAAAAgwKAAAACFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-15T15:41:37.127Z",
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\ProducerDashboard\\Index.cshtml",
+              "RelativeDocumentMoniker": "E-commerce\\Views\\ProducerDashboard\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\ProducerDashboard\\Index.cshtml",
+              "RelativeToolTip": "E-commerce\\Views\\ProducerDashboard\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-17T10:43:43.542Z",
               "EditorCaption": ""
             }
           ]

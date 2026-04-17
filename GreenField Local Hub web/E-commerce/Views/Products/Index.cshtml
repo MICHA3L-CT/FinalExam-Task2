@@ -78,7 +78,7 @@
                     }
 
                     <form asp-controller="BasketProducts" asp-action="Create" method="post">
-                        <input type="hidden" name="ProductsId" value="@item.ProductId" />
+                        <input type="hidden" name="productId" value="@item.ProductId" />
 
                         @if (item.StockQuantity > 0)
                         {
