@@ -1,73 +1,83 @@
-﻿@model IEnumerable<E_commerce.Models.Producer>
-
+@model IEnumerable<E_commerce.Models.Producer>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Our Producers";
+    bool isAdmin = User.IsInRole("Admin");
+
+    string[] avatars = { "🌱", "🥕", "🍎", "🌿", "🥦", "🌾", "🍅", "🫐" };
+    int i = 0;
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-
-            <th>
-                @Html.DisplayNameFor(model => model.ProducerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProducerInfo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateJoined)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsVerified)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.ProducerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProducerInfo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateJoined)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsVerified)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProducerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProducerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProducerId">Delete</a>
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Producers/Producers.css" asp-append-version="true" />
 }
-    </tbody>
-</table>
+
+<div class="producers-page">
+    <div class="producers-container">
+
+        <header class="producers-header">
+            <h1 class="producers-header__title">Meet Our Producers</h1>
+            <p class="producers-header__subtitle">Discover the passionate farmers and producers who bring fresh, locally sourced food directly to your door.</p>
+        </header>
+
+        @if (isAdmin)
+        {
+            <div class="producers-admin-bar">
+                <a asp-action="Create" class="btn-create-producer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Producer
+                </a>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="producers-empty">
+                <p>No producers registered yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="producer-grid">
+                @foreach (var producer in Model)
+                {
+                    string avatar = avatars[i % avatars.Length];
+                    i++;
+                    <article class="producer-card">
+                        <div class="producer-card__banner">
+                            <div class="producer-card__avatar" aria-hidden="true">@avatar</div>
+                        </div>
+                        <div class="producer-card__body">
+                            <h2 class="producer-card__name">@producer.ProducerName</h2>
+                            <p class="producer-card__location">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                @producer.Location
+                            </p>
+                            <p class="producer-card__desc">
+                                @(producer.ProducerInfo ?? producer.ProductDescription ?? "Local producer supplying fresh, quality produce.")
+                            </p>
+                            <div class="producer-card__badges">
+                                @if (producer.IsVerified)
+                                {
+                                    <span class="producer-card__badge badge--verified">✓ Verified Producer</span>
+                                }
+                                <span class="producer-card__badge badge--joined">Since @producer.DateJoined.Year</span>
+                            </div>
+                            <div class="producer-card__actions">
+                                <a asp-controller="Products" asp-action="Index" asp-route-producerId="@producer.ProducerId"
+                                   class="btn-producer-products">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                    View Products
+                                </a>
+                                @if (isAdmin)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@producer.ProducerId" class="btn-producer-details">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@producer.ProducerId" class="btn-producer-details">Delete</a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</div>

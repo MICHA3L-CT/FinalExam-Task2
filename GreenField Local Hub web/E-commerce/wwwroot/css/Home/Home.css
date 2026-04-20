@@ -513,3 +513,61 @@ a {
         opacity: 1;
         transform: translateY(0);
     }
+/* ── Producer Cards (Home) ─────────────────────────────── */
+.producer-card-banner {
+    background: linear-gradient(135deg, #2F6F4E 0%, #4a9465 100%);
+    height: 72px;
+    position: relative;
+    border-radius: 12px 12px 0 0;
+}
+
+[data-theme="dark"] .producer-card-banner {
+    background: linear-gradient(135deg, #1F4F36 0%, #2F6F4E 100%);
+}
+
+.producer-card-avatar {
+    position: absolute;
+    bottom: -28px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.15);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.producer-card-body {
+    padding: 38px 20px 20px;
+}
+
+.producer-card-body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--font-normal, #2B2B2B);
+    margin-bottom: 4px;
+}
+
+.producer-card-location {
+    font-size: 0.78rem;
+    color: var(--font-light, #6B6B6B);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.producer-card-desc {
+    font-size: 0.84rem;
+    color: var(--font-light, #6B6B6B);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

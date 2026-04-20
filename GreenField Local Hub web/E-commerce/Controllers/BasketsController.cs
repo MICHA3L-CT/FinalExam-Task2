@@ -20,78 +20,82 @@ namespace E_commerce.Controllers
             _context = context;
         }
 
+        // GET: Baskets/Count  – used by the cart badge (returns JSON)
+        [HttpGet]
+        public async Task<IActionResult> Count()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Json(new { count = 0 });
+
+            var basket = await _context.Basket
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.Status);
+
+            if (basket == null)
+                return Json(new { count = 0 });
+
+            var count = await _context.BasketProduct
+                .Where(bp => bp.BasketId == basket.BasketId)
+                .SumAsync(bp => (int?)bp.Quantity) ?? 0;
+
+            return Json(new { count });
+        }
+
         // GET: Baskets
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (userId == null)
-            {
-                return Unauthorized();
-            }
+                return Redirect("/Identity/Account/Login?ReturnUrl=%2FBaskets");
 
-            var baskets = await _context.Basket.FirstOrDefaultAsync(b => b.UserId == userId && b.Status);
-
-            if (baskets == null)
+            var basket = await _context.Basket.FirstOrDefaultAsync(b => b.UserId == userId && b.Status);
+            if (basket == null)
             {
-              baskets = new Basket
-              {
-                  UserId = userId,
-                  Status = true,
-                  CreatedDate = DateTime.Now
-              };
-                _context.Basket.Add(baskets);
+                basket = new Basket
+                {
+                    UserId = userId,
+                    Status = true,
+                    CreatedDate = DateTime.Now
+                };
+                _context.Basket.Add(basket);
                 await _context.SaveChangesAsync();
             }
 
             var basketProducts = await _context.BasketProduct
-                .Where(bp => bp.BasketId == baskets.BasketId)
+                .Where(bp => bp.BasketId == basket.BasketId)
                 .Include(bp => bp.Product)
-                .ToListAsync(); 
+                .ToListAsync();
 
-            decimal subtotal = 0m;
-
-            foreach (var basketProduct in basketProducts)
-            {
-                var productTotal =basketProduct.Product.Price * basketProduct.Quantity;
-                subtotal += productTotal;
-            }
+            decimal subtotal = basketProducts.Sum(bp => bp.Product.Price * bp.Quantity);
 
             var orderCount = await _context.Order.CountAsync(o => o.UserId == userId);
 
             decimal discount = 0m;
-
             if (orderCount >= 5)
-            {
                 discount = subtotal * 0.10m;
-            }
 
-            decimal total = subtotal - discount;
+            decimal deliveryFee = subtotal > 0 ? 3.99m : 0m;
+            decimal total = subtotal - discount + deliveryFee;
 
             ViewBag.Subtotal = subtotal;
             ViewBag.Discount = discount;
+            ViewBag.DeliveryFee = deliveryFee;
             ViewBag.Total = total;
             ViewBag.OrderCount = orderCount;
+            ViewBag.BasketId = basket.BasketId;
+            // Loyalty progress: orders toward 5-order threshold
+            ViewBag.LoyaltyOrderCount = orderCount;
 
             return View(basketProducts);
         }
 
-        
-
         // GET: Baskets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var basket = await _context.Basket
-                .FirstOrDefaultAsync(m => m.BasketId == id);
-            if (basket == null)
-            {
-                return NotFound();
-            }
+            var basket = await _context.Basket.FirstOrDefaultAsync(m => m.BasketId == id);
+            if (basket == null) return NotFound();
 
             return View(basket);
         }
@@ -103,8 +107,6 @@ namespace E_commerce.Controllers
         }
 
         // POST: Baskets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BasketId,UserId,Status,CreatedDate")] Basket basket)
@@ -121,30 +123,19 @@ namespace E_commerce.Controllers
         // GET: Baskets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var basket = await _context.Basket.FindAsync(id);
-            if (basket == null)
-            {
-                return NotFound();
-            }
+            if (basket == null) return NotFound();
             return View(basket);
         }
 
         // POST: Baskets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BasketId,UserId,Status,CreatedDate")] Basket basket)
         {
-            if (id != basket.BasketId)
-            {
-                return NotFound();
-            }
+            if (id != basket.BasketId) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -155,14 +146,8 @@ namespace E_commerce.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BasketExists(basket.BasketId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!BasketExists(basket.BasketId)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -172,17 +157,10 @@ namespace E_commerce.Controllers
         // GET: Baskets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var basket = await _context.Basket
-                .FirstOrDefaultAsync(m => m.BasketId == id);
-            if (basket == null)
-            {
-                return NotFound();
-            }
+            var basket = await _context.Basket.FirstOrDefaultAsync(m => m.BasketId == id);
+            if (basket == null) return NotFound();
 
             return View(basket);
         }
@@ -194,9 +172,7 @@ namespace E_commerce.Controllers
         {
             var basket = await _context.Basket.FindAsync(id);
             if (basket != null)
-            {
                 _context.Basket.Remove(basket);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

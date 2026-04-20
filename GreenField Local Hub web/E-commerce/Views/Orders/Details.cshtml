@@ -1,69 +1,160 @@
-﻿@model IEnumerable<E_commerce.Models.OrderProduct>
+@model IEnumerable<E_commerce.Models.OrderProduct>
 
 @{
     ViewData["Title"] = "Order Details";
     var firstItem = Model.FirstOrDefault();
 }
 
-<h1>Order Details</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/Order.css" asp-append-version="true" />
+}
 
-@if (firstItem != null)
-{
-    <div>
-        <p><strong>Order Date:</strong> @firstItem.Order.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
-        <p><strong>Status:</strong> @firstItem.Order.OrderStatus</p>
-        <p><strong>Subtotal:</strong> @firstItem.Order.TotalAmount.ToString("0.00")</p>
+<div class="orders-page">
+    <div class="orders-container">
 
-        @if (!string.IsNullOrEmpty(firstItem.Order.DeliveryType) && firstItem.Order.DeliveryType != "Collection")
+        <div class="order-detail-back">
+            <a asp-action="Index" class="order-detail-back__link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to Orders
+            </a>
+        </div>
+
+        @if (firstItem == null)
         {
-            <p><strong>Order Method:</strong> Delivery</p>
-            <p><strong>Delivery Type:</strong> @firstItem.Order.DeliveryType</p>
-            <p><strong>Delivery Address:</strong> @firstItem.Order.DeliveryAddress</p>
-            <p><strong>Shipping Fee:</strong> @firstItem.Order.ShippingFee.ToString("0.00")</p>
+            <div class="orders-empty" role="status">
+                <span class="orders-empty__icon" aria-hidden="true">📦</span>
+                <h2>Order not found</h2>
+                <a asp-action="Index" class="btn-primary">Back to Orders</a>
+            </div>
         }
-
-        @if (firstItem.Order.DeliveryType == "Collection")
+        else
         {
-            <p><strong>Order Method:</strong> Collection</p>
-            @if (firstItem.Order.ScheduleDate.HasValue)
-            {
-                <p><strong>Collection Date:</strong> @firstItem.Order.ScheduleDate.Value.ToString("yyyy-MM-dd HH:mm")</p>
-            }
+            var order = firstItem.Order;
+
+            <div class="order-detail-header">
+                <div>
+                    <h1 class="orders-title">Order #GLH-@order.OrderId.ToString("D4")</h1>
+                    <p class="orders-subtitle">Placed on @order.OrderDate.ToString("d MMMM yyyy, HH:mm")</p>
+                </div>
+                <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" aria-label="Status: @order.OrderStatus">
+                    @order.OrderStatus
+                </span>
+            </div>
+
+            <div class="order-detail-grid">
+
+                <!-- Products -->
+                <section class="order-detail-section" aria-labelledby="products-heading">
+                    <h2 class="order-detail-section__title" id="products-heading">Items Ordered</h2>
+                    <div class="order-detail-items">
+                        @foreach (var item in Model)
+                        {
+                            var lineTotal = item.Product.Price * item.Quantity;
+                            <article class="order-detail-item">
+                                <div class="order-detail-item__img" aria-hidden="true">
+                                    @if (!string.IsNullOrEmpty(item.Product?.ImagePath))
+                                    {
+                                        <img src="@item.Product.ImagePath" alt="@item.Product.ProductName" />
+                                    }
+                                    else
+                                    {
+                                        <span>🥬</span>
+                                    }
+                                </div>
+                                <div class="order-detail-item__info">
+                                    <p class="order-detail-item__name">@item.Product?.ProductName</p>
+                                    <p class="order-detail-item__producer">@item.Product?.Producer?.ProducerName</p>
+                                </div>
+                                <div class="order-detail-item__meta">
+                                    <span class="order-detail-item__price">£@item.Product?.Price.ToString("0.00")</span>
+                                    <span class="order-detail-item__qty">× @item.Quantity</span>
+                                </div>
+                                <div class="order-detail-item__total">£@lineTotal.ToString("0.00")</div>
+                            </article>
+                        }
+                    </div>
+                </section>
+
+                <!-- Summary sidebar -->
+                <aside class="order-detail-sidebar" aria-label="Order summary">
+
+                    <!-- Delivery info -->
+                    <div class="order-detail-card">
+                        <h2 class="order-detail-card__title">
+                            @if (order.DeliveryType == "Collection") { <text>Collection Details</text> }
+                            else { <text>Delivery Details</text> }
+                        </h2>
+                        @if (order.DeliveryType == "Collection")
+                        {
+                            <dl class="order-detail-dl">
+                                <dt>Method</dt><dd>Click &amp; Collect</dd>
+                                @if (order.ScheduleDate.HasValue)
+                                {
+                                    <dt>Collection Date</dt>
+                                    <dd>@order.ScheduleDate.Value.ToString("d MMMM yyyy, HH:mm")</dd>
+                                }
+                            </dl>
+                        }
+                        else
+                        {
+                            <dl class="order-detail-dl">
+                                <dt>Method</dt><dd>Delivery</dd>
+                                @if (!string.IsNullOrEmpty(order.DeliveryType))
+                                {
+                                    <dt>Type</dt><dd>@order.DeliveryType</dd>
+                                }
+                                @if (!string.IsNullOrEmpty(order.DeliveryAddress))
+                                {
+                                    <dt>Address</dt><dd>@order.DeliveryAddress</dd>
+                                }
+                                <dt>Shipping Fee</dt><dd>£@order.ShippingFee.ToString("0.00")</dd>
+                            </dl>
+                        }
+                    </div>
+
+                    <!-- Price summary -->
+                    <div class="order-detail-card">
+                        <h2 class="order-detail-card__title">Order Summary</h2>
+                        @{
+                            decimal subtotal = Model.Sum(i => i.Product.Price * i.Quantity);
+                            decimal shipping = order.ShippingFee;
+                            decimal discountAmt = order.TotalAmount < subtotal + shipping ? (subtotal + shipping - order.TotalAmount) : 0;
+                        }
+                        <div class="basket-summary__row">
+                            <span>Subtotal</span>
+                            <span>£@subtotal.ToString("0.00")</span>
+                        </div>
+                        @if (discountAmt > 0)
+                        {
+                            <div class="basket-summary__row basket-summary__row--discount">
+                                <span>Loyalty Discount</span>
+                                <span>−£@discountAmt.ToString("0.00")</span>
+                            </div>
+                        }
+                        <div class="basket-summary__row">
+                            <span>Shipping</span>
+                            <span>£@shipping.ToString("0.00")</span>
+                        </div>
+                        <hr class="basket-summary__divider" />
+                        <div class="basket-summary__row basket-summary__row--total">
+                            <strong>Total</strong>
+                            <strong>£@order.TotalAmount.ToString("0.00")</strong>
+                        </div>
+                    </div>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="order-detail-card">
+                            <h2 class="order-detail-card__title">Admin Actions</h2>
+                            <div style="display:flex; gap:10px; flex-direction:column;">
+                                <a asp-action="Edit" asp-route-id="@order.OrderId" class="btn-primary" style="text-align:center;">Edit Order</a>
+                                <a asp-action="Delete" asp-route-id="@order.OrderId" class="btn-secondary" style="text-align:center; color:#dc2626; border-color:#fca5a5;">Delete Order</a>
+                            </div>
+                        </div>
+                    }
+
+                </aside>
+            </div>
         }
     </div>
-
-    <hr />
-
-    <h2>Products Ordered</h2>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th style="text-align:left; padding-right:20px;">Product</th>
-                <th style="text-align:left; padding-right:20px;">Price</th>
-                <th style="text-align:left; padding-right:20px;">Quantity</th>
-                <th style="text-align:left; padding-right:20px;">Line Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                var lineTotal = item.Product.Price * item.Quantity;
-                <tr>
-                    <td style="padding-right:20px;">@item.Product.ProductName</td>
-                    <td style="padding-right:20px;">@item.Product.Price.ToString("0.00")</td>
-                    <td style="padding-right:20px;">@item.Quantity</td>
-                    <td style="padding-right:20px;">@lineTotal.ToString("0.00")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div style="margin-top:20px;">
-        <a asp-action="Index">Back to List</a>
-    </div>
-}
-else
-{
-    <p>Order not found.</p>
-}
+</div>

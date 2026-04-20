@@ -1,5 +1,8 @@
-﻿@{
+@model IEnumerable<E_commerce.Models.Producer>
+@{
     ViewData["Title"] = "Home";
+    var producers = Model?.ToList() ?? new List<E_commerce.Models.Producer>();
+    string[] avatarEmojis = { "🌱", "🥕", "🍎", "🌿", "🥦", "🌾" };
 }
 
 @section Styles {
@@ -96,30 +99,60 @@
 <section class="section fade-in" id="producers-section">
     <h2 class="section-title">Meet Our Producers</h2>
     <div class="producers-grid">
-        <div class="producer-card">
-            <img src="~/images/carrots.jpg" alt="Daniel's Farm" class="producer-card-img" />
-            <div class="producer-card-body">
-                <h3>Daniel's Farm</h3>
-                <p>Family-owned organic farm specialising in seasonal vegetables and fruits.</p>
-                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+        @if (producers.Any())
+        {
+            int idx = 0;
+            @foreach (var producer in producers)
+            {
+                string emoji = avatarEmojis[idx % avatarEmojis.Length];
+                idx++;
+                <div class="producer-card">
+                    <div class="producer-card-banner">
+                        <span class="producer-card-avatar" aria-hidden="true">@emoji</span>
+                    </div>
+                    <div class="producer-card-body">
+                        <h3>@producer.ProducerName</h3>
+                        <p class="producer-card-location">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            @producer.Location
+                        </p>
+                        <p class="producer-card-desc">@(producer.ProductDescription ?? producer.ProducerInfo ?? "Fresh, locally sourced produce.")</p>
+                        <a asp-controller="Products" asp-action="Index" asp-route-producerId="@producer.ProducerId" class="btn-outline">View Products</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Fallback static cards -->
+            <div class="producer-card">
+                <img src="~/images/carrots.jpg" alt="Daniel's Farm" class="producer-card-img" />
+                <div class="producer-card-body">
+                    <h3>Daniel's Farm</h3>
+                    <p>Family-owned organic farm specialising in seasonal vegetables and fruits.</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn-outline">View Products</a>
+                </div>
             </div>
-        </div>
-        <div class="producer-card">
-            <img src="~/images/spinach.jpg" alt="Green Valley Gardens" class="producer-card-img" />
-            <div class="producer-card-body">
-                <h3>Green Valley Gardens</h3>
-                <p>Sustainable farming practices for the freshest produce.</p>
-                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+            <div class="producer-card">
+                <img src="~/images/spinach.jpg" alt="Green Valley Gardens" class="producer-card-img" />
+                <div class="producer-card-body">
+                    <h3>Green Valley Gardens</h3>
+                    <p>Sustainable farming practices for the freshest produce.</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn-outline">View Products</a>
+                </div>
             </div>
-        </div>
-        <div class="producer-card">
-            <img src="~/images/eggs.jpg" alt="Sunny Fields Farm" class="producer-card-img" />
-            <div class="producer-card-body">
-                <h3>Sunny Fields Farm</h3>
-                <p>Passionate about organic vegetables grown with love.</p>
-                <a asp-controller="Producers" asp-action="Index" class="btn-outline">View Products</a>
+            <div class="producer-card">
+                <img src="~/images/eggs.jpg" alt="Sunny Fields Farm" class="producer-card-img" />
+                <div class="producer-card-body">
+                    <h3>Sunny Fields Farm</h3>
+                    <p>Passionate about organic vegetables grown with love.</p>
+                    <a asp-controller="Products" asp-action="Index" class="btn-outline">View Products</a>
+                </div>
             </div>
-        </div>
+        }
+    </div>
+    <div style="text-align:center; margin-top:32px;">
+        <a asp-controller="Producers" asp-action="Index" class="btn-outline">See All Producers</a>
     </div>
 </section>
 
@@ -127,19 +160,16 @@
 <section class="loyalty-section fade-in">
     <h2>Join Our Loyalty Programme</h2>
     <p>Earn points with every order and unlock exclusive discounts</p>
-    <a asp-controller="Account" asp-action="Register" class="btn-primary">Sign Up Now</a>
+    <a asp-controller="Home" asp-action="Loyalty" class="btn-primary">Learn More</a>
 </section>
 
 @section Scripts {
     <script>
-        // Smooth Scroll for "Meet Our Producers" button
         const meetProducersBtn = document.getElementById('meet-producers-btn');
         if (meetProducersBtn) {
             meetProducersBtn.addEventListener('click', () => {
                 const section = document.getElementById('producers-section');
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
             });
         }
     </script>

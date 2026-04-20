@@ -1,0 +1,75 @@
+<footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+        <div class="footer-grid">
+
+            <!-- Brand -->
+            <div class="footer-brand">
+                <a class="footer-brand__logo" asp-controller="Home" asp-action="Index" aria-label="GreenField Local Hub Home">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
+                    </svg>
+                    <span>GLH</span>
+                </a>
+                <p class="footer-brand__tagline">Connecting communities with local farmers to bring fresh, sustainable produce directly to your door.</p>
+</div>
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h3 class="footer-col__title">Quick Links</h3>
+                <ul class="footer-links" role="list">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Products" asp-action="Index">All Products</a></li>
+                    <li><a asp-controller="Producers" asp-action="Index">Our Producers</a></li>
+                    <li><a asp-controller="Home" asp-action="About">About Us</a></li>
+                    <li><a asp-controller="Home" asp-action="Loyalty">Loyalty Programme</a></li>
+                </ul>
+            </div>
+
+            <!-- Customer Service -->
+            <div class="footer-col">
+                <h3 class="footer-col__title">Customer Service</h3>
+                <ul class="footer-links" role="list">
+                    <li><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                    <li><a asp-controller="Baskets" asp-action="Index">My Basket</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                    <li><a asp-controller="Home" asp-action="TermsAndConditions">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="footer-col">
+                <h3 class="footer-col__title">Contact Us</h3>
+                <ul class="footer-contact" role="list">
+                    <li>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <a href="mailto:info@greenfieldlocalhub.com">info@greenfieldlocalhub.com</a>
+                    </li>
+                    <li>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.39a2 2 0 0 1 2-2.18H7a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span>+44 (0)20 1234 5678</span>
+                    </li>
+                    <li>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Mon–Fri: 8am – 6pm</span>
+                    </li>
+                    <li>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>Sat–Sun: 9am – 5pm</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom__inner">
+            <span>&copy; 2024 GreenField Local Hub. All rights reserved.</span>
+            <div class="footer-bottom__links">
+                <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+                <a asp-controller="Home" asp-action="TermsAndConditions">Terms of Service</a>
+                <a href="#cookie-settings" id="manageCookiesFooter">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>

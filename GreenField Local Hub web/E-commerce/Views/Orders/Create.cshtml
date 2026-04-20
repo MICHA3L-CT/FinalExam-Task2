@@ -3,94 +3,213 @@
     ViewData["Title"] = "Checkout";
 }
 
-<h1>Checkout</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/Order.css" asp-append-version="true" />
+}
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly" style="color:red;"></div>
-    <input type="hidden" name="basketId" value="@ViewBag.BasketId" />
+<div class="checkout-page">
+    <div class="checkout-container">
+        <h1 class="checkout-title">Checkout</h1>
 
-    <div style="margin-bottom:20px;">
-        <label style="font-weight:bold; display:block; margin-bottom:10px;">Order Method</label>
+        <form asp-action="Create" method="post" id="checkoutForm" novalidate aria-label="Checkout form">
+            <div asp-validation-summary="ModelOnly" class="checkout-errors" role="alert" aria-live="assertive"></div>
+            <input type="hidden" name="basketId" value="@ViewBag.BasketId" />
 
-        <div>
-            <input type="radio" name="orderMethod" id="deliveryCheck" value="delivery" />
-            <label for="deliveryCheck">Delivery</label>
-        </div>
+            <div class="checkout-layout">
 
-        <div>
-            <input type="radio" name="orderMethod" id="collectionCheck" value="collection" />
-            <label for="collectionCheck">Collection</label>
-        </div>
+                <!-- ── Left: Delivery Options ──────────────────────── -->
+                <section class="checkout-section" aria-labelledby="delivery-heading">
+                    <h2 id="delivery-heading" class="checkout-section__title">Fulfilment Method</h2>
+
+                    <fieldset class="method-fieldset" aria-required="true">
+                        <legend class="sr-only">Choose delivery or collection</legend>
+
+                        <label class="method-card" for="deliveryCheck">
+                            <input type="radio" name="orderMethod" id="deliveryCheck" value="delivery"
+                                   aria-controls="deliveryPanel" />
+                            <span class="method-card__icon" aria-hidden="true">🚚</span>
+                            <span class="method-card__label">Delivery</span>
+                        </label>
+
+                        <label class="method-card" for="collectionCheck">
+                            <input type="radio" name="orderMethod" id="collectionCheck" value="collection"
+                                   aria-controls="collectionPanel" />
+                            <span class="method-card__icon" aria-hidden="true">🏪</span>
+                            <span class="method-card__label">Collection</span>
+                        </label>
+                    </fieldset>
+
+                    <!-- Delivery panel -->
+                    <div id="deliveryPanel" class="method-panel" hidden aria-hidden="true">
+                        <div class="form-group">
+                            <label class="form-label" for="DeliveryType">Delivery Type <span class="required" aria-hidden="true">*</span></label>
+                            <select asp-for="DeliveryType" id="DeliveryType" class="form-select"
+                                    aria-required="true" aria-describedby="deliveryTypeHint">
+                                <option value="">Select delivery type…</option>
+                                <option value="Standard">Standard — £2.99</option>
+                                <option value="First Class">First Class — £4.99</option>
+                                <option value="Next Day">Next Day — £9.99</option>
+                            </select>
+                            <span id="deliveryTypeHint" class="sr-only">Select how quickly you want your order delivered</span>
+                            <span asp-validation-for="DeliveryType" class="field-error" role="alert"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="DeliveryAddress">Delivery Address <span class="required" aria-hidden="true">*</span></label>
+                            <textarea asp-for="DeliveryAddress" id="DeliveryAddress" class="form-input form-textarea"
+                                      placeholder="Enter your full delivery address"
+                                      rows="3" aria-required="true"></textarea>
+                            <span asp-validation-for="DeliveryAddress" class="field-error" role="alert"></span>
+                        </div>
+                    </div>
+
+                    <!-- Collection panel -->
+                    <div id="collectionPanel" class="method-panel" hidden aria-hidden="true">
+                        <div class="form-group">
+                            <label class="form-label" for="CollectionDate">
+                                Collection Date <span class="required" aria-hidden="true">*</span>
+                            </label>
+                            <input asp-for="ScheduleDate" type="date" id="CollectionDate"
+                                   class="form-input" aria-required="true"
+                                   aria-describedby="collectionDateHint" />
+                            <p id="collectionDateHint" class="form-hint">
+                                Earliest collection is 2 days from today.
+                            </p>
+                            <span asp-validation-for="ScheduleDate" class="field-error" role="alert"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── Right: Order Summary ─────────────────────────── -->
+                <aside class="checkout-summary" aria-label="Order summary">
+                    <h2 class="checkout-summary__title">Order Summary</h2>
+
+                    <div class="checkout-summary__row">
+                        <span>Subtotal</span>
+                        <span id="summarySubtotal">—</span>
+                    </div>
+                    <div class="checkout-summary__row" id="shippingRow">
+                        <span>Delivery</span>
+                        <span id="summaryShipping">—</span>
+                    </div>
+                    <hr class="checkout-summary__divider" />
+                    <div class="checkout-summary__row checkout-summary__row--total">
+                        <strong>Total</strong>
+                        <strong id="summaryTotal">—</strong>
+                    </div>
+
+                    <p class="checkout-note" id="shippingNote"></p>
+
+                    <div class="checkout-actions">
+                        <button type="submit" class="btn-checkout" aria-label="Place your order">
+                            Place Order
+                        </button>
+                        <a asp-controller="Baskets" asp-action="Index" class="btn-back-basket">
+                            ← Back to Basket
+                        </a>
+                    </div>
+                </aside>
+
+            </div><!-- /checkout-layout -->
+        </form>
     </div>
-
-    {{-- Delivery options --}}
-    <div id="deliveryTypeGroup" style="display:none; margin-bottom:15px;">
-        <label asp-for="DeliveryType">Delivery Type</label>
-        <select asp-for="DeliveryType">
-            <option value="">Select Delivery Type</option>
-            <option value="Next Day">Next Day</option>
-            <option value="First Class">First Class</option>
-            <option value="Standard">Standard</option>
-        </select>
-        <span asp-validation-for="DeliveryType" style="color:red;"></span>
-
-        <div style="margin-top:10px;">
-            <label asp-for="DeliveryAddress">Delivery Address</label>
-            <input asp-for="DeliveryAddress" style="display:block; width:100%; margin-top:5px;" />
-            <span asp-validation-for="DeliveryAddress" style="color:red;"></span>
-        </div>
-    </div>
-
-    {{-- Collection date --}}
-    <div id="collectionDateGroup" style="display:none; margin-bottom:20px;">
-        <label asp-for="ScheduleDate">Collection Date</label>
-        <input asp-for="ScheduleDate" type="date" id="CollectionDate"
-               style="display:block; margin-top:5px;" />
-        <div style="color:grey; font-size:0.9em;">
-            Earliest collection date is 2 days from today.
-        </div>
-        <span asp-validation-for="ScheduleDate" style="color:red;"></span>
-    </div>
-
-    <div style="margin-top:20px;">
-        <button type="submit">Place Order</button>
-        <a asp-controller="Baskets" asp-action="Index" style="margin-left:15px;">
-            Back to Basket
-        </a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     <script>
-        const collectionDateInput = document.getElementById("CollectionDate");
-        const today = new Date();
-        today.setDate(today.getDate() + 2);
-        const minDate = today.toISOString().split("T")[0];
-        if (collectionDateInput) {
-            collectionDateInput.min = minDate;
-        }
+        (function () {
+            const deliveryCheck   = document.getElementById('deliveryCheck');
+            const collectionCheck = document.getElementById('collectionCheck');
+            const deliveryPanel   = document.getElementById('deliveryPanel');
+            const collectionPanel = document.getElementById('collectionPanel');
+            const deliveryTypeEl  = document.getElementById('DeliveryType');
+            const collectionDateEl= document.getElementById('CollectionDate');
+            const methodCards     = document.querySelectorAll('.method-card');
 
-        const deliveryCheck = document.getElementById("deliveryCheck");
-        const collectionCheck = document.getElementById("collectionCheck");
-        const deliveryTypeGroup = document.getElementById("deliveryTypeGroup");
-        const collectionDateGroup = document.getElementById("collectionDateGroup");
-
-        function updateForm() {
-            deliveryTypeGroup.style.display = "none";
-            collectionDateGroup.style.display = "none";
-
-            if (deliveryCheck.checked) {
-                deliveryTypeGroup.style.display = "block";
-            } else if (collectionCheck.checked) {
-                collectionDateGroup.style.display = "block";
+            // Set earliest collection date
+            const minDate = new Date();
+            minDate.setDate(minDate.getDate() + 2);
+            if (collectionDateEl) {
+                collectionDateEl.min = minDate.toISOString().split('T')[0];
             }
-        }
 
-        deliveryCheck.addEventListener("change", updateForm);
-        collectionCheck.addEventListener("change", updateForm);
-        updateForm();
+            // Shipping fees (must match server values)
+            const fees = { 'Next Day': 9.99, 'First Class': 4.99, 'Standard': 2.99, 'collection': 0 };
+            // Subtotal injected from server via a hidden element or estimated (update if you pass it in ViewBag)
+            const subtotal = parseFloat('@(ViewBag.Subtotal ?? 0)') || 0;
+
+            function showPanel(method) {
+                deliveryPanel.hidden   = method !== 'delivery';
+                deliveryPanel.setAttribute('aria-hidden', method !== 'delivery');
+                collectionPanel.hidden = method !== 'collection';
+                collectionPanel.setAttribute('aria-hidden', method !== 'collection');
+
+                // Update card active styles
+                methodCards.forEach(c => {
+                    const input = c.querySelector('input');
+                    c.classList.toggle('method-card--active', input && input.checked);
+                });
+
+                updateSummary(method);
+            }
+
+            function updateSummary(method) {
+                const subtotalEl  = document.getElementById('summarySubtotal');
+                const shippingEl  = document.getElementById('summaryShipping');
+                const totalEl     = document.getElementById('summaryTotal');
+                const noteEl      = document.getElementById('shippingNote');
+                const shippingRow = document.getElementById('shippingRow');
+
+                let fee = 0;
+                let noteText = '';
+
+                if (method === 'delivery') {
+                    const selected = deliveryTypeEl ? deliveryTypeEl.value : '';
+                    fee = fees[selected] || 0;
+                    shippingRow.style.display = 'flex';
+
+                    const notes = {
+                        'Next Day':    'Next Day delivery by 9 PM tomorrow.',
+                        'First Class': 'First Class delivery in 1–2 days.',
+                        'Standard':    'Standard delivery in 3–5 working days.'
+                    };
+                    noteText = notes[selected] || 'Select a delivery type above.';
+                } else if (method === 'collection') {
+                    shippingRow.style.display = 'none';
+                    noteText = 'Free collection from our local hub.';
+                } else {
+                    shippingRow.style.display = 'none';
+                    noteText = '';
+                }
+
+                const loyaltyDiscount = parseFloat('@(ViewBag.Discount ?? 0)') || 0;
+                const discounted = subtotal - loyaltyDiscount;
+                const total = discounted + fee;
+
+                if (subtotalEl) subtotalEl.textContent = '£' + discounted.toFixed(2);
+                if (shippingEl) shippingEl.textContent = fee > 0 ? '£' + fee.toFixed(2) : 'Free';
+                if (totalEl)    totalEl.textContent    = '£' + total.toFixed(2);
+                if (noteEl)     noteEl.textContent     = noteText;
+            }
+
+            deliveryCheck.addEventListener('change', () => showPanel('delivery'));
+            collectionCheck.addEventListener('change', () => showPanel('collection'));
+
+            if (deliveryTypeEl) {
+                deliveryTypeEl.addEventListener('change', () => {
+                    if (deliveryCheck.checked) updateSummary('delivery');
+                });
+            }
+
+            // Restore state on validation failure
+            const checkedMethod = document.querySelector('input[name="orderMethod"]:checked');
+            if (checkedMethod) {
+                showPanel(checkedMethod.value);
+            } else {
+                updateSummary(null);
+            }
+        })();
     </script>
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,33 +22,30 @@ namespace E_commerce.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? producerId)
         {
             if (User.IsInRole("Producer"))
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                if (userId == null)
-                    return Unauthorized();
-
+                if (userId == null) return Unauthorized();
                 var producer = await _context.Producer.FirstOrDefaultAsync(s => s.UserId == userId);
-
-                if (producer == null)
-                    return NotFound();
-
+                if (producer == null) return NotFound();
                 var producerProducts = await _context.Product
                     .Where(p => p.ProducerId == producer.ProducerId)
                     .Include(p => p.Producer)
                     .ToListAsync();
-
                 return View(producerProducts);
             }
             else
             {
-                var allProducts = await _context.Product
-                    .Include(p => p.Producer)
-                    .ToListAsync();
-
+                var query = _context.Product.Include(p => p.Producer).AsQueryable();
+                if (producerId.HasValue)
+                {
+                    query = query.Where(p => p.ProducerId == producerId.Value);
+                    var prod = await _context.Producer.FindAsync(producerId.Value);
+                    ViewBag.FilteredProducer = prod?.ProducerName;
+                }
+                var allProducts = await query.ToListAsync();
                 return View(allProducts);
             }
         }

@@ -1,90 +1,163 @@
 ﻿@model IEnumerable<E_commerce.Models.BasketProduct>
 @{
     ViewData["Title"] = "Your Basket";
-    var basketId = Model.FirstOrDefault()?.BasketId;
+    var basketId = ViewBag.BasketId;
+    decimal subtotal = (decimal)ViewBag.Subtotal;
+    decimal discount = (decimal)ViewBag.Discount;
+    decimal delivery = (decimal)ViewBag.DeliveryFee;
+    decimal total = (decimal)ViewBag.Total;
+    int orderCount = (int)ViewBag.LoyaltyOrderCount;
+    bool hasDiscount = discount > 0;
 }
 
-<h1>Your Basket</h1>
-
-@if (!Model.Any())
-{
-    <div>
-        <h3>Your basket is empty</h3>
-        <p>Looks like you haven't added any products yet.</p>
-        <a asp-controller="Products" asp-action="Index">Continue Shopping</a>
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Basket/Basket.css" asp-append-version="true" />
 }
-else
-{
-   <div>
-        <div>
-            @foreach (var item in Model)
+
+<div class="basket-page">
+    <div class="basket-container">
+
+        @if (!Model.Any())
+        {
+            <!-- ── Empty basket ─────────────────────────── -->
+            <div class="basket-empty" role="status">
+                <svg class="basket-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <h1 class="basket-empty__title">Your basket is empty</h1>
+                <p class="basket-empty__text">Start shopping and add some fresh products to your basket!</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-primary">Browse Products</a>
+            </div>
+        }
+        else
+        {
+            <!-- ── Loyalty Banner ──────────────────────── -->
+            @if (!hasDiscount)
             {
-                <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-                    <div>
-                        <h4>@item.Product.ProductName</h4>
-                        <p>Price: £@item.Product.Price.ToString("0.00")</p>
+                int remaining = 5 - orderCount;
+                int progress = Math.Min(orderCount, 5);
+                <div class="loyalty-banner" role="complementary" aria-label="Loyalty reward progress">
+                    <span class="loyalty-banner__icon" aria-hidden="true">⭐</span>
+                    <div class="loyalty-banner__text" style="flex:1">
+                        <strong>@remaining more order@(remaining == 1 ? "" : "s") to unlock 10% loyalty discount!</strong>
+                        <div class="loyalty-bar" role="progressbar" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="5" aria-label="@progress of 5 orders completed">
+                            <div class="loyalty-bar__fill" style="width:@(progress * 20)%"></div>
+                        </div>
+                    </div>
+                    <span class="loyalty-count" aria-hidden="true">@progress / 5</span>
+                </div>
+            }
+            else
+            {
+                <div class="loyalty-banner loyalty-banner--active" role="status" aria-label="Loyalty discount applied">
+                    <span class="loyalty-banner__icon" aria-hidden="true">🎉</span>
+                    <div class="loyalty-banner__text">
+                        <strong>10% loyalty discount applied!</strong>
+                        <span>Thank you for being a valued customer.</span>
+                    </div>
+                </div>
+            }
+
+            <h1 class="basket-title">Your Basket (@Model.Sum(m => m.Quantity) item@(Model.Sum(m => m.Quantity) == 1 ? "" : "s"))</h1>
+
+            <div class="basket-layout">
+                <!-- ── Items ──────────────────────────── -->
+                <section class="basket-items" aria-label="Basket items">
+                    @foreach (var item in Model)
+                    {
+                        <article class="basket-item" aria-label="@item.Product.ProductName">
+                            <div class="basket-item__img" aria-hidden="true">
+                                @if (!string.IsNullOrEmpty(item.Product.ImagePath))
+                                {
+                                    <img src="@item.Product.ImagePath" alt="@item.Product.ProductName" />
+                                }
+                                else
+                                {
+                                    <span class="basket-item__img-placeholder">🥬</span>
+                                }
+                            </div>
+
+                            <div class="basket-item__info">
+                                <h2 class="basket-item__name">@item.Product.ProductName</h2>
+                                <p class="basket-item__producer">@item.Product.Producer?.ProducerName</p>
+                            </div>
+
+                            <div class="basket-item__price" aria-label="Price: £@item.Product.Price.ToString("0.00")">
+                                £@item.Product.Price.ToString("0.00")
+                            </div>
+
+                            <!-- Quantity controls -->
+                            <div class="basket-item__qty" role="group" aria-label="Quantity for @item.Product.ProductName">
+                                <form asp-controller="BasketProducts" asp-action="DecreaseQuantity" method="post" class="qty-form" aria-label="Decrease quantity">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.BasketProductId" />
+                                    <button type="submit" class="qty-btn" aria-label="Decrease quantity of @item.Product.ProductName">−</button>
+                                </form>
+                                <span class="qty-value" aria-live="polite">@item.Quantity</span>
+                                <form asp-controller="BasketProducts" asp-action="IncreaseQuantity" method="post" class="qty-form" aria-label="Increase quantity">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.BasketProductId" />
+                                    <button type="submit" class="qty-btn" aria-label="Increase quantity of @item.Product.ProductName">+</button>
+                                </form>
+                            </div>
+
+                            <form asp-controller="BasketProducts" asp-action="Delete" asp-route-id="@item.BasketProductId" method="get">
+                                <button type="submit" class="basket-item__remove" aria-label="Remove @item.Product.ProductName from basket">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </article>
+                    }
+                </section>
+
+                <!-- ── Order Summary ──────────────────── -->
+                <aside class="basket-summary" aria-label="Order summary">
+                    <h2 class="basket-summary__title">Order Summary</h2>
+
+                    <div class="basket-summary__row">
+                        <span>Subtotal</span>
+                        <span>£@subtotal.ToString("0.00")</span>
                     </div>
 
-                    <div>
-                        <p>Qty: @item.Quantity</p>
+                    @if (hasDiscount)
+                    {
+                        <div class="basket-summary__row basket-summary__row--discount">
+                            <span>Loyalty Discount (10%)</span>
+                            <span>−£@discount.ToString("0.00")</span>
+                        </div>
+                    }
+
+                    <div class="basket-summary__row">
+                        <span>Delivery</span>
+                        <span>£@delivery.ToString("0.00")</span>
                     </div>
 
-                    <div>
-                        <p>
-                            Total: £@((item.Product.Price * item.Quantity).ToString("0.00"))
-                        </p>
+                    <hr class="basket-summary__divider" />
+
+                    <div class="basket-summary__row basket-summary__row--total">
+                        <strong>Total</strong>
+                        <strong>£@total.ToString("0.00")</strong>
                     </div>
 
-                    <a asp-controller="BasketProducts"
-                       asp-action="Delete"
-                       asp-route-id="@item.BasketProductId">
-                        Remove
+                    <p class="basket-summary__note">Shipping and taxes calculated at checkout.</p>
+
+                    <a asp-controller="Orders"
+                       asp-action="Create"
+                       asp-route-basketId="@basketId"
+                       class="btn-primary btn-block"
+                       role="button">
+                        Proceed to Checkout
                     </a>
-                </div>
-            }
-
-            <div style="border:1px solid #000; padding:15px; margin-top:20px;">
-                <h3>Order Summary</h3>
-
-                <div>
-                    <span>Subtotal: </span>
-                    <span>£@(((decimal)ViewBag.Subtotal).ToString("0.00"))</span>
-                </div>
-
-                <div>
-                    <span>Loyalty Discount: </span>
-                    <span>£@(((decimal)ViewBag.Discount).ToString("0.00"))</span>
-                </div>
-
-                <hr />
-
-                <div>
-                    <strong>Total: </strong>
-                    <strong>£@(((decimal)ViewBag.Total).ToString("0.00"))</strong>
-                </div>
+                    <a asp-controller="Products" asp-action="Index" class="btn-secondary btn-block" role="button">
+                        Continue Shopping
+                    </a>
+                </aside>
             </div>
-
-            @if (ViewBag.Discount > 0)
-            {
-                <div>
-                    <p>Your loyalty discount has been applied.</p>
-                </div>
-            }
-
-            <div>
-                <a asp-controller="Orders"
-                    asp-action="Create"
-                    asp-route-basketId="@basketId"
-                    class="btn btn-primary w-100 mb-2">
-                    Proceed to Checkout 
-                </a>
-                <a asp-controller="Products"
-                   asp-action="Index">
-                    Continue Shopping
-                </a>
-            </div>
-
-        </div>
-   </div>
-}
+        }
+    </div>
+</div>

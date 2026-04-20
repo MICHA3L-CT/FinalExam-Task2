@@ -368,6 +368,47 @@ namespace E_commerce.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Orders/UpdateStatus — Producers can move orders past Pending
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int orderId, string newStatus)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            // Only Producers and Admins may use this endpoint
+            if (!User.IsInRole("Producer") && !User.IsInRole("Admin"))
+                return Forbid();
+
+            var allowedStatuses = new[] { "Processing", "Shipped", "Delivered", "Cancelled" };
+            if (!allowedStatuses.Contains(newStatus))
+            {
+                TempData["Error"] = "Invalid status selected.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var order = await _context.Order
+                .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null) return NotFound();
+
+            // Producers may only update orders that contain their products
+            if (User.IsInRole("Producer"))
+            {
+                bool hasProducerProducts = order.OrderProducts
+                    .Any(op => op.Product != null && op.Product.Producer != null && op.Product.Producer.UserId == userId);
+                if (!hasProducerProducts) return Forbid();
+            }
+
+            order.OrderStatus = newStatus;
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = $"Order #GLH-{order.OrderId:D4} status updated to {newStatus}.";
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.OrderId == id);

@@ -1,6 +1,7 @@
-﻿@model IEnumerable<E_commerce.Models.Product>
+@model IEnumerable<E_commerce.Models.Product>
 @{
     ViewData["Title"] = "Products";
+    string filteredProducer = ViewBag.FilteredProducer as string;
     var categories = Model.Select(p => p.Category).Distinct().OrderBy(c => c).ToList();
 
     // Count per category for filter pills
@@ -131,6 +132,15 @@
 
         <!-- Product Grid -->
         <main>
+            @if (!string.IsNullOrEmpty(filteredProducer))
+            {
+                <div class="producer-filter-banner">
+                    <span class="producer-filter-banner__text">
+                        🌿 Showing products from <strong>@filteredProducer</strong>
+                    </span>
+                    <a asp-action="Index" class="producer-filter-banner__clear">Show all products</a>
+                </div>
+            }
             <div class="product-grid" id="productGrid" role="list">
 
                 @if (!Model.Any())
@@ -149,7 +159,7 @@
                              data-category="@item.Category?.ToLower()"
                              data-name="@item.ProductName?.ToLower()"
                              data-description="@item.Description?.ToLower()"
-                             data-producer="@(item.Producer?.ProducerId.ToString()?.ToLower() ?? "")"
+                             data-producer="@(item.Producer?.ProducerName?.ToLower() ?? "")"
                              data-price="@item.Price"
                              data-date="@item.DateAdded.ToString("yyyy-MM-dd")">
 
@@ -178,7 +188,7 @@
                             }
 
                             <!-- Wishlist button -->
-                            <button class="card-wishlist" aria-label="Save for later" type="button">
+                            <button class="card-wishlist" aria-label="Save @item.ProductName for later" type="button" data-product-id="@item.ProductId" data-product-name="@item.ProductName">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                                 </svg>

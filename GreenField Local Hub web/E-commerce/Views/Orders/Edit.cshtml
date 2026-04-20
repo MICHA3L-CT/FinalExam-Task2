@@ -1,72 +1,92 @@
-﻿@model E_commerce.Models.Order
-
+@model E_commerce.Models.Order
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Order";
 }
 
-<h1>Edit</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/Order.css" asp-append-version="true" />
+}
 
-<h4>Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="OrderId" />
+<div class="orders-page">
+    <div class="orders-container" style="max-width:680px;">
 
-            <div class="form-group">
-                <label asp-for="OrderDate" class="control-label"></label>
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrderStatus" class="control-label"></label>
+        <div class="order-detail-back">
+            <a asp-action="Index" class="order-detail-back__link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to Orders
+            </a>
+        </div>
 
-                <select asp-for="OrderStatus" class="form-control">
-                    <option value="">--Select Status--</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
+        <h1 class="orders-title">Edit Order <span style="color:#2F6F4E;">#GLH-@Model.OrderId.ToString("D4")</span></h1>
 
-                <span asp-validation-for="OrderStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeliveryAddress" class="control-label"></label>
-                <input asp-for="DeliveryAddress" class="form-control" />
-                <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ShippingFee" class="control-label"></label>
-                <input asp-for="ShippingFee" class="form-control" />
-                <span asp-validation-for="ShippingFee" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeliveryType" class="control-label"></label>
-                <input asp-for="DeliveryType" class="form-control" />
-                <span asp-validation-for="DeliveryType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ScheduleDate" class="control-label"></label>
-                <input asp-for="ScheduleDate" class="form-control" />
-                <span asp-validation-for="ScheduleDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        <div class="order-detail-section" style="margin-top:24px;">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="checkout-errors" role="alert"></div>
+                <input type="hidden" asp-for="OrderId" />
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="OrderStatus" class="form-label">Order Status</label>
+                    <select asp-for="OrderStatus" class="form-input" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);">
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Mark Required">Mark Required</option>
+                    </select>
+                    <span asp-validation-for="OrderStatus" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="OrderDate" class="form-label">Order Date</label>
+                    <input asp-for="OrderDate" type="datetime-local" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);" />
+                    <span asp-validation-for="OrderDate" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="TotalAmount" class="form-label">Total Amount (£)</label>
+                    <input asp-for="TotalAmount" type="number" step="0.01" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);" />
+                    <span asp-validation-for="TotalAmount" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="DeliveryType" class="form-label">Delivery Type</label>
+                    <select asp-for="DeliveryType" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);">
+                        <option value="">-- Select --</option>
+                        <option value="Standard">Standard</option>
+                        <option value="First Class">First Class</option>
+                        <option value="Next Day">Next Day</option>
+                        <option value="Collection">Collection</option>
+                    </select>
+                    <span asp-validation-for="DeliveryType" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="DeliveryAddress" class="form-label">Delivery Address</label>
+                    <input asp-for="DeliveryAddress" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);" />
+                    <span asp-validation-for="DeliveryAddress" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label asp-for="ShippingFee" class="form-label">Shipping Fee (£)</label>
+                    <input asp-for="ShippingFee" type="number" step="0.01" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);" />
+                    <span asp-validation-for="ShippingFee" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:28px;">
+                    <label asp-for="ScheduleDate" class="form-label">Collection / Schedule Date</label>
+                    <input asp-for="ScheduleDate" type="datetime-local" style="width:100%;padding:10px 14px;border:1px solid var(--border,#e5e7eb);border-radius:8px;font-size:0.9rem;background:var(--surface,#fff);color:var(--text-primary,#1a1a1a);" />
+                    <span asp-validation-for="ScheduleDate" style="color:#dc2626;font-size:0.8rem;"></span>
+                </div>
+
+                <div style="display:flex;gap:12px;">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

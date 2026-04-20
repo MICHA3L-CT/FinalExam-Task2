@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Terms & Conditions";
+}
+
+<style>
+    .policy-page { background: var(--body-bg, #FAF7F2); min-height: 100vh; padding: 60px 24px 80px; }
+    .policy-container { max-width: 800px; margin: 0 auto; }
+    .policy-header { margin-bottom: 40px; }
+    .policy-header h1 { font-size: 2rem; font-weight: 700; color: var(--text-primary, #1a1a1a); margin-bottom: 8px; }
+    .policy-header p { color: var(--text-secondary, #6b6b6b); font-size: 0.9rem; }
+    .policy-card { background: var(--surface, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 32px; margin-bottom: 20px; }
+    .policy-card h2 { font-size: 1.1rem; font-weight: 700; color: #2F6F4E; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border, #e5e7eb); }
+    .policy-card p, .policy-card li { font-size: 0.875rem; color: var(--text-secondary, #6b6b6b); line-height: 1.7; margin-bottom: 8px; }
+    .policy-card ul { padding-left: 20px; }
+    .policy-card a { color: #2F6F4E; text-decoration: underline; }
+    [data-theme="dark"] .policy-card { background: var(--surface, #2F3E35); border-color: #3d5246; }
+</style>
+
+<div class="policy-page">
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1>Terms &amp; Conditions</h1>
+            <p>Last updated: 1 May 2026 &nbsp;·&nbsp; Effective: 1 May 2026</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using GreenField Local Hub ("Platform"), you agree to be bound by these Terms and Conditions and our <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>. If you do not agree, please do not use the Platform.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>2. Use of the Platform</h2>
+            <ul>
+                <li>You must be at least 18 years of age to create an account and place orders.</li>
+                <li>You are responsible for maintaining the security of your account credentials.</li>
+                <li>You agree not to misuse the Platform for fraudulent, harmful, or illegal purposes.</li>
+                <li>We reserve the right to suspend or terminate accounts that violate these terms.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2>3. Orders &amp; Payments</h2>
+            <p>All prices are displayed in British Pounds Sterling (GBP) and include VAT where applicable. By placing an order, you enter into a binding contract with the relevant producer(s) through our Platform.</p>
+            <ul>
+                <li>Orders are confirmed by email once payment is processed.</li>
+                <li>We reserve the right to cancel orders if products become unavailable.</li>
+                <li>Payment is processed at the time of checkout.</li>
+                <li>Delivery fees are calculated at checkout based on your chosen delivery method.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2>4. Delivery &amp; Collection</h2>
+            <ul>
+                <li>Estimated delivery times are provided at checkout but are not guaranteed.</li>
+                <li>You are responsible for providing accurate delivery address information.</li>
+                <li>Click &amp; collect orders must be collected by the scheduled date.</li>
+                <li>Risk of damage or loss passes to you on delivery or collection.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2>5. Returns &amp; Refunds</h2>
+            <p>Due to the perishable nature of our products, we are unable to accept returns. If you receive damaged, spoiled, or incorrect items, please contact us within 24 hours of delivery at <a href="mailto:support@greenfieldlocalhub.com">support@greenfieldlocalhub.com</a> with photos and we will arrange a replacement or refund.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>6. Loyalty Programme</h2>
+            <p>The Greenfield Loyalty Programme rewards customers with a 10% discount after every 5 qualifying orders. Loyalty discounts are non-transferable, have no cash value, and may be modified or discontinued at our discretion with 30 days' notice.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>7. Producer Accounts</h2>
+            <p>Producers listing products on the Platform agree to provide accurate product descriptions, maintain adequate stock, and fulfil all accepted orders promptly. GreenField Local Hub acts as an intermediary and is not liable for the quality of individual producers' products beyond facilitating dispute resolution.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>8. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, GreenField Local Hub is not liable for indirect, incidental, or consequential damages arising from your use of the Platform. Our total liability shall not exceed the value of the order giving rise to the claim.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>9. Changes to These Terms</h2>
+            <p>We may update these Terms at any time. Continued use of the Platform after changes take effect constitutes your acceptance of the revised Terms. We will notify registered users of material changes by email at least 14 days in advance.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>10. Governing Law</h2>
+            <p>These Terms are governed by and construed in accordance with the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+        </div>
+    </div>
+</div>

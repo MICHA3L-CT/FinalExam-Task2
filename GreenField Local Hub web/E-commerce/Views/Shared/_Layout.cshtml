@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
@@ -6,36 +6,88 @@
     <title>@ViewData["Title"] - GreenField Local Hub</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Accessibility/Accessibility.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <!-- Terms update banner -->
+    <div class="terms-banner" id="termsBanner" role="alert" aria-live="polite">
+        <div class="terms-banner__bar"></div>
+        <div class="terms-banner__content">
+            <p class="terms-banner__title">Our terms and conditions have been updated</p>
+            <p class="terms-banner__text">
+                We've updated our
+                <a asp-controller="Home" asp-action="TermsAndConditions">Terms of Service</a>,
+                <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a> and
+                <a href="#" id="cookiePolicyLink">Cookie Policy</a>
+                effective 1 May 2026. By continuing to use Greenfield Local Hub, you agree to these updated terms.
+            </p>
+        </div>
+        <button class="terms-banner__close" id="closetermsBanner" aria-label="Dismiss terms update notice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <header role="banner">
+        <nav class="navbar" aria-label="Main navigation">
             <div class="navbar-container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="GreenField Local Hub – Home">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
                         <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
                     </svg>
                     <span>GreenField Local Hub</span>
                 </a>
 
-                <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
                 </button>
 
-                <div class="navbar-menu" id="navbarMenu">
-                    <ul class="navbar-links">
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
-                        <li><a asp-area="" asp-controller="Producers" asp-action="Index">Producers</a></li>
-                        <li><a asp-area="" asp-controller="Baskets" asp-action="Index">Basket</a></li>
-                        <li><a asp-area="" asp-controller="Orders" asp-action="Index">Orders</a></li>
-                        <li><a asp-area="" asp-controller="ProducerDashboard" asp-action="Index">Dashboard</a></li>
+                <div class="navbar-menu" id="navbarMenu" role="navigation">
+                    <ul class="navbar-links" role="list">
+                        <li role="listitem"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li role="listitem"><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
+                        <li role="listitem"><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Producer"))
+                        {
+                            <li role="listitem"><a asp-controller="ProducerDashboard" asp-action="Index" class="navbar-link--dashboard">Dashboard</a></li>
+                        }
                     </ul>
                     <div class="navbar-right">
-                        <button id="theme-toggle" class="theme-toggle">🌙</button>
+                        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+
+                        <!-- Cart icon - redirects to login if not authenticated -->
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <a asp-controller="Baskets" asp-action="Index" class="cart-icon-link" aria-label="View basket">
+                                <span class="cart-icon-wrap" aria-hidden="true">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false">
+                                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                    </svg>
+                                    <span class="cart-badge" id="cartBadge" aria-live="polite" aria-label="Items in basket">0</span>
+                                </span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Identity/Account/Login?ReturnUrl=%2FBaskets" class="cart-icon-link" aria-label="Log in to view basket">
+                                <span class="cart-icon-wrap" aria-hidden="true">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false">
+                                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                    </svg>
+                                </span>
+                            </a>
+                        }
+
+                        <button id="a11y-open-btn" class="a11y-toggle-btn" aria-label="Open accessibility settings" aria-haspopup="dialog" aria-controls="a11y-panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><circle cx="12" cy="5" r="2"/><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12"/></svg>
+                            Accessibility
+                        </button>
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -43,16 +95,56 @@
         </nav>
     </header>
 
-    <main>
+    <div id="toastContainer" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+    <main id="main-content" tabindex="-1" style="min-height:70vh;">
         @RenderBody()
     </main>
+
+    <partial name="_Footer" />
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie consent" aria-live="polite">
+        <div class="cookie-banner__inner">
+            <div class="cookie-banner__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="14" cy="14" r="1" fill="currentColor"/><circle cx="15" cy="9" r="0.5" fill="currentColor"/></svg>
+            </div>
+            <div class="cookie-banner__text">
+                <p class="cookie-banner__title">We use cookies to improve your experience</p>
+                <p class="cookie-banner__desc">
+                    We and our partners use cookies to personalise content, analyse site traffic and provide a better shopping experience.
+                    See our <a asp-controller="Home" asp-action="Privacy">Cookie Policy</a> and
+                    <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a> for details.
+                </p>
+                <div class="cookie-toggles">
+                    <label class="cookie-toggle">
+                        <input type="checkbox" checked disabled id="cookieEssential" /> Essential
+                    </label>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" id="cookieAnalytics" /> Analytics
+                    </label>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" id="cookieMarketing" /> Marketing
+                    </label>
+                    <label class="cookie-toggle">
+                        <input type="checkbox" id="cookiePreferences" /> Preferences
+                    </label>
+                </div>
+            </div>
+            <div class="cookie-banner__actions">
+                <button class="btn-cookie-accept" id="acceptAllCookies">Accept all</button>
+                <button class="btn-cookie-decline" id="declineAllCookies">Decline all</button>
+                <button class="btn-cookie-manage" id="saveCookiePrefs">Manage preferences</button>
+            </div>
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        // Theme Toggle
+        // ── Theme Toggle ──────────────────────────────────────
         const themeToggleBtn = document.getElementById('theme-toggle');
         const htmlEl = document.documentElement;
         const savedTheme = localStorage.getItem('glh-theme') || 'light';
@@ -61,6 +153,7 @@
         function updateToggleIcon(theme) {
             if (themeToggleBtn) {
                 themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
             }
         }
         updateToggleIcon(savedTheme);
@@ -75,45 +168,45 @@
             });
         }
 
-        // Mobile navbar toggle
+        // ── Mobile Navbar ─────────────────────────────────────
         const navbarToggle = document.getElementById('navbarToggle');
         const navbarMenu = document.getElementById('navbarMenu');
-
         if (navbarToggle && navbarMenu) {
             navbarToggle.addEventListener('click', () => {
-                navbarToggle.classList.toggle('active');
+                const isActive = navbarToggle.classList.toggle('active');
                 navbarMenu.classList.toggle('active');
+                navbarToggle.setAttribute('aria-expanded', isActive.toString());
             });
-
             document.querySelectorAll('.navbar-links a').forEach(link => {
                 link.addEventListener('click', () => {
                     navbarToggle.classList.remove('active');
                     navbarMenu.classList.remove('active');
+                    navbarToggle.setAttribute('aria-expanded', 'false');
                 });
             });
         }
 
-        // Active Nav Link
+        // ── Active Nav Link ───────────────────────────────────
         const currentPath = window.location.pathname.toLowerCase();
         document.querySelectorAll('.navbar-links a').forEach(link => {
-            const href = link.getAttribute('href').toLowerCase();
-            if (href === currentPath || (currentPath === '/' && href === '/home')) {
+            const href = link.getAttribute('href')?.toLowerCase();
+            if (href && (href === currentPath || (currentPath === '/' && href.includes('/home')))) {
                 link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
             }
         });
 
-        // Navbar shadow on scroll
+        // ── Scroll shadow ─────────────────────────────────────
         const navbar = document.querySelector('.navbar');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                navbar.style.boxShadow = '0 4px 20px rgba(47, 111, 78, 0.18)';
-            } else {
-                navbar.style.boxShadow = '0 4px 16px rgba(47, 111, 78, 0.10)';
+            if (navbar) {
+                navbar.style.boxShadow = window.scrollY > 10
+                    ? '0 4px 20px rgba(47, 111, 78, 0.18)'
+                    : '0 4px 16px rgba(47, 111, 78, 0.10)';
             }
         });
 
-        // Fade-in on scroll
-        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        // ── Fade-in ───────────────────────────────────────────
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -121,11 +214,354 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ── Cart Badge ────────────────────────────────────────
+        function updateCartBadge(count) {
+            const badge = document.getElementById('cartBadge');
+            if (!badge) return;
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+        async function fetchCartCount() {
+            try {
+                const res = await fetch('/Baskets/Count');
+                if (res.ok) {
+                    const data = await res.json();
+                    updateCartBadge(data.count || 0);
+                }
+            } catch (e) {}
+        }
+        fetchCartCount();
+        window.GreenHub = window.GreenHub || {};
+        window.GreenHub.updateCartBadge = updateCartBadge;
+        window.GreenHub.fetchCartCount = fetchCartCount;
+
+        // ── Cookie Consent ────────────────────────────────────
+        const cookieBanner = document.getElementById('cookieBanner');
+        const cookieKey = 'glh-cookie-consent';
+
+        function hideCookieBanner() {
+            if (cookieBanner) cookieBanner.classList.remove('visible');
+        }
+
+        function showCookieBanner() {
+            if (cookieBanner) setTimeout(() => cookieBanner.classList.add('visible'), 800);
+        }
+
+        if (!localStorage.getItem(cookieKey)) {
+            showCookieBanner();
+        }
+
+        document.getElementById('acceptAllCookies')?.addEventListener('click', () => {
+            ['cookieAnalytics','cookieMarketing','cookiePreferences'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = true;
+            });
+            localStorage.setItem(cookieKey, JSON.stringify({ essential:true, analytics:true, marketing:true, preferences:true }));
+            hideCookieBanner();
+        });
+
+        document.getElementById('declineAllCookies')?.addEventListener('click', () => {
+            localStorage.setItem(cookieKey, JSON.stringify({ essential:true, analytics:false, marketing:false, preferences:false }));
+            hideCookieBanner();
+        });
+
+        document.getElementById('saveCookiePrefs')?.addEventListener('click', () => {
+            const prefs = {
+                essential: true,
+                analytics: document.getElementById('cookieAnalytics')?.checked ?? false,
+                marketing: document.getElementById('cookieMarketing')?.checked ?? false,
+                preferences: document.getElementById('cookiePreferences')?.checked ?? false,
+            };
+            localStorage.setItem(cookieKey, JSON.stringify(prefs));
+            hideCookieBanner();
+        });
+
+        document.getElementById('manageCookiesFooter')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (cookieBanner) cookieBanner.classList.add('visible');
+        });
+
+        // ── Terms Banner ──────────────────────────────────────
+        const termsBanner = document.getElementById('termsBanner');
+        const termsKey = 'glh-terms-dismissed';
+
+        if (termsBanner && !localStorage.getItem(termsKey)) {
+            termsBanner.classList.add('visible');
+        }
+
+        document.getElementById('closetermsBanner')?.addEventListener('click', () => {
+            if (termsBanner) termsBanner.classList.remove('visible');
+            localStorage.setItem(termsKey, '1');
+        });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- ── Accessibility Panel ──────────────────────────────── -->
+    <div id="a11y-overlay" class="a11y-overlay" aria-hidden="true"></div>
+
+    <aside id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Accessibility settings">
+        <div class="a11y-panel__head">
+            <div class="a11y-panel__head-text">
+                <h2 class="a11y-panel__title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12"/></svg>
+                    Accessibility Settings
+                </h2>
+                <p class="a11y-panel__desc">Customise your experience. Settings are saved automatically.</p>
+            </div>
+            <button id="a11y-panel-close" class="a11y-panel__close" aria-label="Close accessibility panel">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <div class="a11y-panel__body">
+
+            <!-- ── AUDITORY ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-auditory">
+                    <span class="a11y-category__icon a11y-category__icon--auditory" aria-hidden="true">🔊</span>
+                    <span class="a11y-category__label">Auditory <span class="a11y-category__badge">Text-to-Speech</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-auditory" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Read page aloud</span>
+                            <span class="a11y-setting__desc">Uses your browser's built-in text-to-speech to read the page content</span>
+                        </div>
+                        <label class="a11y-switch" aria-label="Toggle text to speech">
+                            <input type="checkbox" id="a11y-tts-toggle" />
+                            <span class="a11y-switch__track"></span>
+                        </label>
+                    </div>
+                    <div class="a11y-setting a11y-setting--slider">
+                        <div class="a11y-setting__top">
+                            <span class="a11y-setting__label">Reading speed</span>
+                            <span class="a11y-setting__value" id="a11y-tts-speed-val">1×</span>
+                        </div>
+                        <input type="range" id="a11y-tts-speed" class="a11y-slider" min="0.5" max="2" step="0.25" value="1" aria-label="Reading speed" />
+                        <span class="a11y-setting__desc">Slow (0.5×) to Fast (2×)</span>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Voice</span>
+                            <span class="a11y-setting__desc">Choose from available voices on your device</span>
+                        </div>
+                        <select id="a11y-tts-voice" class="a11y-select" aria-label="Select voice">
+                            <option value="">Default voice</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COGNITIVE ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-cognitive">
+                    <span class="a11y-category__icon a11y-category__icon--cognitive" aria-hidden="true">🧠</span>
+                    <span class="a11y-category__label">Cognitive <span class="a11y-category__badge">Reading &amp; Focus</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-cognitive" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Dyslexia-friendly font</span>
+                            <span class="a11y-setting__desc">Switches to Verdana — wider spacing between letters and words for easier reading</span>
+                        </div>
+                        <label class="a11y-switch" aria-label="Toggle dyslexia friendly font">
+                            <input type="checkbox" id="a11y-dyslexia-font" />
+                            <span class="a11y-switch__track"></span>
+                        </label>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Line spacing</span>
+                            <span class="a11y-setting__desc">Extra space between lines of text</span>
+                        </div>
+                        <select id="a11y-line-spacing" class="a11y-select" aria-label="Line spacing">
+                            <option value="">Default</option>
+                            <option value="a11y-line-relaxed">Relaxed</option>
+                            <option value="a11y-line-loose">Loose</option>
+                        </select>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Letter spacing</span>
+                            <span class="a11y-setting__desc">Extra space between individual characters</span>
+                        </div>
+                        <select id="a11y-letter-spacing" class="a11y-select" aria-label="Letter spacing">
+                            <option value="">Default</option>
+                            <option value="a11y-letter-wide">Wide</option>
+                            <option value="a11y-letter-wider">Wider</option>
+                        </select>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Word spacing</span>
+                            <span class="a11y-setting__desc">Extra space between words</span>
+                        </div>
+                        <select id="a11y-word-spacing" class="a11y-select" aria-label="Word spacing">
+                            <option value="">Default</option>
+                            <option value="a11y-word-wide">Wide</option>
+                            <option value="a11y-word-wider">Wider</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── NEUROLOGICAL ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-neurological">
+                    <span class="a11y-category__icon a11y-category__icon--neurological" aria-hidden="true">⚡</span>
+                    <span class="a11y-category__label">Neurological <span class="a11y-category__badge">Motion &amp; Stimulus</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-neurological" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Reduce motion</span>
+                            <span class="a11y-setting__desc">Stops all animations, transitions and auto-scrolling across the site</span>
+                        </div>
+                        <label class="a11y-switch" aria-label="Toggle reduce motion">
+                            <input type="checkbox" id="a11y-reduce-motion" />
+                            <span class="a11y-switch__track"></span>
+                        </label>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Enhanced focus ring</span>
+                            <span class="a11y-setting__desc">Shows a bold orange outline on focused elements — helps track keyboard position</span>
+                        </div>
+                        <label class="a11y-switch" aria-label="Toggle enhanced focus ring">
+                            <input type="checkbox" id="a11y-focus-ring" />
+                            <span class="a11y-switch__track"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PHYSICAL ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-physical">
+                    <span class="a11y-category__icon a11y-category__icon--physical" aria-hidden="true">🖱️</span>
+                    <span class="a11y-category__label">Physical <span class="a11y-category__badge">Motor &amp; Navigation</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-physical" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Large cursor</span>
+                            <span class="a11y-setting__desc">Increases the mouse pointer size to make it easier to locate on screen</span>
+                        </div>
+                        <label class="a11y-switch" aria-label="Toggle large cursor">
+                            <input type="checkbox" id="a11y-large-cursor" />
+                            <span class="a11y-switch__track"></span>
+                        </label>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Font size</span>
+                            <span class="a11y-setting__desc">Increase base text size sitewide for easier reading and larger click targets</span>
+                        </div>
+                        <select id="a11y-font-size" class="a11y-select" aria-label="Font size">
+                            <option value="">Default</option>
+                            <option value="a11y-font-md">Medium</option>
+                            <option value="a11y-font-lg">Large</option>
+                            <option value="a11y-font-xl">X-Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── SPEECH ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-speech">
+                    <span class="a11y-category__icon a11y-category__icon--speech" aria-hidden="true">🎙️</span>
+                    <span class="a11y-category__label">Speech <span class="a11y-category__badge">Voice Input</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-speech" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Voice navigation hints</span>
+                            <span class="a11y-setting__desc">All interactive elements have descriptive <code>aria-label</code> attributes compatible with voice control tools like Dragon NaturallySpeaking</span>
+                        </div>
+                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Skip to main content</span>
+                            <span class="a11y-setting__desc">Press <kbd style="background:#f3f4f6;border:1px solid #d1d5db;border-radius:4px;padding:1px 5px;font-size:0.75rem;">Tab</kbd> when the page loads to reveal a skip link — jumps past navigation directly to content</span>
+                        </div>
+                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Screen reader support</span>
+                            <span class="a11y-setting__desc">Semantic HTML with ARIA roles, live regions and descriptive labels throughout — tested with NVDA and VoiceOver</span>
+                        </div>
+                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── VISUAL ── -->
+            <div class="a11y-category">
+                <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-visual">
+                    <span class="a11y-category__icon a11y-category__icon--visual" aria-hidden="true">👁️</span>
+                    <span class="a11y-category__label">Visual <span class="a11y-category__badge">Colour &amp; Contrast</span></span>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="a11y-cat-visual" class="a11y-category__content" hidden>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Colour mode</span>
+                            <span class="a11y-setting__desc">Adjust colour rendering to improve readability</span>
+                        </div>
+                        <select id="a11y-colour-mode" class="a11y-select" aria-label="Colour mode">
+                            <option value="">Default</option>
+                            <option value="a11y-high-contrast">High contrast</option>
+                            <option value="a11y-grayscale">Greyscale</option>
+                            <option value="a11y-invert">Invert colours</option>
+                        </select>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Colour saturation</span>
+                            <span class="a11y-setting__desc">Reduce saturation if colours feel overwhelming; boost for low-vision users</span>
+                        </div>
+                        <select id="a11y-saturation" class="a11y-select" aria-label="Colour saturation">
+                            <option value="">Default</option>
+                            <option value="a11y-saturation-low">Low</option>
+                            <option value="a11y-saturation-high">High</option>
+                        </select>
+                    </div>
+                    <div class="a11y-setting">
+                        <div class="a11y-setting__info">
+                            <span class="a11y-setting__label">Dark / light mode</span>
+                            <span class="a11y-setting__desc">Also available via the 🌙 button in the navigation bar</span>
+                        </div>
+                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Available</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="a11y-panel__footer">
+            <button id="a11y-reset" class="a11y-reset-btn">Reset all settings</button>
+        </div>
+    </aside>
+
+    <!-- TTS reading bar -->
+    <div id="a11y-tts-bar" class="a11y-tts-bar" role="status" aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span id="a11y-tts-bar-text" class="a11y-tts-bar__text">Reading page aloud…</span>
+        <button id="a11y-tts-stop" class="a11y-tts-btn">Stop</button>
+    </div>
+
+    <script src="~/js/Accessibility/Accessibility.js" asp-append-version="true"></script>
 </body>
 </html>

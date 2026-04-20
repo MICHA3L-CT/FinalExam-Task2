@@ -11,6 +11,7 @@
         public int StockQuantity { get; set; }
         public string Category { get; set; }
         public DateOnly DateAdded { get; set; }
+        public bool IsActive { get; set; } = true;
         public Producer Producer { get; set; }
         public List<BasketProduct>? BasketProducts { get; set; }
         public List<OrderProduct>? OrderProducts { get; set; }

@@ -1,6 +1,242 @@
-﻿namespace E_commerce.wwwroot.css.Producers
-{
-    public class Producers
-    {
-    }
+/* ── Producers Page ─────────────────────────────────────── */
+.producers-page {
+    background: var(--body-bg, #FAF7F2);
+    min-height: 100vh;
+    padding: 48px 0 80px;
+}
+
+.producers-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.producers-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.producers-header__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+    margin-bottom: 10px;
+}
+
+.producers-header__subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary, #6b6b6b);
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.producer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+}
+
+.producer-card {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.producer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(47, 111, 78, 0.15);
+}
+
+.producer-card__banner {
+    background: linear-gradient(135deg, #2F6F4E 0%, #4a9465 100%);
+    height: 80px;
+    position: relative;
+}
+
+[data-theme="dark"] .producer-card__banner {
+    background: linear-gradient(135deg, #1F4F36 0%, #2F6F4E 100%);
+}
+
+.producer-card__avatar {
+    width: 72px;
+    height: 72px;
+    background: rgba(255,255,255,0.2);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    position: absolute;
+    bottom: -36px;
+    left: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: #fff;
+}
+
+.producer-card__body {
+    padding: 48px 24px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.producer-card__name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+    margin-bottom: 4px;
+}
+
+.producer-card__location {
+    font-size: 0.82rem;
+    color: var(--text-secondary, #6b6b6b);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.producer-card__desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary, #6b6b6b);
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.producer-card__badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.producer-card__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge--verified {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.badge--joined {
+    background: #f0f7f3;
+    color: #2F6F4E;
+    border: 1px solid #d4e4d0;
+}
+
+[data-theme="dark"] .badge--verified {
+    background: #1a3a2a;
+    color: #6ee7b7;
+    border-color: #2a5a3a;
+}
+
+[data-theme="dark"] .badge--joined {
+    background: #1e3028;
+    color: #a0cfb0;
+    border-color: #2a4a35;
+}
+
+.producer-card__actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-producer-products {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #2F6F4E;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-producer-products:hover {
+    background: #1F4F36;
+    color: #fff;
+}
+
+.btn-producer-details {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--text-secondary, #6b6b6b);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-producer-details:hover {
+    background: var(--body-bg, #FAF7F2);
+    color: var(--text-primary, #1a1a1a);
+}
+
+.producers-empty {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-secondary, #6b6b6b);
+}
+
+.producers-admin-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+}
+
+.btn-create-producer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: #2F6F4E;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-create-producer:hover {
+    background: #1F4F36;
+    color: #fff;
+}
+
+[data-theme="dark"] .producer-card {
+    background: var(--surface, #2F3E35);
+    border-color: #3d5246;
+}
+
+[data-theme="dark"] .producer-card__name {
+    color: #F5F5F5;
+}
+
+@media (max-width: 768px) {
+    .producer-grid { grid-template-columns: 1fr; }
+    .producers-header__title { font-size: 1.5rem; }
 }

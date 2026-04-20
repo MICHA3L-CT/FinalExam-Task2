@@ -1,25 +1,22 @@
 ﻿/**
  * Greenfield Local Hub – Products Index
- * Handles: search, category filtering, sort, basket add, toast notifications
+ * Handles: search, category filtering, sort, basket add, toast notifications, cart badge
  * File: ~/js/Products/Products.js
  */
 
 (function () {
     'use strict';
 
-    // State
+    // ── State ────────────────────────────────────────────────
     const state = {
         activeCategory: 'all',
         searchQuery: '',
         sortBy: 'newest',
     };
 
-    // DOM refs
+    // ── DOM refs ─────────────────────────────────────────────
     const grid = document.getElementById('productGrid');
-    const getCards = () => {
-        if (!grid) return [];
-        return Array.from(grid.querySelectorAll('.product-card'));
-    };
+    const getCards = () => grid ? Array.from(grid.querySelectorAll('.product-card')) : [];
     const searchInput = document.getElementById('productSearch');
     const sortSelect = document.getElementById('sortSelect');
     const filterPills = document.querySelectorAll('.filter-pill');
@@ -27,23 +24,23 @@
     const clearBtn = document.getElementById('clearFilters');
     const toastContainer = document.getElementById('toastContainer');
 
-    // Helper Functions
+    // ── Count badge ──────────────────────────────────────────
     function updateCount(visibleCount) {
         if (!countBadge) return;
         const count = visibleCount !== undefined ? visibleCount : getCards().length;
         countBadge.textContent = `${count} item${count !== 1 ? 's' : ''} found`;
     }
 
+    // ── Empty state ──────────────────────────────────────────
     function toggleEmptyState(show) {
         if (!grid) return;
         let emptyState = document.getElementById('emptyState');
-
         if (show && !emptyState) {
             emptyState = document.createElement('div');
             emptyState.id = 'emptyState';
             emptyState.className = 'empty-state';
             emptyState.innerHTML = `
-                <div class="empty-state__icon">🌿</div>
+                <div class="empty-state__icon" aria-hidden="true">🌿</div>
                 <div class="empty-state__title">No products found</div>
                 <div class="empty-state__text">Try a different search or category.</div>
             `;
@@ -53,7 +50,7 @@
         }
     }
 
-    // Filter Functions
+    // ── Filtering ────────────────────────────────────────────
     function applyFilters() {
         let visibleCount = 0;
         const searchLower = state.searchQuery.toLowerCase();
@@ -65,13 +62,10 @@
             const producer = (card.dataset.producer || '').toLowerCase();
 
             const matchesCategory = state.activeCategory === 'all' || category === state.activeCategory;
-
-            let matchesSearch = true;
-            if (state.searchQuery) {
-                matchesSearch = name.includes(searchLower) ||
-                    description.includes(searchLower) ||
-                    producer.includes(searchLower);
-            }
+            const matchesSearch = !state.searchQuery ||
+                name.includes(searchLower) ||
+                description.includes(searchLower) ||
+                producer.includes(searchLower);
 
             const shouldShow = matchesCategory && matchesSearch;
             card.style.display = shouldShow ? '' : 'none';
@@ -94,10 +88,9 @@
         applyFilters();
     }
 
-    // Sort Functions
+    // ── Sorting ──────────────────────────────────────────────
     function sortCards() {
         if (!grid) return;
-
         const cards = getCards();
         const sorted = [...cards].sort((a, b) => {
             const priceA = parseFloat(a.dataset.price || 0);
@@ -117,7 +110,6 @@
                 default: return 0;
             }
         });
-
         sorted.forEach(card => grid.appendChild(card));
         applyFilters();
     }
@@ -127,82 +119,83 @@
         sortCards();
     }
 
-    // Clear Filters
+    // ── Clear filters ────────────────────────────────────────
     function clearFilters() {
         state.activeCategory = 'all';
         state.searchQuery = '';
-
         if (searchInput) searchInput.value = '';
-
         filterPills.forEach(p => p.classList.remove('active'));
         const allPill = document.querySelector('.filter-pill[data-category="all"]');
         if (allPill) allPill.classList.add('active');
-
         applyFilters();
     }
 
-    // Add to Basket
+    // ── Add to Basket (AJAX – no redirect) ──────────────────
     function onAddToBasket(e) {
         e.preventDefault();
         const form = e.currentTarget;
         const productName = form.dataset.productName || 'Product';
         const submitBtn = form.querySelector('.btn-add-basket');
 
-        if (submitBtn) {
-            const originalHtml = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Added!`;
-            submitBtn.disabled = true;
+        if (!submitBtn) return;
 
-            const formData = new FormData(form);
-            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        const originalHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Added!`;
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-label', productName + ' added to basket');
 
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': token || ''
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Network error');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showToast(`✓ ${productName} added to basket`, 'success');
+                    // Update cart badge in the navbar
+                    if (typeof data.cartCount === 'number' && window.GreenHub) {
+                        window.GreenHub.updateCartBadge(data.cartCount);
+                    }
+                } else {
+                    showToast(data.message || 'Failed to add item', 'error');
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`✓ ${productName} added to basket`, 'success');
-                    } else {
-                        showToast(data.message || 'Failed to add item', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Failed to add item to basket', 'error');
-                })
-                .finally(() => {
-                    setTimeout(() => {
-                        submitBtn.innerHTML = originalHtml;
-                        submitBtn.disabled = false;
-                    }, 1500);
-                });
-        }
+            .catch(() => {
+                showToast('Failed to add item to basket', 'error');
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalHtml;
+                    submitBtn.disabled = false;
+                    submitBtn.setAttribute('aria-label', 'Add ' + productName + ' to basket');
+                }, 1500);
+            });
     }
 
-    // Toast Notifications
+    // ── Toast notifications ──────────────────────────────────
     function showToast(message, type = 'success') {
-        if (!toastContainer) {
-            console.warn('Toast container not found');
-            return;
-        }
+        const container = toastContainer || document.getElementById('toastContainer');
+        if (!container) return;
 
         const toast = document.createElement('div');
         toast.className = `toast toast--${type}`;
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
         toast.innerHTML = `
-            <span class="toast__icon">${type === 'success' ? '✓' : '✕'}</span>
+            <span class="toast__icon" aria-hidden="true">${type === 'success' ? '✓' : '✕'}</span>
             <span>${escapeHtml(message)}</span>
         `;
 
-        toastContainer.appendChild(toast);
+        container.appendChild(toast);
 
         setTimeout(() => {
             toast.classList.add('removing');
-            toast.addEventListener('animationend', () => toast.remove());
+            toast.addEventListener('animationend', () => toast.remove(), { once: true });
         }, 3000);
     }
 
@@ -212,7 +205,7 @@
         return div.innerHTML;
     }
 
-    // Debounce Utility
+    // ── Debounce ─────────────────────────────────────────────
     function debounce(fn, delay) {
         let timer;
         return function (...args) {
@@ -221,52 +214,28 @@
         };
     }
 
-    // Initialization
+    // ── Init ─────────────────────────────────────────────────
     function init() {
-        if (!grid) {
-            console.warn('Product grid not found');
-            return;
-        }
+        if (!grid) return;
 
-        console.log('Products.js initialized');
+        if (searchInput) searchInput.addEventListener('input', debounce(onSearch, 300));
+        if (sortSelect) sortSelect.addEventListener('change', onSort);
+        if (clearBtn) clearBtn.addEventListener('click', clearFilters);
 
-        if (searchInput) {
-            searchInput.addEventListener('input', debounce(onSearch, 300));
-        }
+        filterPills.forEach(pill => pill.addEventListener('click', () => onFilter(pill)));
 
-        if (sortSelect) {
-            sortSelect.addEventListener('change', onSort);
-        }
-
-        if (clearBtn) {
-            clearBtn.addEventListener('click', clearFilters);
-        }
-
-        if (filterPills.length > 0) {
-            filterPills.forEach(pill => {
-                pill.addEventListener('click', () => onFilter(pill));
-            });
-        }
-
-        const basketForms = document.querySelectorAll('.basket-form');
-        if (basketForms.length > 0) {
-            basketForms.forEach(form => {
-                form.removeEventListener('submit', onAddToBasket);
-                form.addEventListener('submit', onAddToBasket);
-            });
-        }
+        document.querySelectorAll('.basket-form').forEach(form => {
+            form.addEventListener('submit', onAddToBasket);
+        });
 
         sortCards();
-        console.log('Products.js ready - Filters and sorting active');
     }
 
-    // Export for external use
-    window.GreenHub = {
-        showToast,
-        refreshFilters: applyFilters
-    };
+    // ── Public API ───────────────────────────────────────────
+    window.GreenHub = window.GreenHub || {};
+    window.GreenHub.showToast = showToast;
+    window.GreenHub.refreshFilters = applyFilters;
 
-    // Start the application
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

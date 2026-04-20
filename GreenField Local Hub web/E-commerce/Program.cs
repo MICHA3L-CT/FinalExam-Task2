@@ -13,19 +13,39 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()                         
+// RequireConfirmedAccount = false so seed users (and any manually registered users)
+// can log in without needing an email confirmation link.
+// Seed data already sets EmailConfirmed = true on all seeded accounts, but this
+// also prevents a 400 if anything ever creates a user without that flag set.
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;  // <-- KEY FIX
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+})
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    });
-    
+// Google OAuth is only registered when valid credentials are present in config.
+// Without a correctly registered redirect URI in Google Cloud Console the OAuth
+// handshake corrupts the antiforgery cookie and causes HTTP 400 on every login.
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+{
+    builder.Services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+            options.ClientId = googleClientId;
+            options.ClientSecret = googleClientSecret;
+        });
+}
 
 var app = builder.Build();
 
@@ -34,7 +54,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var context = services.GetRequiredService<ApplicationDbContext>();
     await SeedData.SeedUsersAndRoles(services, userManager, roleManager);
     await SeedData.SeedProducers(services);
     await SeedData.SeedProducts(services);
@@ -53,6 +72,8 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
 

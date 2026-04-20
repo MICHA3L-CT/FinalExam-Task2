@@ -1,6 +1,103 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<style>
+    .policy-page { background: var(--body-bg, #FAF7F2); min-height: 100vh; padding: 60px 24px 80px; }
+    .policy-container { max-width: 800px; margin: 0 auto; }
+    .policy-header { margin-bottom: 40px; }
+    .policy-header h1 { font-size: 2rem; font-weight: 700; color: var(--text-primary, #1a1a1a); margin-bottom: 8px; }
+    .policy-header p { color: var(--text-secondary, #6b6b6b); font-size: 0.9rem; }
+    .policy-card { background: var(--surface, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 32px; margin-bottom: 20px; }
+    .policy-card h2 { font-size: 1.1rem; font-weight: 700; color: #2F6F4E; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border, #e5e7eb); }
+    .policy-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text-primary, #1a1a1a); margin: 16px 0 6px; }
+    .policy-card p, .policy-card li { font-size: 0.875rem; color: var(--text-secondary, #6b6b6b); line-height: 1.7; margin-bottom: 8px; }
+    .policy-card ul { padding-left: 20px; }
+    .policy-card a { color: #2F6F4E; text-decoration: underline; }
+    [data-theme="dark"] .policy-card { background: var(--surface, #2F3E35); border-color: #3d5246; }
+</style>
+
+<div class="policy-page">
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: 1 May 2026 &nbsp;·&nbsp; Effective: 1 May 2026</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>1. Who We Are</h2>
+            <p>GreenField Local Hub ("we", "us", "our") is an online marketplace connecting local producers with consumers. We are the data controller for the personal data we collect from you.</p>
+            <p>Contact us at: <a href="mailto:privacy@greenfieldlocalhub.com">privacy@greenfieldlocalhub.com</a></p>
+        </div>
+
+        <div class="policy-card">
+            <h2>2. Data We Collect</h2>
+            <h3>Account Data</h3>
+            <ul>
+                <li>Email address and password (hashed)</li>
+                <li>Name and contact details</li>
+                <li>Account preferences and settings</li>
+            </ul>
+            <h3>Order & Transaction Data</h3>
+            <ul>
+                <li>Delivery address and collection preferences</li>
+                <li>Order history and basket contents</li>
+                <li>Payment information (processed securely; we do not store card details)</li>
+            </ul>
+            <h3>Usage Data</h3>
+            <ul>
+                <li>Pages visited, products viewed, and search queries</li>
+                <li>Device type, browser, and IP address</li>
+                <li>Cookie identifiers (see Cookie Policy below)</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2>3. How We Use Your Data</h2>
+            <ul>
+                <li><strong>To fulfil your orders</strong> — processing payments, coordinating delivery, and notifying you of order status.</li>
+                <li><strong>To run your account</strong> — managing your loyalty points, preferences, and saved items.</li>
+                <li><strong>To improve the platform</strong> — analysing usage patterns to improve performance and product discovery.</li>
+                <li><strong>To communicate with you</strong> — sending transactional emails and, where you have opted in, marketing communications.</li>
+                <li><strong>To comply with legal obligations</strong> — such as tax record-keeping and fraud prevention.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2>4. Cookie Policy</h2>
+            <h3>Essential Cookies</h3>
+            <p>Required for the website to function (authentication session, basket contents). Cannot be disabled.</p>
+            <h3>Analytics Cookies</h3>
+            <p>Help us understand how visitors use the site (e.g. Google Analytics). Disabled by default — only set with your consent.</p>
+            <h3>Marketing Cookies</h3>
+            <p>Used to deliver relevant adverts on third-party platforms. Disabled by default — only set with your consent.</p>
+            <h3>Preference Cookies</h3>
+            <p>Remember your theme setting and display preferences. Disabled by default — only set with your consent.</p>
+            <p>You can manage your cookie choices at any time using the banner at the bottom of the page or via the footer "Cookie Policy" link.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>5. Your Rights</h2>
+            <p>Under UK GDPR you have the right to:</p>
+            <ul>
+                <li><strong>Access</strong> — request a copy of the data we hold about you.</li>
+                <li><strong>Rectification</strong> — ask us to correct inaccurate data.</li>
+                <li><strong>Erasure</strong> — ask us to delete your data (subject to legal obligations).</li>
+                <li><strong>Portability</strong> — receive your data in a machine-readable format.</li>
+                <li><strong>Objection</strong> — object to processing for direct marketing at any time.</li>
+                <li><strong>Withdrawal of consent</strong> — for any processing based on consent.</li>
+            </ul>
+            <p>To exercise any right, contact us at <a href="mailto:privacy@greenfieldlocalhub.com">privacy@greenfieldlocalhub.com</a>. We will respond within 30 days.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>6. Data Retention</h2>
+            <p>We retain your account data for as long as your account is active. Order records are kept for 7 years for tax purposes. Analytics data is anonymised after 26 months.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2>7. Contact &amp; Complaints</h2>
+            <p>If you have a complaint about how we handle your data, contact us at <a href="mailto:privacy@greenfieldlocalhub.com">privacy@greenfieldlocalhub.com</a> or write to us at our registered address. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO): <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>.</p>
+        </div>
+    </div>
+</div>

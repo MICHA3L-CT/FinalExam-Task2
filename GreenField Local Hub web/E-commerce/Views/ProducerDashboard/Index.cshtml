@@ -1,77 +1,209 @@
-﻿@model IEnumerable<E_commerce.Models.Product>
-
-<h1>Supplier Dashboard</h1>
-
-<p>
-    <strong>Total Products:</strong> @ViewBag.TotalProducts
-</p>
-<p>
-    <strong>Low Stock Products:</strong> @ViewBag.LowStockCount
-</p>
-<p>
-    <strong>Total Stock Units:</strong> @ViewBag.TotalStock
-</p>
-
-@if (!Model.Any())
-{
-    <p>You do not have any products yet.</p>
+@model IEnumerable<E_commerce.Models.Product>
+@{
+    ViewData["Title"] = "Producer Dashboard";
+    int totalProducts = (int)(ViewBag.TotalProducts ?? 0);
+    int lowStock = (int)(ViewBag.LowStockCount ?? 0);
+    int totalStock = (int)(ViewBag.TotalStock ?? 0);
+    decimal totalRevenue = (decimal)(ViewBag.TotalRevenue ?? 0m);
+    var recentOrders = ViewBag.RecentOrders as List<E_commerce.Models.Order> ?? new();
+    string producerName = ViewBag.ProducerName as string ?? "Producer";
 }
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Stock</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Take(5))
-            {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>@item.Price.ToString("0.00")</td>
-                    <td>@item.StockQuantity</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-<p>
-    <a asp-asp-controller="Product" asp-action="Index">View all your products</a>
-</p>
 
-<h2>Recent Orders</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Producer Dashboard/ProducerDashboard.css" asp-append-version="true" />
+}
 
-@if (ViewBag.RecentOrders == null || !((List<E_commerce.Models.Order>)ViewBag.RecentOrders).Any())
-{
-    <p>No recent orders found.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Order Date</th>
-                <th>Status</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in ((List<E_commerce.Models.Order>)ViewBag.RecentOrders).Take(5))
-            {
-                <tr>
-                    <td>@order.OrderId</td>
-                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
-                    <td>@order.OrderStatus</td>
-                    <td>@order.TotalAmount.ToString("0.00")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-<p>
-    <a asp-asp-controller="Order" asp-action="Index">View All your orders</a>
-</p>
+<div class="dashboard-page" aria-label="Producer Dashboard">
+    <div class="dashboard-layout">
+
+        <!-- ── Sidebar ──────────────────────────────────────── -->
+        <nav class="dashboard-sidebar" aria-label="Dashboard navigation">
+            <p class="sidebar-section-label">MANAGE</p>
+            <ul class="sidebar-links" role="list">
+                <li>
+                    <a href="#" class="sidebar-link sidebar-link--active" aria-current="page">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Products" asp-action="Index" class="sidebar-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" /><path d="M16 3H8l-2 4h12l-2-4z" /></svg>
+                        Stock
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Orders" asp-action="Index" class="sidebar-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
+                        Orders
+                    </a>
+                </li>
+            </ul>
+
+            <p class="sidebar-section-label">ACCOUNT</p>
+            <ul class="sidebar-links" role="list">
+                <li>
+                    <a asp-controller="Home" asp-action="Index" class="sidebar-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                        Back to Shop
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- ── Main content ──────────────────────────────────── -->
+        <main class="dashboard-main" id="main-content">
+
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Producer Dashboard</h1>
+                    <p class="dashboard-welcome">Welcome back, @producerName 🌿</p>
+                </div>
+            </div>
+
+            <!-- ── Metric Cards ──────────────────────────────── -->
+            <div class="metric-grid" role="list" aria-label="Key metrics">
+                <article class="metric-card metric-card--revenue" role="listitem" aria-label="Total revenue">
+                    <p class="metric-card__label">TOTAL REVENUE</p>
+                    <p class="metric-card__value">£@totalRevenue.ToString("0.00")</p>
+                    <p class="metric-card__sub">All time</p>
+                </article>
+                <article class="metric-card" role="listitem" aria-label="Total orders: @recentOrders.Count">
+                    <p class="metric-card__label">ORDERS</p>
+                    <p class="metric-card__value">@recentOrders.Count</p>
+                    <p class="metric-card__sub">All time</p>
+                </article>
+                <article class="metric-card" role="listitem" aria-label="Products listed: @totalProducts">
+                    <p class="metric-card__label">PRODUCTS LISTED</p>
+                    <p class="metric-card__value">@totalProducts</p>
+                    <p class="metric-card__sub">@lowStock low stock</p>
+                </article>
+                <article class="metric-card" role="listitem" aria-label="Total stock units: @totalStock">
+                    <p class="metric-card__label">TOTAL STOCK</p>
+                    <p class="metric-card__value">@totalStock</p>
+                    <p class="metric-card__sub">Units remaining</p>
+                </article>
+            </div>
+
+            <!-- ── Recent Orders ─────────────────────────────── -->
+            <section class="dashboard-card" aria-labelledby="recent-orders-heading">
+                <div class="dashboard-card__header">
+                    <h2 id="recent-orders-heading" class="dashboard-card__title">Recent Orders</h2>
+                    <a asp-controller="Orders" asp-action="Index" class="dashboard-card__link">View All</a>
+                </div>
+
+                @if (!recentOrders.Any())
+                {
+                    <p class="dashboard-empty" role="status">No recent orders found.</p>
+                }
+                else
+                {
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" aria-label="Recent orders">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Items</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in recentOrders.Take(5))
+                                {
+                                    <tr>
+                                        <td><span class="order-id-badge">#GLH-@order.OrderId.ToString("D3")</span></td>
+                                        <td>@order.OrderDate.ToString("d MMM")</td>
+                                        <td>
+                                            @if (order.OrderProducts != null && order.OrderProducts.Any())
+                                            {
+                                                @string.Join(" + ", order.OrderProducts.Take(2).Select(op =>
+                                                $"{op.Product?.ProductName} ×{op.Quantity}"))
+                                    @if (order.OrderProducts.Count > 2)
+                                                {
+                                                    <text>…</text>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <text>—</text>
+                                            }
+                                        </td>
+                                        <td class="dash-total">£@order.TotalAmount.ToString("0.00")</td>
+                                        <td>
+                                            <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" aria-label="Status: @order.OrderStatus">
+                                                @order.OrderStatus
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </section>
+
+            <!-- ── Products Overview ─────────────────────────── -->
+            <section class="dashboard-card" aria-labelledby="products-heading">
+                <div class="dashboard-card__header">
+                    <h2 id="products-heading" class="dashboard-card__title">Your Products</h2>
+                    <a asp-controller="Products" asp-action="Create" class="dashboard-card__link">+ Add Product</a>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <p class="dashboard-empty" role="status">You have no products yet.</p>
+                }
+                else
+                {
+                    <div class="dash-table-wrap">
+                        <table class="dash-table" aria-label="Your products">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"><span class="sr-only">Actions</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model)
+                                {
+                                    <tr>
+                                        <td class="product-name-cell">@product.ProductName</td>
+                                        <td>£@product.Price.ToString("0.00")</td>
+                                        <td>
+                                            @if (product.StockQuantity < 5)
+                                            {
+                                                <span class="low-stock-badge" aria-label="Low stock: @product.StockQuantity remaining">@product.StockQuantity ⚠</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@product.StockQuantity</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="status-badge @(product.IsActive ? "status-badge--delivered" : "status-badge--cancelled")"
+                                                  aria-label="@(product.IsActive ? "Active" : "Inactive")">
+                                                @(product.IsActive ? "Active" : "Inactive")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="dash-actions">
+                                                <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.ProductId"
+                                                   class="btn-dash-action" aria-label="Edit @product.ProductName">Edit</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </section>
+
+        </main>
+    </div>
+</div>

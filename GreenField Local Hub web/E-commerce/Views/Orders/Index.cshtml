@@ -1,74 +1,196 @@
-﻿@model IEnumerable<E_commerce.Models.Order>
-
+@model IEnumerable<E_commerce.Models.Order>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "My Orders";
+    bool isAdmin = User.IsInRole("Admin");
+    bool isProducer = User.IsInRole("Producer");
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeliveryAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShippingFee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeliveryType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ScheduleDate)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeliveryAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShippingFee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeliveryType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScheduleDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/Order.css" asp-append-version="true" />
 }
-    </tbody>
-</table>
+
+<div class="orders-page">
+    <div class="orders-container">
+
+        <h1 class="orders-title">
+            @if (isAdmin)
+            {
+                <text>All Orders</text>
+            }
+            else if (isProducer)
+            {
+
+                <text>Orders for Your Products</text>
+            }
+            else
+            {
+
+                <text>My Orders</text>
+            }
+        </h1>
+
+        @if (isAdmin || isProducer)
+        {
+            <p class="orders-subtitle">
+                @if (isAdmin)
+                {
+                    <text>View and manage all incoming orders.</text>
+                }
+                else
+                {
+
+                    <text>Orders containing your products.</text>
+                }
+            </p>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="orders-empty" role="status">
+                <span class="orders-empty__icon" aria-hidden="true">📦</span>
+                <h2>No orders yet</h2>
+                <p>Once you place an order it will appear here.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-primary">Start Shopping</a>
+            </div>
+        }
+        else if (isAdmin || isProducer)
+        {
+            <!-- Admin / Producer table view -->
+            <div class="orders-table-wrap">
+                <table class="orders-table" aria-label="Orders table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Date</th>
+                            @if (isAdmin)
+                            {
+                                <th scope="col">Customer</th>
+                            }
+                            <th scope="col">Items</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"><span class="sr-only">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td><span class="order-id">#GLH-@order.OrderId.ToString("D4")</span></td>
+                                <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
+                                @if (isAdmin)
+                                {
+                                    <td>@order.UserId?.Substring(0, Math.Min(8, order.UserId.Length))…</td>
+                                }
+                                <td>
+                                    @if (order.OrderProducts != null)
+                                    {
+                                        @string.Join(", ", order.OrderProducts.Take(2).Select(op =>
+                                        $"{op.Product?.ProductName} ×{op.Quantity}"))
+                            @if (order.OrderProducts.Count > 2)
+                                        {
+                                            <text>…</text>
+                                        }
+                                    }
+                                </td>
+                                <td class="order-total">£@order.TotalAmount.ToString("0.00")</td>
+                                <td>
+                                    <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" aria-label="Status: @order.OrderStatus">
+                                        @order.OrderStatus
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="order-actions">
+                                        <a asp-action="Details" asp-route-id="@order.OrderId"
+                                           class="btn-action" aria-label="View details for order #@order.OrderId">Details</a>
+                                        @if (isAdmin)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@order.OrderId"
+                                               class="btn-action btn-action--primary" aria-label="Edit order #@order.OrderId">Edit</a>
+                                        }
+                                        @if (isProducer && order.OrderStatus == "Pending")
+                                        {
+                                            <form asp-action="UpdateStatus" asp-controller="Orders" method="post" class="producer-status-form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="orderId" value="@order.OrderId" />
+                                                <select name="newStatus" class="producer-status-select" aria-label="Update status for order #@order.OrderId">
+                                                    <option value="">Update status…</option>
+                                                    <option value="Processing">Processing</option>
+                                                    <option value="Shipped">Shipped</option>
+                                                    <option value="Delivered">Delivered</option>
+                                                    <option value="Cancelled">Cancelled</option>
+                                                </select>
+                                                <button type="submit" class="btn-action btn-action--primary producer-status-btn" aria-label="Save status update">
+                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <!-- Customer card view -->
+            <div class="orders-list" role="list" aria-label="Your orders">
+                @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+                {
+                    <article class="order-card" role="listitem" aria-label="Order #GLH-@order.OrderId.ToString("D4")">
+                        <div class="order-card__header">
+                            <div>
+                                <span class="order-card__id">Order #GLH-@order.OrderId.ToString("D4")</span>
+                                <span class="order-card__date">@order.OrderDate.ToString("d MMMM yyyy")</span>
+                            </div>
+                            <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" aria-label="Status: @order.OrderStatus">
+                                @order.OrderStatus
+                            </span>
+                        </div>
+
+                        @if (order.OrderProducts != null && order.OrderProducts.Any())
+                        {
+                            <div class="order-card__chips" aria-label="Items ordered">
+                                @foreach (var op in order.OrderProducts)
+                                {
+                                    <span class="item-chip">
+                                        @if (!string.IsNullOrEmpty(op.Product?.ImagePath))
+                                        {
+                                            <img src="@op.Product.ImagePath" alt="" aria-hidden="true" class="item-chip__img" />
+                                        }
+                                        @op.Product?.ProductName × @op.Quantity
+                                    </span>
+                                }
+                            </div>
+                        }
+
+                        <div class="order-card__footer">
+                            <span class="order-card__total" aria-label="Order total: £@order.TotalAmount.ToString("0.00")">
+                                Total: <strong>£@order.TotalAmount.ToString("0.00")</strong>
+                            </span>
+                            <div class="order-card__actions">
+                                <a asp-action="Details" asp-route-id="@order.OrderId"
+                                   class="btn-action" aria-label="View details for order #@order.OrderId">Details</a>
+                                @if (order.OrderProducts != null && order.OrderProducts.Any())
+                                {
+                                    <form asp-controller="BasketProducts" asp-action="Reorder" method="post"
+                                          aria-label="Reorder items from order #@order.OrderId">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                                        <button type="submit" class="btn-action btn-action--outline"
+                                                aria-label="Reorder items from order #@order.OrderId">
+                                            Reorder
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+
+    </div>
+</div>
