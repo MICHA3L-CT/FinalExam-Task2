@@ -1,4 +1,5 @@
 @model IEnumerable<E_commerce.Models.Producer>
+@* Public producer listing page, displayed as a card grid. *@
 @{
     ViewData["Title"] = "Our Producers";
     bool isAdmin = User.IsInRole("Admin");

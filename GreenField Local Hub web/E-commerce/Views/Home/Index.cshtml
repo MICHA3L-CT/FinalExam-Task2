@@ -1,27 +1,64 @@
+@* 
+    HOME PAGE VIEW
+    ==============
+    This view serves as the main landing page for the e-commerce platform.
+    It displays four key sections:
+    1. Hero section - Main banner with call-to-action
+    2. Feature strip - Key selling points of the platform
+    3. Fresh picks - Static product showcases
+    4. Producer cards - Dynamic producer profiles (up to 3 from controller)
+    
+    Model: IEnumerable<E_commerce.Models.Producer>
+    Receives up to 3 producer records from HomeController.Index()
+*@
 @model IEnumerable<E_commerce.Models.Producer>
+
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home";  // Sets the browser tab title
+
+    // Null-safe conversion: converts model to list or creates empty list if model is null
+    // This prevents null reference exceptions when iterating through producers
     var producers = Model?.ToList() ?? new List<E_commerce.Models.Producer>();
+
+    // Array of avatar emojis for visual variety in producer cards
+    // Index cycles through these to provide unique avatars for each producer
     string[] avatarEmojis = { "🌱", "🥕", "🍎", "🌿", "🥦", "🌾" };
 }
 
 @section Styles {
+    @* Loads page-specific CSS from wwwroot/css/Home/home.css *@
     <link rel="stylesheet" href="~/css/Home/home.css" />
 }
 
-<!-- ── HERO ── -->
+<!-- ── HERO SECTION ── -->
+<!--
+    HERO SECTION
+    Purpose: Creates immediate visual impact and primary call-to-action
+    Contains: Main headline, subheading, and two action buttons
+    Styling: Uses 'fade-in' class for entrance animation
+-->
 <section class="hero fade-in">
     <h1>Farm fresh goods delivered and provided to you</h1>
     <p>Discover locally grown produce from producers in your community</p>
     <div class="hero-buttons">
+        <!-- Direct link to products page for immediate shopping -->
         <a asp-controller="Products" asp-action="Index" class="btn-primary">Shop Now</a>
+
+        <!-- Button with JavaScript handler to scroll to producers section -->
         <button id="meet-producers-btn" class="btn-outline-white">Meet Our Producers</button>
     </div>
 </section>
 
 <!-- ── FEATURES STRIP ── -->
+<!--
+    FEATURES STRIP
+    Purpose: Communicates platform's unique value propositions
+    Design: 4 columns of features with custom SVG icons
+    Benefits: Builds trust and explains platform advantages quickly
+-->
 <section class="features-strip fade-in">
     <div class="feature-item">
+        <!-- Map pin icon representing local sourcing -->
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
         </svg>
@@ -29,6 +66,7 @@
         <p>Supporting local farmers and reducing carbon footprint</p>
     </div>
     <div class="feature-item">
+        <!-- Delivery truck icon for flexible delivery options -->
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="1" y="3" width="15" height="13" />
             <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
@@ -39,6 +77,7 @@
         <p>Choose delivery or click &amp; collect options</p>
     </div>
     <div class="feature-item">
+        <!-- Box/shopping icon for easy ordering process -->
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
             <line x1="3" y1="6" x2="21" y2="6" />
@@ -48,6 +87,7 @@
         <p>Simple checkout process with secure payment</p>
     </div>
     <div class="feature-item">
+        <!-- Heart icon representing loyalty/rewards program -->
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
         </svg>
@@ -56,18 +96,27 @@
     </div>
 </section>
 
-<!-- ── FRESH PICKS ── -->
+<!-- ── FRESH PICKS SECTION ── -->
+<!--
+    FRESH PICKS SECTION
+    Purpose: Showcases featured products with static placeholder content
+    Note: These are always static cards that link to the full products page
+    Enhancement opportunity: Could be made dynamic by fetching from Products table
+-->
 <section class="section section-alt fade-in">
     <h2 class="section-title">This Week's Fresh Picks</h2>
     <div class="products-grid">
+        <!-- Product Card 1: Apples from Daniel's Farm -->
         <a asp-controller="Products" asp-action="Index" class="product-card">
-            <img src="~/images/apples.jpg" alt="Organic Red Apples" class="product-card-img" />
+            <img src="~/images/apples.jpg" alt="Delicious Red Apples" class="product-card-img" />
             <div class="product-card-body">
                 <span class="product-tag">Fruits &amp; Veg</span>
-                <h4>Organic Red Apples</h4>
+                <h4>Delicious Red Apples</h4>
                 <p>Daniel's Farm</p>
             </div>
         </a>
+
+        <!-- Product Card 2: Organic Carrots from Sunny Fields Farm -->
         <a asp-controller="Products" asp-action="Index" class="product-card">
             <img src="~/images/carrots.jpg" alt="Organic Carrots" class="product-card-img" />
             <div class="product-card-body">
@@ -76,14 +125,18 @@
                 <p>Sunny Fields Farm</p>
             </div>
         </a>
+
+        <!-- Product Card 3: Strawberries from Green Valley Gardens -->
         <a asp-controller="Products" asp-action="Index" class="product-card">
-            <img src="~/images/spinach.jpg" alt="Fresh Spinach" class="product-card-img" />
+            <img src="~/images/Strawberries.jpg" alt="Freshly picked Strawberries" class="product-card-img" />
             <div class="product-card-body">
                 <span class="product-tag">Fruits &amp; Veg</span>
-                <h4>Fresh Spinach</h4>
+                <h4>Freshly picked Strawberries</h4>
                 <p>Green Valley Gardens</p>
             </div>
         </a>
+
+        <!-- Product Card 4: Free Range Eggs from Sunny Fields Farm -->
         <a asp-controller="Products" asp-action="Index" class="product-card">
             <img src="~/images/eggs.jpg" alt="Free Range Eggs" class="product-card-img" />
             <div class="product-card-body">
@@ -95,28 +148,62 @@
     </div>
 </section>
 
-<!-- ── MEET OUR PRODUCERS ── -->
+<!-- ── MEET OUR PRODUCERS SECTION ── -->
+<!--
+    PRODUCERS SECTION
+    Purpose: Displays producer profiles dynamically from database
+    Data Source: Model passed from HomeController.Index() (max 3 records)
+    Behavior:
+    - If producers exist in DB: Shows dynamic cards with cycling emoji avatars
+    - If no producers: Falls back to static placeholder cards
+
+    The producerId is passed as a query parameter to filter products by producer
+-->
 <section class="section fade-in" id="producers-section">
     <h2 class="section-title">Meet Our Producers</h2>
     <div class="producers-grid">
         @if (producers.Any())
         {
-            int idx = 0;
+            int idx = 0;  // Counter for cycling through avatar emojis
+
             @foreach (var producer in producers)
             {
+                // Cycle through emoji array using modulo operator
+                // This ensures we never go out of bounds and get variety
                 string emoji = avatarEmojis[idx % avatarEmojis.Length];
                 idx++;
+
                 <div class="producer-card">
+                    <!-- Producer banner with emoji avatar -->
                     <div class="producer-card-banner">
                         <span class="producer-card-avatar" aria-hidden="true">@emoji</span>
                     </div>
+
                     <div class="producer-card-body">
                         <h3>@producer.ProducerName</h3>
+
+                        <!-- Location display with inline location pin SVG -->
                         <p class="producer-card-location">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
                             @producer.Location
                         </p>
+
+                        @* 
+                            Display description with fallback priority:
+                            1. ProductDescription (most specific)
+                            2. ProducerInfo (general info)
+                            3. Default message (if both are null)
+                        *@
                         <p class="producer-card-desc">@(producer.ProductDescription ?? producer.ProducerInfo ?? "Fresh, locally sourced produce.")</p>
+
+                        <!--
+                            Link to filtered products page
+                            asp-route-producerId passes the producer ID as query parameter
+                            This shows only products from this specific producer
+                        -->
                         <a asp-controller="Products" asp-action="Index" asp-route-producerId="@producer.ProducerId" class="btn-outline">View Products</a>
                     </div>
                 </div>
@@ -124,7 +211,15 @@
         }
         else
         {
-            <!-- Fallback static cards -->
+            @* 
+                FALLBACK: Static producer cards when database is empty
+                These serve as:
+                1. Placeholders during development
+                2. Demo content before producers are added to DB
+                3. Graceful degradation if data loading fails
+            *@
+
+            <!-- Fallback Card 1: Daniel's Farm -->
             <div class="producer-card">
                 <img src="~/images/carrots.jpg" alt="Daniel's Farm" class="producer-card-img" />
                 <div class="producer-card-body">
@@ -133,6 +228,8 @@
                     <a asp-controller="Products" asp-action="Index" class="btn-outline">View Products</a>
                 </div>
             </div>
+
+            <!-- Fallback Card 2: Green Valley Gardens -->
             <div class="producer-card">
                 <img src="~/images/spinach.jpg" alt="Green Valley Gardens" class="producer-card-img" />
                 <div class="producer-card-body">
@@ -141,6 +238,8 @@
                     <a asp-controller="Products" asp-action="Index" class="btn-outline">View Products</a>
                 </div>
             </div>
+
+            <!-- Fallback Card 3: Sunny Fields Farm -->
             <div class="producer-card">
                 <img src="~/images/eggs.jpg" alt="Sunny Fields Farm" class="producer-card-img" />
                 <div class="producer-card-body">
@@ -151,12 +250,20 @@
             </div>
         }
     </div>
+
+    <!-- "See All" link to full producers listing page -->
     <div style="text-align:center; margin-top:32px;">
         <a asp-controller="Producers" asp-action="Index" class="btn-outline">See All Producers</a>
     </div>
 </section>
 
-<!-- ── LOYALTY CTA ── -->
+<!-- ── LOYALTY CTA SECTION ── -->
+<!--
+    LOYALTY PROGRAM CTA
+    Purpose: Promotes customer retention through rewards program
+    Placement: Bottom of page as secondary conversion opportunity
+    Links to: Home/Loyalty page with detailed program information
+-->
 <section class="loyalty-section fade-in">
     <h2>Join Our Loyalty Programme</h2>
     <p>Earn points with every order and unlock exclusive discounts</p>
@@ -164,11 +271,23 @@
 </section>
 
 @section Scripts {
+    @* 
+        PAGE-SPECIFIC JAVASCRIPT
+        Functionality: Smooth scroll to producers section when hero button is clicked
+        Enhancement: Uses DOM manipulation to find and scroll to target section
+        Accessibility: Provides alternative navigation method for keyboard users
+    *@
     <script>
+        // Get reference to the "Meet Our Producers" button in the hero section
         const meetProducersBtn = document.getElementById('meet-producers-btn');
+
+        // Only attach event listener if button exists (defensive programming)
         if (meetProducersBtn) {
             meetProducersBtn.addEventListener('click', () => {
+                // Find the producers section by its ID
                 const section = document.getElementById('producers-section');
+
+                // If section exists, scroll smoothly to it
                 if (section) section.scrollIntoView({ behavior: 'smooth' });
             });
         }

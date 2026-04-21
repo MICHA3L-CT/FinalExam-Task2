@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +10,8 @@ using E_commerce.Models;
 
 namespace E_commerce.Controllers
 {
+    // Admin CRUD controller for managing discount codes.
+    // These are manual codes; the automatic loyalty discount is handled separately in OrdersController.
     public class DiscountsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,39 +21,33 @@ namespace E_commerce.Controllers
             _context = context;
         }
 
-        // GET: Discounts
+        // GET: /Discounts
         public async Task<IActionResult> Index()
         {
             return View(await _context.Discount.ToListAsync());
         }
 
-        // GET: Discounts/Details/5
+        // GET: /Discounts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var discount = await _context.Discount
                 .FirstOrDefaultAsync(m => m.DiscountId == id);
             if (discount == null)
-            {
                 return NotFound();
-            }
 
             return View(discount);
         }
 
-        // GET: Discounts/Create
+        // GET: /Discounts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Discounts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Discounts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DiscountId,Code,DiscountPercentage,ExpiryDate,IsActive,MaxUses,UsedCount")] Discount discount)
@@ -65,33 +61,26 @@ namespace E_commerce.Controllers
             return View(discount);
         }
 
-        // GET: Discounts/Edit/5
+        // GET: /Discounts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var discount = await _context.Discount.FindAsync(id);
             if (discount == null)
-            {
                 return NotFound();
-            }
+
             return View(discount);
         }
 
-        // POST: Discounts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Discounts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("DiscountId,Code,DiscountPercentage,ExpiryDate,IsActive,MaxUses,UsedCount")] Discount discount)
         {
             if (id != discount.DiscountId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -103,52 +92,43 @@ namespace E_commerce.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!DiscountExists(discount.DiscountId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(discount);
         }
 
-        // GET: Discounts/Delete/5
+        // GET: /Discounts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var discount = await _context.Discount
                 .FirstOrDefaultAsync(m => m.DiscountId == id);
             if (discount == null)
-            {
                 return NotFound();
-            }
 
             return View(discount);
         }
 
-        // POST: Discounts/Delete/5
+        // POST: /Discounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var discount = await _context.Discount.FindAsync(id);
             if (discount != null)
-            {
                 _context.Discount.Remove(discount);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper - checks whether a discount with the given ID exists
         private bool DiscountExists(int id)
         {
             return _context.Discount.Any(e => e.DiscountId == id);

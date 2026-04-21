@@ -1,4 +1,7 @@
-﻿@model E_commerce.Models.Order
+@* Checkout form - lets the user choose delivery or collection and places their order. *@
+@* The inline script handles panel visibility and live order summary totals. *@
+@model E_commerce.Models.Order
+@* The checkout form. Handles both delivery and collection orders. *@
 @{
     ViewData["Title"] = "Checkout";
 }
@@ -17,7 +20,7 @@
 
             <div class="checkout-layout">
 
-                <!-- ── Left: Delivery Options ──────────────────────── -->
+                
                 <section class="checkout-section" aria-labelledby="delivery-heading">
                     <h2 id="delivery-heading" class="checkout-section__title">Fulfilment Method</h2>
 
@@ -80,7 +83,7 @@
                     </div>
                 </section>
 
-                <!-- ── Right: Order Summary ─────────────────────────── -->
+                
                 <aside class="checkout-summary" aria-label="Order summary">
                     <h2 class="checkout-summary__title">Order Summary</h2>
 

@@ -1,3 +1,6 @@
+@* Order details page - shows a full breakdown of one order. *@
+@* Model is IEnumerable<OrderProduct> (the lines of the order), not the Order itself. *@
+@* The Order header info is accessed via firstItem.Order on the first line item. *@
 @model IEnumerable<E_commerce.Models.OrderProduct>
 
 @{

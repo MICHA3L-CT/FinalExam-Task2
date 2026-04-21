@@ -1,3 +1,7 @@
+@* Products listing page with search, category filter and sort controls. *@
+@* Producers see only their own products. Customers see all products (or filtered by producer). *@
+@* Filtering and sorting are done client-side in Products.js without a page reload. *@
+@* Add-to-basket uses an AJAX POST to BasketProducts/Create and updates the cart badge in the navbar. *@
 @model IEnumerable<E_commerce.Models.Product>
 @{
     ViewData["Title"] = "Products";

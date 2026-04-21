@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +10,8 @@ using E_commerce.Models;
 
 namespace E_commerce.Controllers
 {
+    // Handles the public producer listing page and admin CRUD for producer profiles.
+    // The Index page is accessible to everyone; Create/Edit/Delete are for admin use.
     public class ProducersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,39 +21,35 @@ namespace E_commerce.Controllers
             _context = context;
         }
 
-        // GET: Producers
+        // GET: /Producers
+        // Returns all producers for the public-facing producer listing page
         public async Task<IActionResult> Index()
         {
             return View(await _context.Producer.ToListAsync());
         }
 
-        // GET: Producers/Details/5
+        // GET: /Producers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producer = await _context.Producer
                 .FirstOrDefaultAsync(m => m.ProducerId == id);
             if (producer == null)
-            {
                 return NotFound();
-            }
 
             return View(producer);
         }
 
-        // GET: Producers/Create
+        // GET: /Producers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Producers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Producers/Create
+        // Bind only the fields we want to allow from the form to prevent overposting
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProducerId,UserId,ProducerName,PhoneNumber,ProductDescription,Location,ProducerInfo,DateJoined,IsVerified")] Producer producer)
@@ -65,33 +63,26 @@ namespace E_commerce.Controllers
             return View(producer);
         }
 
-        // GET: Producers/Edit/5
+        // GET: /Producers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producer = await _context.Producer.FindAsync(id);
             if (producer == null)
-            {
                 return NotFound();
-            }
+
             return View(producer);
         }
 
-        // POST: Producers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Producers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProducerId,UserId,ProducerName,PhoneNumber,ProductDescription,Location,ProducerInfo,DateJoined,IsVerified")] Producer producer)
         {
             if (id != producer.ProducerId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -103,52 +94,43 @@ namespace E_commerce.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProducerExists(producer.ProducerId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(producer);
         }
 
-        // GET: Producers/Delete/5
+        // GET: /Producers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producer = await _context.Producer
                 .FirstOrDefaultAsync(m => m.ProducerId == id);
             if (producer == null)
-            {
                 return NotFound();
-            }
 
             return View(producer);
         }
 
-        // POST: Producers/Delete/5
+        // POST: /Producers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var producer = await _context.Producer.FindAsync(id);
             if (producer != null)
-            {
                 _context.Producer.Remove(producer);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper - checks whether a producer with the given ID exists
         private bool ProducerExists(int id)
         {
             return _context.Producer.Any(e => e.ProducerId == id);

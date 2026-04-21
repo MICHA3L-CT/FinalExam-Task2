@@ -1,3 +1,7 @@
+@* Orders list page - shows different content depending on the user's role. *@
+@* Admin: full table of all orders with edit button. *@
+@* Producer: table of orders containing their products, with Update Status button. *@
+@* Customer: card-based view of their own orders with reorder option. *@
 @model IEnumerable<E_commerce.Models.Order>
 @{
     ViewData["Title"] = "My Orders";
@@ -108,22 +112,10 @@
                                             <a asp-action="Edit" asp-route-id="@order.OrderId"
                                                class="btn-action btn-action--primary" aria-label="Edit order #@order.OrderId">Edit</a>
                                         }
-                                        @if (isProducer && order.OrderStatus == "Pending")
+                                        @if (isProducer || isAdmin)
                                         {
-                                            <form asp-action="UpdateStatus" asp-controller="Orders" method="post" class="producer-status-form">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="orderId" value="@order.OrderId" />
-                                                <select name="newStatus" class="producer-status-select" aria-label="Update status for order #@order.OrderId">
-                                                    <option value="">Update status…</option>
-                                                    <option value="Processing">Processing</option>
-                                                    <option value="Shipped">Shipped</option>
-                                                    <option value="Delivered">Delivered</option>
-                                                    <option value="Cancelled">Cancelled</option>
-                                                </select>
-                                                <button type="submit" class="btn-action btn-action--primary producer-status-btn" aria-label="Save status update">
-                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                                </button>
-                                            </form>
+                                            <a asp-action="UpdateStatus" asp-route-id="@order.OrderId"
+                                               class="btn-action btn-action--primary" aria-label="Update status for order #@order.OrderId">Update Status</a>
                                         }
                                     </div>
                                 </td>

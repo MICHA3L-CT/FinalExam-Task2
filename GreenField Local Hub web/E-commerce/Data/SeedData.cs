@@ -1,17 +1,22 @@
-﻿using E_commerce.Models;
+using E_commerce.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce.Data
 {
+    // Runs at application startup to populate the database with default users, roles,
+    // producers and products. Each method checks if data already exists before inserting,
+    // so re-running on startup is safe and will not create duplicates.
     public class SeedData
     {
+        // Creates the four application roles and all test user accounts.
+        // Called first from Program.cs before seeding producers or products.
         public static async Task SeedUsersAndRoles(
             IServiceProvider serviceProvider,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            // ── Roles ────────────────────────────────────────────
+            // Create each role if it does not already exist in the database
             string[] roleNames = { "Admin", "Producer", "Customer", "Developer" };
 
             foreach (string roleName in roleNames)
@@ -20,7 +25,8 @@ namespace E_commerce.Data
                     await roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
-            // ── Helper: create or fix a user ────────────────────
+            // Local helper that creates a user if they do not exist, or fixes their email
+            // confirmation flag if they were previously created without it.
             static async Task<IdentityUser> EnsureUser(
                 UserManager<IdentityUser> um,
                 string email,
@@ -33,7 +39,7 @@ namespace E_commerce.Data
                     {
                         UserName       = email,
                         Email          = email,
-                        EmailConfirmed = true   // Always confirmed so login works without email flow
+                        EmailConfirmed = true   // Mark confirmed so the user can log in without an email link
                     };
                     var result = await um.CreateAsync(user, password);
                     if (!result.Succeeded)
@@ -41,20 +47,21 @@ namespace E_commerce.Data
                 }
                 else if (!user.EmailConfirmed)
                 {
-                    // Fix any existing user whose email was never confirmed
+                    // If the user already exists but their email was never confirmed, fix it now
                     user.EmailConfirmed = true;
                     await um.UpdateAsync(user);
                 }
                 return user;
             }
 
+            // Local helper that assigns a role to a user only if they do not already have it
             static async Task EnsureRole(UserManager<IdentityUser> um, IdentityUser user, string role)
             {
                 if (!await um.IsInRoleAsync(user, role))
                     await um.AddToRoleAsync(user, role);
             }
 
-            // ── Seed users ───────────────────────────────────────
+            // Create all seeded user accounts with a shared default password
             var admin     = await EnsureUser(userManager, "admin@example.com",     "Password123!");
             var producer1 = await EnsureUser(userManager, "producer@example.com",  "Password123!");
             var producer2 = await EnsureUser(userManager, "producer2@example.com", "Password123!");
@@ -62,7 +69,7 @@ namespace E_commerce.Data
             var dev       = await EnsureUser(userManager, "dev@example.com",        "Password123!");
             var customer  = await EnsureUser(userManager, "user@example.com",       "Password123!");
 
-            // ── Assign roles ─────────────────────────────────────
+            // Assign each user to their appropriate role
             await EnsureRole(userManager, admin,     "Admin");
             await EnsureRole(userManager, producer1, "Producer");
             await EnsureRole(userManager, producer2, "Producer");
@@ -71,11 +78,14 @@ namespace E_commerce.Data
             await EnsureRole(userManager, customer,  "Customer");
         }
 
+        // Creates the three default producer profiles if no producers exist yet.
+        // Requires SeedUsersAndRoles to have run first so the user IDs are available.
         public static async Task SeedProducers(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var context     = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
+            // Look up the Identity users that the producer profiles will be linked to
             var producerUser1 = await userManager.FindByEmailAsync("producer@example.com");
             var producerUser2 = await userManager.FindByEmailAsync("producer2@example.com");
             var producerUser3 = await userManager.FindByEmailAsync("producer3@example.com");
@@ -83,6 +93,7 @@ namespace E_commerce.Data
             if (producerUser1 == null || producerUser2 == null || producerUser3 == null)
                 throw new Exception("Producer users not found. Ensure SeedUsersAndRoles ran first.");
 
+            // Do not insert producers if any already exist - avoids duplicate seeding on restart
             if (context.Producer.Any())
                 return;
 
@@ -127,13 +138,17 @@ namespace E_commerce.Data
             await context.SaveChangesAsync();
         }
 
+        // Creates default products for each producer if no products exist yet.
+        // Requires SeedProducers to have run first so the producer IDs are available.
         public static async Task SeedProducts(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
+            // Skip if products are already in the database
             if (context.Product.Any())
                 return;
 
+            // Look up each producer by name to get their ProducerId for the foreign key
             var danielsFarmfoods   = await context.Producer.FirstOrDefaultAsync(p => p.ProducerName == "Daniel's Farmfoods");
             var greenValleyGardens = await context.Producer.FirstOrDefaultAsync(p => p.ProducerName == "Green Valley Gardens");
             var sunnyFieldsFarm    = await context.Producer.FirstOrDefaultAsync(p => p.ProducerName == "Sunny Fields Farm");

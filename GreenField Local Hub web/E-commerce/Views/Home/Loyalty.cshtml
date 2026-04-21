@@ -1,3 +1,6 @@
+@* Loyalty programme information page - static content plus an interactive demo simulator. *@
+@* No model - all interactivity is handled by the JavaScript at the bottom of the file. *@
+@* The demo tracker lets users simulate placing orders to see how the loyalty counter works. *@
 @{
     ViewData["Title"] = "Loyalty Programme";
 }
@@ -61,33 +64,31 @@
     </section>
 
     <!-- Progress Demo (interactive) -->
-    <section class="loyalty-demo" aria-labelledby="progress-heading">
-        <div class="loyalty-container">
-            <h2 class="loyalty-section-title" id="progress-heading">Your Progress Tracker</h2>
-            <p class="loyalty-section-sub">Here's what your loyalty journey looks like</p>
-            <div class="loyalty-demo-card">
-                <div class="loyalty-demo__header">
-                    <span class="loyalty-demo__label">Orders toward next 10% discount</span>
-                    <span class="loyalty-demo__count" id="demoCount">3 / 5</span>
-                </div>
-                <div class="loyalty-progress-track" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="5" id="demoTrack">
-                    <div class="loyalty-progress-fill" id="demoFill" style="width:60%"></div>
-                    <div class="loyalty-progress-dots">
-                        <span class="loyalty-dot loyalty-dot--done" aria-label="Order 1 complete">1</span>
-                        <span class="loyalty-dot loyalty-dot--done" aria-label="Order 2 complete">2</span>
-                        <span class="loyalty-dot loyalty-dot--done" aria-label="Order 3 complete">3</span>
-                        <span class="loyalty-dot" aria-label="Order 4 pending">4</span>
-                        <span class="loyalty-dot" aria-label="Order 5 pending">5</span>
-                    </div>
-                </div>
-                <p class="loyalty-demo__msg">Just <strong>2 more orders</strong> to unlock your 10% discount!</p>
-                <div class="loyalty-demo__controls">
-                    <button class="btn-demo" id="demoSimulate">Simulate next order ▶</button>
-                    <button class="btn-demo btn-demo--reset" id="demoReset">Reset</button>
-                </div>
-            </div>
+    <div class="loyalty-demo-card">
+        <div class="loyalty-demo__header">
+            <span class="loyalty-demo__label">Orders toward next 10% discount</span>
+            <span class="loyalty-demo__count" id="demoCount">3 / 5</span>
         </div>
-    </section>
+
+        <div class="loyalty-progress-track" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="5" id="demoTrack">
+            <div class="loyalty-progress-fill" id="demoFill" style="width:60%"></div>
+        </div>
+
+        <div class="loyalty-progress-dots">
+            <span class="loyalty-dot loyalty-dot--done" aria-label="Order 1 complete">1</span>
+            <span class="loyalty-dot loyalty-dot--done" aria-label="Order 2 complete">2</span>
+            <span class="loyalty-dot loyalty-dot--done" aria-label="Order 3 complete">3</span>
+            <span class="loyalty-dot" aria-label="Order 4 pending">4</span>
+            <span class="loyalty-dot" aria-label="Order 5 pending">5</span>
+        </div>
+
+        <p class="loyalty-demo__msg">Just <strong>2 more orders</strong> to unlock your 10% discount!</p>
+
+        <div class="loyalty-demo__controls">
+            <button class="btn-demo" id="demoSimulate">Simulate next order ▶</button>
+            <button class="btn-demo btn-demo--reset" id="demoReset">Reset</button>
+        </div>
+    </div>
 
     <!-- Benefits -->
     <section class="loyalty-benefits">
@@ -189,7 +190,7 @@
         });
 
         // Demo simulator
-        let demoOrders = 3;
+               let demoOrders = 3;
         const MAX = 5;
 
         function updateDemo() {
@@ -204,7 +205,7 @@
             });
             const msg = document.querySelector('.loyalty-demo__msg');
             if (demoOrders >= MAX) {
-                msg.innerHTML = '<strong>🎉 Discount unlocked!</strong> Your 10% loyalty discount has been applied to your basket.';
+                msg.innerHTML = '<strong>🎉 Discount unlocked!</strong> 10% off applied — counter resets on your next order.';
             } else {
                 const rem = MAX - demoOrders;
                 msg.innerHTML = 'Just <strong>' + rem + ' more order' + (rem > 1 ? 's' : '') + '</strong> to unlock your 10% discount!';
@@ -212,11 +213,19 @@
         }
 
         document.getElementById('demoSimulate')?.addEventListener('click', () => {
-            if (demoOrders < MAX) { demoOrders++; updateDemo(); }
+            if (demoOrders < MAX) {
+                demoOrders++;
+                updateDemo();
+            } else {
+                // Auto-reset after discount fires — simulates the real system
+                demoOrders = 1;
+                updateDemo();
+            }
         });
 
         document.getElementById('demoReset')?.addEventListener('click', () => {
-            demoOrders = 0; updateDemo();
+            demoOrders = 0;
+            updateDemo();
         });
     </script>
 }

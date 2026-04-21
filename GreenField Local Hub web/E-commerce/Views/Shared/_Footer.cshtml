@@ -1,9 +1,11 @@
+@* Site footer partial - included in _Layout.cshtml. *@
+@* Contains: brand info, quick navigation links, policy links, contact details and copyright. *@
+@* The "Cookie Policy" link at the bottom re-opens the cookie consent banner via JavaScript. *@
+
 <footer class="site-footer" role="contentinfo">
     <div class="footer-container">
         <div class="footer-grid">
-
-            <!-- Brand -->
-            <div class="footer-brand">
+    <div class="footer-brand">
                 <a class="footer-brand__logo" asp-controller="Home" asp-action="Index" aria-label="GreenField Local Hub Home">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
@@ -12,31 +14,27 @@
                 </a>
                 <p class="footer-brand__tagline">Connecting communities with local farmers to bring fresh, sustainable produce directly to your door.</p>
 </div>
-
-            <!-- Quick Links -->
             <div class="footer-col">
                 <h3 class="footer-col__title">Quick Links</h3>
                 <ul class="footer-links" role="list">
                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-controller="Products" asp-action="Index">All Products</a></li>
                     <li><a asp-controller="Producers" asp-action="Index">Our Producers</a></li>
-                    <li><a asp-controller="Home" asp-action="About">About Us</a></li>
+                    <li><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                    <li><a asp-controller="Baskets" asp-action="Index">My Basket</a></li>
+                    
                     <li><a asp-controller="Home" asp-action="Loyalty">Loyalty Programme</a></li>
                 </ul>
             </div>
-
-            <!-- Customer Service -->
             <div class="footer-col">
-                <h3 class="footer-col__title">Customer Service</h3>
+                <h3 class="footer-col__title">Policies</h3>
                 <ul class="footer-links" role="list">
-                    <li><a asp-controller="Orders" asp-action="Index">My Orders</a></li>
-                    <li><a asp-controller="Baskets" asp-action="Index">My Basket</a></li>
+                   
+                    <li><a asp-controller="Home" asp-action="About">About Us</a></li>
                     <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
                     <li><a asp-controller="Home" asp-action="TermsAndConditions">Terms &amp; Conditions</a></li>
                 </ul>
             </div>
-
-            <!-- Contact -->
             <div class="footer-col">
                 <h3 class="footer-col__title">Contact Us</h3>
                 <ul class="footer-contact" role="list">
@@ -64,7 +62,7 @@
 
     <div class="footer-bottom">
         <div class="footer-bottom__inner">
-            <span>&copy; 2024 GreenField Local Hub. All rights reserved.</span>
+            <span>&copy; 2026 GreenField Local Hub. All rights reserved.</span>
             <div class="footer-bottom__links">
                 <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
                 <a asp-controller="Home" asp-action="TermsAndConditions">Terms of Service</a>

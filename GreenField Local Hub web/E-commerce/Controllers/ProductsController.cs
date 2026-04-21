@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace E_commerce.Controllers
 {
+    // Handles listing, creating, editing and deleting products.
+    // Customers see all products (or filtered by producer).
+    // Producers only see and manage their own products.
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,15 +24,21 @@ namespace E_commerce.Controllers
             _context = context;
         }
 
-        // GET: Products
+        // GET: /Products or /Products?producerId=3
+        // If the logged-in user is a Producer, only their own products are shown.
+        // If a producerId query parameter is supplied, filters to that producer's products.
+        // Otherwise all products are shown.
         public async Task<IActionResult> Index(int? producerId)
         {
             if (User.IsInRole("Producer"))
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId == null) return Unauthorized();
+
                 var producer = await _context.Producer.FirstOrDefaultAsync(s => s.UserId == userId);
                 if (producer == null) return NotFound();
+
+                // Load only the products belonging to this producer
                 var producerProducts = await _context.Product
                     .Where(p => p.ProducerId == producer.ProducerId)
                     .Include(p => p.Producer)
@@ -38,11 +47,13 @@ namespace E_commerce.Controllers
             }
             else
             {
+                // Build a query that can be filtered by producer if a producerId was supplied
                 var query = _context.Product.Include(p => p.Producer).AsQueryable();
                 if (producerId.HasValue)
                 {
                     query = query.Where(p => p.ProducerId == producerId.Value);
                     var prod = await _context.Producer.FindAsync(producerId.Value);
+                    // Pass the producer name to the view so it can show a "Showing products from X" banner
                     ViewBag.FilteredProducer = prod?.ProducerName;
                 }
                 var allProducts = await query.ToListAsync();
@@ -50,7 +61,7 @@ namespace E_commerce.Controllers
             }
         }
 
-        // GET: Products/Details/5
+        // GET: /Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -66,7 +77,8 @@ namespace E_commerce.Controllers
             return View(product);
         }
 
-        // GET: Products/Create
+        // GET: /Products/Create
+        // Only producers can access this page
         [Authorize(Roles = "Producer")]
         public IActionResult Create()
         {
@@ -74,7 +86,9 @@ namespace E_commerce.Controllers
             return View();
         }
 
-        // POST: Products/Create
+        // POST: /Products/Create
+        // The ProducerId is set automatically from the logged-in producer's profile,
+        // so the user cannot create products for a different producer.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Producer")]
@@ -88,8 +102,9 @@ namespace E_commerce.Controllers
             if (producer == null)
                 return NotFound();
 
+            // Assign the producer ID from the logged-in user's profile rather than from the form
             product.ProducerId = producer.ProducerId;
-            ModelState.Remove("ProducerId");
+            ModelState.Remove("ProducerId"); // Remove validation error for the field we set manually
 
             if (ModelState.IsValid)
             {
@@ -102,7 +117,8 @@ namespace E_commerce.Controllers
             return View(product);
         }
 
-        // GET: Products/Edit/5
+        // GET: /Products/Edit/5
+        // Only the producer who owns this product can edit it
         [Authorize(Roles = "Producer")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -113,8 +129,8 @@ namespace E_commerce.Controllers
             if (product == null)
                 return NotFound();
 
-            // Ownership check
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Ownership check - make sure the logged-in producer owns this product
+            var userId   = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var producer = await _context.Producer.FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (producer == null || product.ProducerId != producer.ProducerId)
@@ -123,7 +139,7 @@ namespace E_commerce.Controllers
             return View(product);
         }
 
-        // POST: Products/Edit/5
+        // POST: /Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Producer")]
@@ -140,11 +156,12 @@ namespace E_commerce.Controllers
             if (producer == null)
                 return NotFound();
 
-            // Ownership check
+            // Re-check ownership using AsNoTracking to avoid EF Core tracking conflicts
             var existingProduct = await _context.Product.AsNoTracking().FirstOrDefaultAsync(p => p.ProductId == id);
             if (existingProduct == null || existingProduct.ProducerId != producer.ProducerId)
                 return Forbid();
 
+            // Keep the original ProducerId - do not allow it to be changed via the form
             product.ProducerId = producer.ProducerId;
             ModelState.Remove("ProducerId");
 
@@ -170,7 +187,8 @@ namespace E_commerce.Controllers
             return View(product);
         }
 
-        // GET: Products/Delete/5
+        // GET: /Products/Delete/5
+        // Only the producer who owns this product can delete it
         [Authorize(Roles = "Producer")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -185,7 +203,7 @@ namespace E_commerce.Controllers
                 return NotFound();
 
             // Ownership check
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId   = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var producer = await _context.Producer.FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (producer == null || product.ProducerId != producer.ProducerId)
@@ -194,7 +212,7 @@ namespace E_commerce.Controllers
             return View(product);
         }
 
-        // POST: Products/Delete/5
+        // POST: /Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Producer")]
@@ -204,8 +222,8 @@ namespace E_commerce.Controllers
             if (product == null)
                 return NotFound();
 
-            // Ownership check
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Final ownership check before actually deleting
+            var userId   = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var producer = await _context.Producer.FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (producer == null || product.ProducerId != producer.ProducerId)
@@ -216,6 +234,7 @@ namespace E_commerce.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper - checks whether a product with the given ID exists
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.ProductId == id);

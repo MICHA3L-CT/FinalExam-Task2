@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +11,11 @@ using System.Security.Claims;
 
 namespace E_commerce.Controllers
 {
+    // Handles order listing, checkout creation, status updates and admin editing.
+    // What each role sees:
+    //   Admin    - all orders in the system
+    //   Producer - only orders that contain their products
+    //   Customer - only their own orders
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,31 +25,36 @@ namespace E_commerce.Controllers
             _context = context;
         }
 
-        // GET: Orders
+        // GET: /Orders
+        // Returns a different set of orders depending on the user's role
         public async Task<ActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (userId == null)
-            {
                 return Unauthorized();
-            }
 
             if (User.IsInRole("Admin"))
             {
-                var allOrders = await _context.Order.Include(o => o.OrderProducts).ThenInclude(op => op.Product).ToListAsync();
+                // Admins see every order with its product lines
+                var allOrders = await _context.Order
+                    .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                    .ToListAsync();
                 return View(allOrders);
             }
             else if (User.IsInRole("Producer"))
             {
-                // Find all products belonging to this producer
+                // Get the IDs of all products this producer sells
                 var producerProducts = await _context.Product
                     .Where(p => p.ProducerId != null && p.Producer.UserId == userId)
                     .Select(p => p.ProductId)
                     .ToListAsync();
 
-                // Find orders that contain these products
-                var producerOrders = await _context.OrderProduct.Where(op => producerProducts.Contains(op.ProductId)).Include(op => op.Order).ThenInclude(o => o.OrderProducts)
+                // Find all orders that contain at least one of those products
+                var producerOrders = await _context.OrderProduct
+                    .Where(op => producerProducts.Contains(op.ProductId))
+                    .Include(op => op.Order)
+                    .ThenInclude(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                     .Select(op => op.Order)
                     .Distinct()
@@ -52,46 +62,49 @@ namespace E_commerce.Controllers
 
                 return View(producerOrders);
             }
-            else // Regular user/customer
+            else
             {
-                var userOrders = await _context.Order.Where(o => o.UserId == userId).Include(o => o.OrderProducts)
+                // Regular customers see only their own orders
+                var userOrders = await _context.Order
+                    .Where(o => o.UserId == userId)
+                    .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                     .ToListAsync();
                 return View(userOrders);
             }
         }
 
-        // Order Details action for all user types
+        // GET: /Orders/Details/5
+        // Shows the full order detail page. Each role sees a filtered view:
+        //   Admin    - all products in the order
+        //   Producer - only the lines for their own products
+        //   Customer - only their own order (returns 404 for someone else's order ID)
         public async Task<IActionResult> Details(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (userId == null)
-            {
                 return Unauthorized();
-            }
 
+            // Start with all order lines for this order, including the related Order and Product details
             IQueryable<OrderProduct> orderProductsQuery = _context.OrderProduct
                 .Where(op => op.OrderId == id)
                 .Include(op => op.Order)
                 .Include(op => op.Product)
                 .ThenInclude(p => p.Producer);
 
-            // Apply different filters based on user role
             if (User.IsInRole("Admin"))
             {
-                // Admins can see all order details
-                // No additional filtering needed
+                // Admins can see every line - no extra filter needed
             }
             else if (User.IsInRole("Producer"))
             {
-                // Producers can only see their own products in the order
+                // Producers only see the lines for products they sell
                 orderProductsQuery = orderProductsQuery
                     .Where(op => op.Product.Producer.UserId == userId);
             }
-            else // Regular user
+            else
             {
-                // Regular users can only see their own orders
+                // Customers can only see lines from their own orders
                 orderProductsQuery = orderProductsQuery
                     .Where(op => op.Order.UserId == userId);
             }
@@ -99,25 +112,22 @@ namespace E_commerce.Controllers
             var orderProducts = await orderProductsQuery.ToListAsync();
 
             if (orderProducts == null || !orderProducts.Any())
-            {
                 return NotFound();
-            }
 
             return View(orderProducts);
         }
-  
 
-        // GET: Orders/Create
-
+        // GET: /Orders/Create?basketId=3
+        // Displays the checkout form, passing the basket ID through to the view
         public IActionResult Create(int basketId)
         {
             ViewBag.BasketId = basketId;
             return View();
         }
 
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Orders/Create
+        // Processes the checkout form, validates the order, deducts stock,
+        // closes the basket and creates the order and order line records.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Order order, string orderMethod, int basketId)
@@ -125,16 +135,14 @@ namespace E_commerce.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
 
-            // Validate basket ownership
+            // Make sure the basket exists and belongs to the logged-in user
             var basket = await _context.Basket
                 .FirstOrDefaultAsync(b => b.BasketId == basketId && b.UserId == userId && b.Status);
 
             if (basket == null)
-            {
                 return NotFound();
-            }
 
-            // Get basket products safely
+            // Load all basket lines with product prices
             var basketProducts = await _context.BasketProduct
                 .Where(bp => bp.BasketId == basket.BasketId)
                 .Include(bp => bp.Product)
@@ -147,79 +155,67 @@ namespace E_commerce.Controllers
                 return View(order);
             }
 
-            // Set OrderMethod from form
             order.OrderMethod = orderMethod;
 
-            // Validate order method is selected
             if (string.IsNullOrEmpty(orderMethod))
-            {
                 ModelState.AddModelError("OrderMethod", "Must choose Collection or Delivery");
-            }
 
-            // Safe subtotal
+            // Calculate the basket subtotal (null-safe filter in case any product was deleted)
             decimal subtotal = basketProducts
                 .Where(bp => bp.Product != null)
                 .Sum(bp => bp.Product.Price * bp.Quantity);
 
-            // Loyalty discount
-            var orderCount = await _context.Order.CountAsync(o => o.UserId == userId);
-            decimal discount = orderCount >= 5 ? subtotal * 0.10m : 0m;
+            // Apply loyalty discount if the user has completed a multiple of 5 orders
+            var orderCount     = await _context.Order.CountAsync(o => o.UserId == userId);
+            bool discountEarned = orderCount > 0 && orderCount % 5 == 0;
+            decimal discount   = discountEarned ? subtotal * 0.10m : 0m;
 
-            // Order setup
-            order.UserId = userId;
-            order.OrderDate = DateTime.Now;
+            // Set system-controlled fields that should not come from the form
+            order.UserId      = userId;
+            order.OrderDate   = DateTime.Now;
             order.OrderStatus = "Pending";
 
-            // Delivery vs Collection
             if (orderMethod == "collection")
             {
-                // Clear delivery fields
-                order.DeliveryType = null;
+                // Collection orders have no delivery address or shipping fee
+                order.DeliveryType    = null;
                 order.DeliveryAddress = null;
-                order.ShippingFee = 0m;
+                order.ShippingFee     = 0m;
 
                 ModelState.Remove("DeliveryType");
                 ModelState.Remove("DeliveryAddress");
 
-                // Validate collection date
                 if (order.ScheduleDate == null)
                 {
                     ModelState.AddModelError("ScheduleDate", "Collection date is required.");
                 }
                 else
                 {
+                    // Collection must be booked at least 2 days in advance
                     var earliestDate = DateTime.Now.Date.AddDays(2);
                     if (order.ScheduleDate.Value.Date < earliestDate)
-                    {
                         ModelState.AddModelError("ScheduleDate", "Collection must be at least 2 days from today.");
-                    }
                 }
             }
             else if (orderMethod == "delivery")
             {
-                // Clear collection date
+                // Delivery orders do not use a schedule date
                 order.ScheduleDate = null;
                 ModelState.Remove("ScheduleDate");
 
-                // Validate delivery type
                 if (string.IsNullOrWhiteSpace(order.DeliveryType))
-                {
                     ModelState.AddModelError("DeliveryType", "Delivery type is required.");
-                }
 
-                // Validate delivery address
                 if (string.IsNullOrWhiteSpace(order.DeliveryAddress))
-                {
                     ModelState.AddModelError("DeliveryAddress", "Delivery address is required.");
-                }
 
-                // Set shipping fee based on delivery type
+                // Set shipping fee based on the chosen delivery speed
                 order.ShippingFee = order.DeliveryType switch
                 {
-                    "Next Day" => 9.99m,
+                    "Next Day"    => 9.99m,
                     "First Class" => 4.99m,
-                    "Standard" => 2.99m,
-                    _ => 0m
+                    "Standard"    => 2.99m,
+                    _             => 0m
                 };
             }
             else
@@ -229,6 +225,7 @@ namespace E_commerce.Controllers
 
             order.TotalAmount = (subtotal - discount) + order.ShippingFee;
 
+            // Remove validation for fields we set manually so they do not block the form
             ModelState.Remove("UserId");
             ModelState.Remove("OrderStatus");
             ModelState.Remove("OrderDate");
@@ -240,7 +237,7 @@ namespace E_commerce.Controllers
                 return View(order);
             }
 
-            // CHECK STOCK BEFORE CREATING ORDER
+            // Check that every product has enough stock before committing anything
             foreach (var basketProduct in basketProducts)
             {
                 if (basketProduct.Product.StockQuantity < basketProduct.Quantity)
@@ -251,28 +248,28 @@ namespace E_commerce.Controllers
                 }
             }
 
-            // Save order
+            // Save the order header first so we get an OrderId for the lines
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
-            // Save order items and update stock
+            // Create an OrderProduct line for each basket item and reduce the stock level
             foreach (var basketProduct in basketProducts)
             {
                 if (basketProduct.Product == null) continue;
 
                 _context.OrderProduct.Add(new OrderProduct
                 {
-                    OrderId = order.OrderId,
+                    OrderId   = order.OrderId,
                     ProductId = basketProduct.ProductId,
-                    Quantity = basketProduct.Quantity,
-                    UnitPrice = basketProduct.Product.Price
+                    Quantity  = basketProduct.Quantity,
+                    UnitPrice = basketProduct.Product.Price  // Snapshot of price at time of purchase
                 });
 
-                // UPDATE STOCK QUANTITY
+                // Deduct the purchased quantity from the live stock count
                 basketProduct.Product.StockQuantity -= basketProduct.Quantity;
             }
 
-            // Close + clear basket
+            // Mark the basket as closed and remove all its product lines
             basket.Status = false;
             _context.BasketProduct.RemoveRange(basketProducts);
 
@@ -281,34 +278,28 @@ namespace E_commerce.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Orders/Edit/5
+        // GET: /Orders/Edit/5
+        // Admin-only form to edit any field on an order
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var order = await _context.Order.FindAsync(id);
             if (order == null)
-            {
                 return NotFound();
-            }
+
             ViewData["DiscountId"] = new SelectList(_context.Discount, "DiscountId", "DiscountId", order.DiscountId);
             return View(order);
         }
 
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Orders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrderId,UserId,DiscountId,OrderDate,OrderStatus,TotalAmount,DeliveryAddress,ShippingFee,DeliveryType,ScheduleDate")] Order order)
         {
             if (id != order.OrderId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -320,13 +311,9 @@ namespace E_commerce.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!OrderExists(order.OrderId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -334,81 +321,106 @@ namespace E_commerce.Controllers
             return View(order);
         }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: /Orders/UpdateStatus/5
+        // Allows Admin or Producer to change an order's status.
+        // Producers can only update orders that contain their own products.
+        public async Task<IActionResult> UpdateStatus(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var order = await _context.Order
-                .Include(o => o.Discount)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            if (!User.IsInRole("Admin") && !User.IsInRole("Producer"))
+                return Forbid();
+
+            var order = await _context.Order.FindAsync(id);
+            if (order == null) return NotFound();
+
+            // If the user is a producer (but not also an admin), verify they own a product in this order
+            if (User.IsInRole("Producer") && !User.IsInRole("Admin"))
             {
-                return NotFound();
+                var producerProductIds = await _context.Product
+                    .Where(p => p.Producer.UserId == userId)
+                    .Select(p => p.ProductId)
+                    .ToListAsync();
+
+                bool ownsProduct = await _context.OrderProduct
+                    .AnyAsync(op => op.OrderId == id && producerProductIds.Contains(op.ProductId));
+
+                if (!ownsProduct) return Forbid();
             }
 
             return View(order);
         }
 
-        // POST: Orders/Delete/5
+        // POST: /Orders/UpdateStatus/5
+        // Only updates the OrderStatus field - does not touch any other order data.
+        // This is intentional so producers cannot change prices or addresses.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int id, string orderStatus)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            if (!User.IsInRole("Admin") && !User.IsInRole("Producer"))
+                return Forbid();
+
+            var order = await _context.Order.FindAsync(id);
+            if (order == null) return NotFound();
+
+            // Ownership check for producers
+            if (User.IsInRole("Producer") && !User.IsInRole("Admin"))
+            {
+                var producerProductIds = await _context.Product
+                    .Where(p => p.Producer.UserId == userId)
+                    .Select(p => p.ProductId)
+                    .ToListAsync();
+
+                bool ownsProduct = await _context.OrderProduct
+                    .AnyAsync(op => op.OrderId == id && producerProductIds.Contains(op.ProductId));
+
+                if (!ownsProduct) return Forbid();
+            }
+
+            // Only update the status - nothing else changes
+            order.OrderStatus = orderStatus;
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /Orders/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var order = await _context.Order
+                .Include(o => o.Discount)
+                .FirstOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        // POST: /Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Order.FindAsync(id);
             if (order != null)
-            {
                 _context.Order.Remove(order);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Orders/UpdateStatus — Producers can move orders past Pending
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(int orderId, string newStatus)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
-
-            // Only Producers and Admins may use this endpoint
-            if (!User.IsInRole("Producer") && !User.IsInRole("Admin"))
-                return Forbid();
-
-            var allowedStatuses = new[] { "Processing", "Shipped", "Delivered", "Cancelled" };
-            if (!allowedStatuses.Contains(newStatus))
-            {
-                TempData["Error"] = "Invalid status selected.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var order = await _context.Order
-                .Include(o => o.OrderProducts)
-                    .ThenInclude(op => op.Product)
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
-            if (order == null) return NotFound();
-
-            // Producers may only update orders that contain their products
-            if (User.IsInRole("Producer"))
-            {
-                bool hasProducerProducts = order.OrderProducts
-                    .Any(op => op.Product != null && op.Product.Producer != null && op.Product.Producer.UserId == userId);
-                if (!hasProducerProducts) return Forbid();
-            }
-
-            order.OrderStatus = newStatus;
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] = $"Order #GLH-{order.OrderId:D4} status updated to {newStatus}.";
-            return RedirectToAction(nameof(Index));
-        }
-
+        // Helper - checks whether an order with the given ID exists
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.OrderId == id);

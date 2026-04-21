@@ -1,3 +1,7 @@
+@* Producer dashboard - only accessible to users in the Producer role (enforced by controller). *@
+@* Model is IEnumerable<Product> (for the products table). *@
+@* Summary stats (revenue, order count, stock totals) come from ViewBag values set in the controller. *@
+@* Recent orders come from ViewBag.RecentOrders cast to List<Order>. *@
 @model IEnumerable<E_commerce.Models.Product>
 @{
     ViewData["Title"] = "Producer Dashboard";
@@ -16,7 +20,7 @@
 <div class="dashboard-page" aria-label="Producer Dashboard">
     <div class="dashboard-layout">
 
-        <!-- ── Sidebar ──────────────────────────────────────── -->
+        
         <nav class="dashboard-sidebar" aria-label="Dashboard navigation">
             <p class="sidebar-section-label">MANAGE</p>
             <ul class="sidebar-links" role="list">
@@ -51,7 +55,7 @@
             </ul>
         </nav>
 
-        <!-- ── Main content ──────────────────────────────────── -->
+        
         <main class="dashboard-main" id="main-content">
 
             <div class="dashboard-header">
@@ -61,7 +65,7 @@
                 </div>
             </div>
 
-            <!-- ── Metric Cards ──────────────────────────────── -->
+            
             <div class="metric-grid" role="list" aria-label="Key metrics">
                 <article class="metric-card metric-card--revenue" role="listitem" aria-label="Total revenue">
                     <p class="metric-card__label">TOTAL REVENUE</p>
@@ -85,7 +89,7 @@
                 </article>
             </div>
 
-            <!-- ── Recent Orders ─────────────────────────────── -->
+            
             <section class="dashboard-card" aria-labelledby="recent-orders-heading">
                 <div class="dashboard-card__header">
                     <h2 id="recent-orders-heading" class="dashboard-card__title">Recent Orders</h2>
@@ -136,6 +140,12 @@
                                                 @order.OrderStatus
                                             </span>
                                         </td>
+                                        <td>
+                                            <a asp-controller="Orders" asp-action="UpdateStatus" asp-route-id="@order.OrderId"
+                                               class="btn-dash-action" aria-label="Update status for order #@order.OrderId">
+                                                Update Status
+                                            </a>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -144,7 +154,7 @@
                 }
             </section>
 
-            <!-- ── Products Overview ─────────────────────────── -->
+            
             <section class="dashboard-card" aria-labelledby="products-heading">
                 <div class="dashboard-card__header">
                     <h2 id="products-heading" class="dashboard-card__title">Your Products</h2>

@@ -12,7 +12,10 @@
     text-align: center;
 }
 
-.loyalty-hero__inner { max-width: 600px; margin: 0 auto; }
+.loyalty-hero__inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
 
 .loyalty-hero__badge {
     font-size: 3rem;
@@ -22,8 +25,13 @@
 }
 
 @keyframes starPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.12); }
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
 }
 
 .loyalty-hero__title {
@@ -56,11 +64,11 @@
     transition: background 0.2s, transform 0.15s;
 }
 
-.btn-loyalty-cta:hover {
-    background: #f0f7f3;
-    color: #1F4F36;
-    transform: translateY(-2px);
-}
+    .btn-loyalty-cta:hover {
+        background: #f0f7f3;
+        color: #1F4F36;
+        transform: translateY(-2px);
+    }
 
 .btn-loyalty-secondary {
     padding: 13px 28px;
@@ -74,7 +82,10 @@
     transition: background 0.2s;
 }
 
-.btn-loyalty-secondary:hover { background: rgba(255,255,255,0.25); color: #fff; }
+    .btn-loyalty-secondary:hover {
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+    }
 
 /* Shared layout */
 .loyalty-container {
@@ -83,7 +94,9 @@
     padding: 0 24px;
 }
 
-.loyalty-container--narrow { max-width: 760px; }
+.loyalty-container--narrow {
+    max-width: 760px;
+}
 
 .loyalty-section-title {
     font-size: 1.6rem;
@@ -100,7 +113,9 @@
 }
 
 /* How It Works */
-.loyalty-how { padding: 64px 24px; }
+.loyalty-how {
+    padding: 64px 24px;
+}
 
 .loyalty-steps {
     display: flex;
@@ -139,7 +154,10 @@
     justify-content: center;
 }
 
-.loyalty-step__icon { font-size: 2.4rem; margin-bottom: 12px; }
+.loyalty-step__icon {
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+}
 
 .loyalty-step h3 {
     font-weight: 700;
@@ -161,7 +179,7 @@
     flex-shrink: 0;
 }
 
-/* Demo */
+/* ── Demo Card ───────────────────────────────────────────── */
 .loyalty-demo {
     background: linear-gradient(135deg, #f0f7f3 0%, #e8f3ec 100%);
     padding: 64px 24px;
@@ -179,13 +197,17 @@
     max-width: 560px;
     margin: 0 auto;
     box-shadow: 0 4px 24px rgba(47,111,78,0.1);
+    /* Ensure nothing inside overlaps by using block flow */
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 .loyalty-demo__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .loyalty-demo__label {
@@ -200,12 +222,14 @@
     color: #2F6F4E;
 }
 
+/* Progress bar — no relative positioning, just a plain block */
 .loyalty-progress-track {
     background: #e5e7eb;
     border-radius: 999px;
     height: 12px;
-    position: relative;
-    margin-bottom: 0;
+    width: 100%;
+    margin-bottom: 16px;
+    /* NO position:relative, NO overflow complications */
 }
 
 .loyalty-progress-fill {
@@ -215,26 +239,28 @@
     transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
 }
 
+/* Dots — completely separate row, NOT overlapping the bar */
 .loyalty-progress-dots {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 0 2px;
+    align-items: center;
+    margin-bottom: 16px;
+    /* Fully in normal flow — no absolute/relative tricks */
 }
 
 .loyalty-dot {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--text-secondary, #6b6b6b);
-    transition: all 0.3s;
+    transition: background 0.3s, transform 0.3s, color 0.3s;
+    /* No z-index, no position — just normal flow */
 }
 
 .loyalty-dot--done {
@@ -243,15 +269,16 @@
     transform: scale(1.1);
 }
 
+/* Message row */
 .loyalty-demo__msg {
     font-size: 0.9rem;
     color: var(--text-secondary, #6b6b6b);
     text-align: center;
     margin-bottom: 20px;
     min-height: 22px;
-    transition: all 0.3s;
 }
 
+/* Controls — plain flex row, below everything */
 .loyalty-demo__controls {
     display: flex;
     gap: 10px;
@@ -270,7 +297,9 @@
     transition: background 0.2s;
 }
 
-.btn-demo:hover { background: #1F4F36; }
+    .btn-demo:hover {
+        background: #1F4F36;
+    }
 
 .btn-demo--reset {
     background: transparent;
@@ -278,13 +307,15 @@
     border: 1px solid var(--border, #e5e7eb);
 }
 
-.btn-demo--reset:hover {
-    background: var(--body-bg, #FAF7F2);
-    color: var(--text-primary, #1a1a1a);
-}
+    .btn-demo--reset:hover {
+        background: var(--body-bg, #FAF7F2);
+        color: var(--text-primary, #1a1a1a);
+    }
 
 /* Benefits */
-.loyalty-benefits { padding: 64px 24px; }
+.loyalty-benefits {
+    padding: 64px 24px;
+}
 
 .loyalty-benefit-grid {
     display: grid;
@@ -301,12 +332,16 @@
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.loyalty-benefit-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(47,111,78,0.12);
-}
+    .loyalty-benefit-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(47,111,78,0.12);
+    }
 
-.loyalty-benefit__icon { font-size: 2rem; display: block; margin-bottom: 12px; }
+.loyalty-benefit__icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 12px;
+}
 
 .loyalty-benefit-card h3 {
     font-weight: 700;
@@ -332,7 +367,11 @@
     background: var(--surface, #2F3E35);
 }
 
-.faq-list { display: flex; flex-direction: column; gap: 1px; }
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
 
 .faq-item {
     border: 1px solid var(--border, #e5e7eb);
@@ -358,23 +397,30 @@
     gap: 12px;
 }
 
-.faq-question:hover { background: #f0f7f3; }
+    .faq-question:hover {
+        background: #f0f7f3;
+    }
 
-.faq-chevron { transition: transform 0.25s; flex-shrink: 0; }
+.faq-chevron {
+    transition: transform 0.25s;
+    flex-shrink: 0;
+}
 
-.faq-question[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
+.faq-question[aria-expanded="true"] .faq-chevron {
+    transform: rotate(180deg);
+}
 
 .faq-answer {
     padding: 0 20px 16px;
     background: var(--body-bg, #FAF7F2);
 }
 
-.faq-answer p {
-    font-size: 0.875rem;
-    color: var(--text-secondary, #6b6b6b);
-    line-height: 1.6;
-    margin: 0;
-}
+    .faq-answer p {
+        font-size: 0.875rem;
+        color: var(--text-secondary, #6b6b6b);
+        line-height: 1.6;
+        margin: 0;
+    }
 
 /* CTA Bottom */
 .loyalty-cta-section {
@@ -384,10 +430,18 @@
     padding: 64px 24px;
 }
 
-.loyalty-cta-section h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
-.loyalty-cta-section p { opacity: 0.88; margin-bottom: 28px; }
+    .loyalty-cta-section h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
 
-/* Dark mode overrides */
+    .loyalty-cta-section p {
+        opacity: 0.88;
+        margin-bottom: 28px;
+    }
+
+/* Dark mode */
 [data-theme="dark"] .loyalty-step,
 [data-theme="dark"] .loyalty-benefit-card,
 [data-theme="dark"] .loyalty-demo-card {
@@ -400,11 +454,32 @@
     background: #1e3028;
 }
 
-[data-theme="dark"] .loyalty-progress-track { background: #3d5246; }
+[data-theme="dark"] .loyalty-progress-track {
+    background: #3d5246;
+}
+
+[data-theme="dark"] .loyalty-dot {
+    background: #3d5246;
+    color: #C8D5C0;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
-    .loyalty-steps { flex-direction: column; align-items: stretch; }
-    .loyalty-step__connector { transform: rotate(90deg); text-align: center; }
-    .loyalty-hero__title { font-size: 1.6rem; }
+    .loyalty-steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .loyalty-step__connector {
+        transform: rotate(90deg);
+        text-align: center;
+    }
+
+    .loyalty-hero__title {
+        font-size: 1.6rem;
+    }
+
+    .loyalty-demo-card {
+        padding: 24px 20px;
+    }
 }

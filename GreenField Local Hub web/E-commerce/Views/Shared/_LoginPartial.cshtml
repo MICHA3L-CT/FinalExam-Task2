@@ -1,14 +1,18 @@
+@* Renders the login/logout area on the right side of the navbar. *@
+@* Uses SignInManager to check whether a user is currently authenticated. *@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
+    @* Logged-in state: show the username linking to account management, and a logout button *@
     <div class="navbar-user">
         <a class="navbar-user__name" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage your account">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             @User.Identity?.Name
         </a>
+        @* Logout is a POST form to prevent CSRF attacks - a plain link would be unsafe *@
         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
             <button type="submit" class="btn-nav-logout">Log out</button>
         </form>
@@ -16,6 +20,7 @@
 }
 else
 {
+    @* Logged-out state: show Log In and Register buttons *@
     <div class="navbar-auth">
         <a class="btn-nav-login" asp-area="Identity" asp-page="/Account/Login">Log In</a>
         <a class="btn-nav-register" asp-area="Identity" asp-page="/Account/Register">Register</a>

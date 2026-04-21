@@ -1,3 +1,7 @@
+@* Master layout file - wraps every page on the site. *@
+@* Renders: terms update banner, navbar, page body (via RenderBody), footer, *@
+@* cookie consent banner, accessibility panel, and all shared JavaScript. *@
+@* Individual views can inject their own CSS via @section Styles and JS via @section Scripts. *@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -55,11 +59,15 @@
                         {
                             <li role="listitem"><a asp-controller="ProducerDashboard" asp-action="Index" class="navbar-link--dashboard">Dashboard</a></li>
                         }
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Producer"))
+                        {
+                            <li role="listitem"><a asp-area="" asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                        }
                     </ul>
                     <div class="navbar-right">
                         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
 
-                        <!-- Cart icon - redirects to login if not authenticated -->
+
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <a asp-controller="Baskets" asp-action="Index" class="cart-icon-link" aria-label="View basket">
@@ -144,7 +152,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        // ── Theme Toggle ──────────────────────────────────────
+        // Theme toggle - reads saved preference from localStorage on load, toggles between light/dark
         const themeToggleBtn = document.getElementById('theme-toggle');
         const htmlEl = document.documentElement;
         const savedTheme = localStorage.getItem('glh-theme') || 'light';
@@ -168,7 +176,7 @@
             });
         }
 
-        // ── Mobile Navbar ─────────────────────────────────────
+        // Mobile navbar - hamburger button toggles the slide-in menu on small screens
         const navbarToggle = document.getElementById('navbarToggle');
         const navbarMenu = document.getElementById('navbarMenu');
         if (navbarToggle && navbarMenu) {
@@ -186,7 +194,7 @@
             });
         }
 
-        // ── Active Nav Link ───────────────────────────────────
+        // Active nav link - highlights the current page link by comparing URL paths
         const currentPath = window.location.pathname.toLowerCase();
         document.querySelectorAll('.navbar-links a').forEach(link => {
             const href = link.getAttribute('href')?.toLowerCase();
@@ -196,7 +204,7 @@
             }
         });
 
-        // ── Scroll shadow ─────────────────────────────────────
+        // Scroll shadow - adds a deeper shadow to the navbar when the user scrolls down
         const navbar = document.querySelector('.navbar');
         window.addEventListener('scroll', () => {
             if (navbar) {
@@ -206,7 +214,7 @@
             }
         });
 
-        // ── Fade-in ───────────────────────────────────────────
+        // Fade-in animation - uses IntersectionObserver to animate elements as they scroll into view
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -217,7 +225,7 @@
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // ── Cart Badge ────────────────────────────────────────
+        // Cart badge - fetches the item count from /Baskets/Count and updates the number on the basket icon
         function updateCartBadge(count) {
             const badge = document.getElementById('cartBadge');
             if (!badge) return;
@@ -238,7 +246,7 @@
         window.GreenHub.updateCartBadge = updateCartBadge;
         window.GreenHub.fetchCartCount = fetchCartCount;
 
-        // ── Cookie Consent ────────────────────────────────────
+        // Cookie consent banner - shows on first visit, saves preferences to localStorage
         const cookieBanner = document.getElementById('cookieBanner');
         const cookieKey = 'glh-cookie-consent';
 
@@ -284,7 +292,7 @@
             if (cookieBanner) cookieBanner.classList.add('visible');
         });
 
-        // ── Terms Banner ──────────────────────────────────────
+        // Terms update banner - shows once at the top of the page, dismissed via localStorage flag
         const termsBanner = document.getElementById('termsBanner');
         const termsKey = 'glh-terms-dismissed';
 

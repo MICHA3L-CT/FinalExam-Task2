@@ -1,10 +1,12 @@
-﻿@model IEnumerable<E_commerce.Models.BasketProduct>
+@* Basket page - shows the user's current basket contents, loyalty progress and order summary. *@
+@* Receives a list of BasketProduct records from BasketsController.Index(). *@
+@* The subtotal, discount, and total come from ViewBag values calculated in the controller. *@
+@model IEnumerable<E_commerce.Models.BasketProduct>
 @{
     ViewData["Title"] = "Your Basket";
     var basketId = ViewBag.BasketId;
     decimal subtotal = (decimal)ViewBag.Subtotal;
     decimal discount = (decimal)ViewBag.Discount;
-    decimal delivery = (decimal)ViewBag.DeliveryFee;
     decimal total = (decimal)ViewBag.Total;
     int orderCount = (int)ViewBag.LoyaltyOrderCount;
     bool hasDiscount = discount > 0;
@@ -19,7 +21,7 @@
 
         @if (!Model.Any())
         {
-            <!-- ── Empty basket ─────────────────────────── -->
+            
             <div class="basket-empty" role="status">
                 <svg class="basket-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <circle cx="9" cy="21" r="1" />
@@ -33,7 +35,7 @@
         }
         else
         {
-            <!-- ── Loyalty Banner ──────────────────────── -->
+            
             @if (!hasDiscount)
             {
                 int remaining = 5 - orderCount;
@@ -63,7 +65,7 @@
             <h1 class="basket-title">Your Basket (@Model.Sum(m => m.Quantity) item@(Model.Sum(m => m.Quantity) == 1 ? "" : "s"))</h1>
 
             <div class="basket-layout">
-                <!-- ── Items ──────────────────────────── -->
+                
                 <section class="basket-items" aria-label="Basket items">
                     @foreach (var item in Model)
                     {
@@ -115,7 +117,7 @@
                     }
                 </section>
 
-                <!-- ── Order Summary ──────────────────── -->
+                
                 <aside class="basket-summary" aria-label="Order summary">
                     <h2 class="basket-summary__title">Order Summary</h2>
 
@@ -132,10 +134,6 @@
                         </div>
                     }
 
-                    <div class="basket-summary__row">
-                        <span>Delivery</span>
-                        <span>£@delivery.ToString("0.00")</span>
-                    </div>
 
                     <hr class="basket-summary__divider" />
 
@@ -144,7 +142,7 @@
                         <strong>£@total.ToString("0.00")</strong>
                     </div>
 
-                    <p class="basket-summary__note">Shipping and taxes calculated at checkout.</p>
+                    <p class="basket-summary__note">Delivery cost calculated at checkout based on your chosen delivery method.</p>
 
                     <a asp-controller="Orders"
                        asp-action="Create"
