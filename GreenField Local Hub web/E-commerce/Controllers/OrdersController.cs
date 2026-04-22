@@ -36,8 +36,7 @@ namespace E_commerce.Controllers
             if (User.IsInRole("Admin"))
             {
                 // Admins see every order with its product lines
-                var allOrders = await _context.Order
-                    .Include(o => o.OrderProducts)
+                var allOrders = await _context.Order.Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                     .ToListAsync();
                 return View(allOrders);

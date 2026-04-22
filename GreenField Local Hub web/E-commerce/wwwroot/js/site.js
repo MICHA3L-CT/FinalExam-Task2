@@ -1,7 +1,4 @@
-/**
- * GreenField Local Hub — site.js
- * Shared: Favourites/Wishlist functionality
- */
+
 (function () {
     'use strict';
 

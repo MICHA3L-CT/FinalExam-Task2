@@ -103,9 +103,9 @@ namespace E_commerce.Data
                 {
                     ProducerName       = "Daniel's Farmfoods",
                     PhoneNumber        = "07700900001",
-                    ProductDescription = "We grow a wide variety of seasonal fruits and vegetables using traditional organic methods...",
+                    ProductDescription = "We grow a wide variety of seasonal fruits, meat and vegetables using traditional organic methods.",
                     Location           = "Birmingham",
-                    ProducerInfo       = "Daniel's Farm has been family-owned and operated for over 30 years...",
+                    ProducerInfo       = "Daniel’s Farm has been family-owned for over 30 years, producing high - quality beef along with fresh, seasonal fruits and vegetables.With a focus on sustainability and freshness, the farm delivers honest, locally grown food straight from field to table.",
                     DateJoined         = new DateOnly(2023, 4, 10),
                     IsVerified         = true,
                     UserId             = producerUser1.Id
@@ -114,9 +114,9 @@ namespace E_commerce.Data
                 {
                     ProducerName       = "Green Valley Gardens",
                     PhoneNumber        = "07700900002",
-                    ProductDescription = "Green Valley Gardens specialises in freshly cut herbs...",
+                    ProductDescription = "Green Valley Gardens specialises in freshly cut herbs and vegetables ",
                     Location           = "Coventry",
-                    ProducerInfo       = "Green Valley Gardens was established in 2018...",
+                    ProducerInfo       = "Green Valley is dedicated to growing fresh, high-quality vegetables and herbs, carefully cultivated to ensure great flavour and sustainability. Their produce is harvested at peak freshness, bringing natural goodness straight from the field to your table.",
                     DateJoined         = new DateOnly(2023, 7, 22),
                     IsVerified         = true,
                     UserId             = producerUser2.Id
@@ -125,9 +125,9 @@ namespace E_commerce.Data
                 {
                     ProducerName       = "Sunny Fields Farm",
                     PhoneNumber        = "07700900003",
-                    ProductDescription = "Sunny Fields Farm produces free-range eggs...",
+                    ProductDescription = "Sunny Fields Farm produces free-range eggs and other poultry products",
                     Location           = "Wolverhampton",
-                    ProducerInfo       = "Sunny Fields Farm has been in the Holloway family...",
+                    ProducerInfo       = "Sunny Farm specialises in fresh, free-range poultry eggs, produced with care and a focus on animal welfare. Known for their quality and rich flavour, their eggs are a reliable choice for everyday freshness",
                     DateJoined         = new DateOnly(2024, 1, 5),
                     IsVerified         = true,
                     UserId             = producerUser3.Id
@@ -245,7 +245,106 @@ namespace E_commerce.Data
                     ImagePath     = "/Images/bananas.jpg",
                     ProducerId    = greenValleyGardens.ProducerId,
                     DateAdded     = DateOnly.FromDateTime(DateTime.Now),
-                }
+                },
+                new Product
+                {
+                    ProductName   = "Tomatoes",
+                    Description   = "Ripe and juicy tomatoes.",
+                    Price         = 1.00m,
+                    StockQuantity = 100,
+                    Category      = "Vegetables",
+                    ImagePath     = "/Images/Tomatoes.jpg",
+                    ProducerId    = greenValleyGardens.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Lettuce",
+                    Description   = "Crisp and refreshing lettuce.",
+                    Price         = 0.80m,
+                    StockQuantity = 90,
+                    Category      = "Vegetables",
+                    ImagePath     = "/Images/Lettuce.jpg",
+                    ProducerId    = greenValleyGardens.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Cucumbers",
+                    Description   = "Cool and crunchy cucumbers.",
+                    Price         = 0.70m,
+                    StockQuantity = 80,
+                    Category      = "Vegetables",
+                    ImagePath     = "/Images/Cucumbers.jpg",
+                    ProducerId    = greenValleyGardens.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Turkey",
+                    Description   = "Large and well fed Turkies",
+                    Price         = 12.90m,
+                    StockQuantity = 50,
+                    Category      = "Meat",
+                    ImagePath     = "/Images/Turkey.jpg",
+                    ProducerId    = sunnyFieldsFarm.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Chicken",
+                    Description   = "Nurtured with free range feed",
+                    Price         = 4.20m,
+                    StockQuantity = 60,
+                    Category      = "Meat",
+                    ImagePath     = "/Images/Chicken.jpg",
+                    ProducerId    = sunnyFieldsFarm.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Milk",
+                    Description   = "Pasturised milk fresh from the source",
+                    Price         = 1.50m,
+                    StockQuantity = 50,
+                    Category      = "Dairy",
+                    ImagePath     = "/Images/Milk.jpg",
+                    ProducerId    = sunnyFieldsFarm.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Fish",
+                    Description   = "Fresh fish",
+                    Price         = 3.40m,
+                    StockQuantity = 40,
+                    Category      = "Meat",
+                    ImagePath     = "/Images/Fish.jpg",
+                    ProducerId    = danielsFarmfoods.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Peppers",
+                    Description   = "Sweet and crunchy peppers",
+                    Price         = 1.20m,
+                    StockQuantity = 70,
+                    Category      = "Vegetables",
+                    ImagePath     = "/Images/Peppers.jpg",
+                    ProducerId    = greenValleyGardens.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
+                new Product
+                {
+                    ProductName   = "Grapes",
+                    Description   = "Sweet and refreshing Grapes",
+                    Price         = 1.10m,
+                    StockQuantity = 25,
+                    Category      = "Fruit",
+                    ImagePath     = "/Images/Grapes.jpg",
+                    ProducerId    = greenValleyGardens.ProducerId,
+                    DateAdded     = DateOnly.FromDateTime(DateTime.Now),
+                },
             };
 
             await context.Product.AddRangeAsync(products);
