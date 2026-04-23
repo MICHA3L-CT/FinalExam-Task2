@@ -2,13 +2,13 @@
 @* Lists all discount codes. Admin view. *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Discount Codes"; @* Browser tab title *@
 }
 
-<h1>Index</h1>
+<h1>Discount Codes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New</a> @* Link to create a new discount code *@
 </p>
 <table class="table">
     <thead>
@@ -31,7 +31,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.UsedCount)
             </th>
-            <th></th>
+            <th></th> @* Empty column header for the action links *@
         </tr>
     </thead>
     <tbody>
@@ -56,9 +56,10 @@
                 @Html.DisplayFor(modelItem => item.UsedCount)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DiscountId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DiscountId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DiscountId">Delete</a>
+                @* Row-level action links - each passes the discount ID as a route value *@
+                    <a asp-action="Edit"    asp-route-id="@item.DiscountId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.DiscountId">Details</a> |
+                    <a asp-action="Delete"  asp-route-id="@item.DiscountId">Delete</a>
             </td>
         </tr>
 }

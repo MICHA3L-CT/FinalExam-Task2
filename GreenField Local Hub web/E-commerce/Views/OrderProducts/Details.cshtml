@@ -2,7 +2,7 @@
 @* Shows details of a single order product line. *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Order Line Details"; @* Browser tab title *@
 }
 
 <h1>Details</h1>
@@ -38,6 +38,7 @@
     </dl>
 </div>
 <div>
+    @* Null-conditional ?. protects against a null model reference *@
     <a asp-action="Edit" asp-route-id="@Model?.OrderProductId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

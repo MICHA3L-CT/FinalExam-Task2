@@ -1,85 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\shared\\_footer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\shared\\_footer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\wwwroot\\css\\home\\home.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\wwwroot\\css\\home\\home.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|c:\\users\\digi-t-y2-7\\documents\\github\\finalexam-task2\\greenfield local hub web\\e-commerce\\views\\shared\\_layout.cshtml.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{6F866A6A-253E-45FE-A9F9-A143A743D6EA}|E-commerce\\E-commerce.csproj|solutionrelative:e-commerce\\views\\shared\\_layout.cshtml.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\User\\OneDrive\\Documents\\FinalExam-Task2\\GreenField Local Hub web\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 1,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "_Layout.cshtml.css",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Shared\\_Layout.cshtml.css",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Shared\\_Layout.cshtml.css",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Shared\\_Layout.cshtml.css",
-              "RelativeToolTip": "E-commerce\\Views\\Shared\\_Layout.cshtml.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-04-22T14:36:36.453Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_Footer.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Shared\\_Footer.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Shared\\_Footer.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Shared\\_Footer.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Shared\\_Footer.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABrAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-22T14:31:54.275Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Home.css",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Home\\Home.css",
-              "RelativeDocumentMoniker": "E-commerce\\wwwroot\\css\\Home\\Home.css",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\wwwroot\\css\\Home\\Home.css",
-              "RelativeToolTip": "E-commerce\\wwwroot\\css\\Home\\Home.css",
-              "ViewState": "AgIAAP8BAAAAAAAAAAAowD0CAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-04-22T14:31:01.836Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "E-commerce\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Digi-T-Y2-7\\Documents\\GitHub\\FinalExam-Task2\\GreenField Local Hub web\\E-commerce\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "E-commerce\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAOoAAAAAAAAAAAAYwCYBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-22T14:30:53.522Z"
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

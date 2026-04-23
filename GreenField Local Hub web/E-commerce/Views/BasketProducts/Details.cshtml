@@ -1,8 +1,8 @@
 @model E_commerce.Models.BasketProduct
-@* Shows details of a single basket product record. *@
+@* Shows the full details of a single basket product line. Admin/debug view. *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Basket Product Details"; @* Browser tab title *@
 }
 
 <h1>Details</h1>
@@ -10,34 +10,26 @@
 <div>
     <h4>BasketProduct</h4>
     <hr />
+
+    @* Definition list layout - each dt is a field label, each dd is the value *@
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.ProductId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Basket)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Basket.BasketId)
-        </dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Quantity)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Quantity)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TotalPrice)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TotalPrice)</dd>
+
+        @* These show the related entity IDs - requires the controller to have used .Include() *@
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Product)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Product.ProductId)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Basket)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Basket.BasketId)</dd>
     </dl>
 </div>
+
 <div>
+    @* Null-conditional ?. stops a crash if the model somehow wasn't loaded *@
     <a asp-action="Edit" asp-route-id="@Model?.BasketProductId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

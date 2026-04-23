@@ -1,36 +1,47 @@
 @model E_commerce.Models.BasketProduct
-@* Form to manually create a basket product record. *@
+@* Form to manually create a basket product record. Admin use only. *@
+@* Normally basket products are created automatically via AJAX in BasketProductsController.Create. *@
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Basket Product"; @* Browser tab title *@
 }
 
 <h1>Create</h1>
 
 <h4>BasketProduct</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            @* Show model-level validation errors (not field-level) at the top of the form *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
+                @* Dropdown populated from ViewBag.ProductId set in the controller *@
+                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
             </div>
+
             <div class="form-group">
                 <label asp-for="BasketId" class="control-label"></label>
-                <select asp-for="BasketId" class ="form-control" asp-items="ViewBag.BasketId"></select>
+                @* Dropdown populated from ViewBag.BasketId set in the controller *@
+                <select asp-for="BasketId" class="form-control" asp-items="ViewBag.BasketId"></select>
             </div>
+
             <div class="form-group">
                 <label asp-for="Quantity" class="control-label"></label>
                 <input asp-for="Quantity" class="form-control" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="TotalPrice" class="control-label"></label>
+                @* Normally calculated as Quantity x Product.Price, but can be overridden here *@
                 <input asp-for="TotalPrice" class="form-control" />
                 <span asp-validation-for="TotalPrice" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -42,6 +53,7 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@* Load jQuery validation scripts for client-side field validation *@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,63 +1,44 @@
 @model E_commerce.Models.Producer
-@* Confirmation page before deleting a producer profile. *@
+@* Confirmation page before permanently deleting a producer profile. Admin use. *@
+@* Deleting a producer will also cascade-delete their products depending on the DB constraints. *@
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Producer"; @* Browser tab title *@
 }
 
-<h1>Delete</h1>
-
+<h1>Delete Producer</h1>
 <h3>Are you sure you want to delete this?</h3>
+
 <div>
     <h4>Producer</h4>
     <hr />
-    <dl class="row">
 
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProducerName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProducerName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProductDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProducerInfo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProducerInfo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateJoined)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateJoined)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsVerified)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsVerified)
-        </dd>
+    @* Read-only summary of the producer being deleted so admin can confirm the right record *@
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ProducerName)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ProducerName)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.PhoneNumber)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ProductDescription)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ProductDescription)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Location)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Location)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ProducerInfo)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ProducerInfo)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateJoined)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateJoined)</dd>
+
+        @* IsVerified shown as a checkbox-style display *@
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.IsVerified)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.IsVerified)</dd>
     </dl>
-    
+
+    @* The form POSTs to the Delete action - the hidden field passes the ID *@
     <form asp-action="Delete">
         <input type="hidden" asp-for="ProducerId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

@@ -2,7 +2,7 @@
 @* Shows details of a single discount code. *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Discount Details"; @* Browser tab title *@
 }
 
 <h1>Details</h1>
@@ -50,6 +50,7 @@
     </dl>
 </div>
 <div>
+    @* Null-conditional ?. guards against a null model *@
     <a asp-action="Edit" asp-route-id="@Model?.DiscountId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

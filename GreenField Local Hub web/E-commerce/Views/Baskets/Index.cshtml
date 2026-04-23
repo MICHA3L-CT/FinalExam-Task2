@@ -4,24 +4,82 @@
 @model IEnumerable<E_commerce.Models.BasketProduct>
 @{
     ViewData["Title"] = "Your Basket";
-    var basketId = ViewBag.BasketId;
+
+    @* Read all the values the controller placed in ViewBag *@
+    var basketId    = ViewBag.BasketId;
     decimal subtotal = (decimal)ViewBag.Subtotal;
     decimal discount = (decimal)ViewBag.Discount;
-    decimal total = (decimal)ViewBag.Total;
-    int orderCount = (int)ViewBag.LoyaltyOrderCount;
-    bool hasDiscount = discount > 0;
+    decimal total    = (decimal)ViewBag.Total;
+    int orderCount   = (int)ViewBag.LoyaltyOrderCount; @* Position within current 5-order loyalty cycle *@
+    bool hasDiscount = discount > 0;                    @* True when a 10% loyalty discount has been earned *@
 }
 
 @section Styles {
+    @* Load the basket-specific stylesheet - all other styling comes from site.css *@
     <link rel="stylesheet" href="~/css/Basket/Basket.css" asp-append-version="true" />
+    <style>
+        /* ── Basket title row: title + "Add Products" button side by side ── */
+        .basket-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Pushes title left and button right */
+            flex-wrap: wrap;                /* Stacks on small screens */
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        /* Remove the bottom margin from the h1 since the row handles spacing */
+        .basket-title-row .basket-title {
+            margin-bottom: 0;
+        }
+
+        /* "Add More Products" button - outline style matching site design language */
+        .btn-add-products {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: var(--radius-sm, 8px);
+            border: 1.5px solid var(--accent, #2F6F4E);
+            background: transparent;
+            color: var(--accent, #2F6F4E);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap; /* Prevent the label wrapping to two lines */
+        }
+
+            .btn-add-products:hover {
+                background: var(--accent, #2F6F4E);
+                color: #fff;
+            }
+
+            .btn-add-products:focus-visible {
+                outline: 2px solid var(--accent, #2F6F4E);
+                outline-offset: 3px;
+            }
+
+        /* Dark mode overrides for the new button */
+        [data-theme="dark"] .btn-add-products {
+            border-color: #5aad7a;
+            color: #5aad7a;
+        }
+
+            [data-theme="dark"] .btn-add-products:hover {
+                background: #5aad7a;
+                color: #1a2a1f;
+            }
+    </style>
 }
 
 <div class="basket-page">
     <div class="basket-container">
 
+        @* ── Empty state ─────────────────────────────────────────── *@
         @if (!Model.Any())
         {
-            
+            @* Show a friendly empty-basket message with a link back to the products page *@
             <div class="basket-empty" role="status">
                 <svg class="basket-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <circle cx="9" cy="21" r="1" />
@@ -35,16 +93,20 @@
         }
         else
         {
-            
+            @* ── Loyalty banner ──────────────────────────────────── *@
             @if (!hasDiscount)
             {
-                int remaining = 5 - orderCount;
-                int progress = Math.Min(orderCount, 5);
+                @* Show progress bar counting toward the next loyalty discount *@
+                int remaining = 5 - orderCount;     @* How many more orders needed *@
+                int progress  = Math.Min(orderCount, 5); @* Clamp to max 5 so the bar never overflows *@
                 <div class="loyalty-banner" role="complementary" aria-label="Loyalty reward progress">
                     <span class="loyalty-banner__icon" aria-hidden="true">⭐</span>
                     <div class="loyalty-banner__text" style="flex:1">
                         <strong>@remaining more order@(remaining == 1 ? "" : "s") to unlock 10% loyalty discount!</strong>
-                        <div class="loyalty-bar" role="progressbar" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="5" aria-label="@progress of 5 orders completed">
+                        @* Progress bar - width is calculated as (progress / 5) * 100% *@
+                        <div class="loyalty-bar" role="progressbar"
+                             aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="5"
+                             aria-label="@progress of 5 orders completed">
                             <div class="loyalty-bar__fill" style="width:@(progress * 20)%"></div>
                         </div>
                     </div>
@@ -53,6 +115,7 @@
             }
             else
             {
+                @* Discount has been earned - show a celebratory banner instead of the progress bar *@
                 <div class="loyalty-banner loyalty-banner--active" role="status" aria-label="Loyalty discount applied">
                     <span class="loyalty-banner__icon" aria-hidden="true">🎉</span>
                     <div class="loyalty-banner__text">
@@ -62,14 +125,34 @@
                 </div>
             }
 
-            <h1 class="basket-title">Your Basket (@Model.Sum(m => m.Quantity) item@(Model.Sum(m => m.Quantity) == 1 ? "" : "s"))</h1>
+            @* ── Basket title row with aligned "Add More Products" button ── *@
+            <div class="basket-title-row">
+                @* Show the total number of items in brackets e.g. "Your Basket (3 items)" *@
+                <h1 class="basket-title">
+                    Your Basket (@Model.Sum(m => m.Quantity) item@(Model.Sum(m => m.Quantity) == 1 ? "" : "s"))
+                </h1>
+                @* "Add More Products" button - sits to the right of the title on desktop,
+                   stacks below on mobile thanks to flex-wrap *@
+                <a asp-controller="Products" asp-action="Index" class="btn-add-products" role="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add More Products
+                </a>
+            </div>
 
+            @* ── Two-column layout: basket items on left, order summary on right ── *@
             <div class="basket-layout">
-                
+
+                @* ── Left column: basket item cards ── *@
                 <section class="basket-items" aria-label="Basket items">
                     @foreach (var item in Model)
                     {
+                        @* Each article is one product line in the basket *@
                         <article class="basket-item" aria-label="@item.Product.ProductName">
+
+                            @* Product thumbnail image (or emoji placeholder if none is set) *@
                             <div class="basket-item__img" aria-hidden="true">
                                 @if (!string.IsNullOrEmpty(item.Product.ImagePath))
                                 {
@@ -77,27 +160,37 @@
                                 }
                                 else
                                 {
+                                    @* Fallback emoji when no image has been uploaded *@
                                     <span class="basket-item__img-placeholder">🥬</span>
                                 }
                             </div>
 
+                            @* Product name and producer name *@
                             <div class="basket-item__info">
                                 <h2 class="basket-item__name">@item.Product.ProductName</h2>
+                                @* Null-conditional ?. handles products whose producer wasn't loaded *@
                                 <p class="basket-item__producer">@item.Product.Producer?.ProducerName</p>
                             </div>
 
+                            @* Unit price for this product *@
                             <div class="basket-item__price" aria-label="Price: £@item.Product.Price.ToString("0.00")">
                                 £@item.Product.Price.ToString("0.00")
                             </div>
 
-                            <!-- Quantity controls -->
+                            @* ── Quantity stepper: minus, current value, plus ── *@
                             <div class="basket-item__qty" role="group" aria-label="Quantity for @item.Product.ProductName">
+
+                                @* Decrease button - if quantity is 1 this will remove the line entirely *@
                                 <form asp-controller="BasketProducts" asp-action="DecreaseQuantity" method="post" class="qty-form" aria-label="Decrease quantity">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@item.BasketProductId" />
                                     <button type="submit" class="qty-btn" aria-label="Decrease quantity of @item.Product.ProductName">−</button>
                                 </form>
+
+                                @* Live region so screen readers announce when the number changes *@
                                 <span class="qty-value" aria-live="polite">@item.Quantity</span>
+
+                                @* Increase button - adds one more unit *@
                                 <form asp-controller="BasketProducts" asp-action="IncreaseQuantity" method="post" class="qty-form" aria-label="Increase quantity">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@item.BasketProductId" />
@@ -105,6 +198,7 @@
                                 </form>
                             </div>
 
+                            @* Remove button - navigates to the styled confirmation page *@
                             <form asp-controller="BasketProducts" asp-action="Delete" asp-route-id="@item.BasketProductId" method="get">
                                 <button type="submit" class="basket-item__remove" aria-label="Remove @item.Product.ProductName from basket">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -113,19 +207,22 @@
                                     </svg>
                                 </button>
                             </form>
+
                         </article>
                     }
                 </section>
 
-                
+                @* ── Right column: sticky order summary panel ── *@
                 <aside class="basket-summary" aria-label="Order summary">
                     <h2 class="basket-summary__title">Order Summary</h2>
 
+                    @* Subtotal row - sum of all item prices before any discount *@
                     <div class="basket-summary__row">
                         <span>Subtotal</span>
                         <span>£@subtotal.ToString("0.00")</span>
                     </div>
 
+                    @* Only show the discount row when a loyalty discount applies *@
                     @if (hasDiscount)
                     {
                         <div class="basket-summary__row basket-summary__row--discount">
@@ -134,16 +231,19 @@
                         </div>
                     }
 
-
+                    @* Divider between subtotals and the final total *@
                     <hr class="basket-summary__divider" />
 
+                    @* Bold total row - subtotal minus any discount applied *@
                     <div class="basket-summary__row basket-summary__row--total">
                         <strong>Total</strong>
                         <strong>£@total.ToString("0.00")</strong>
                     </div>
 
+                    @* Small note reminding the user that delivery is calculated at checkout *@
                     <p class="basket-summary__note">Delivery cost calculated at checkout based on your chosen delivery method.</p>
 
+                    @* Checkout CTA - passes the basket ID as a route parameter so the order controller knows which basket to use *@
                     <a asp-controller="Orders"
                        asp-action="Create"
                        asp-route-basketId="@basketId"
@@ -151,10 +251,13 @@
                        role="button">
                         Proceed to Checkout
                     </a>
+
+                    @* Secondary link to go back and keep browsing *@
                     <a asp-controller="Products" asp-action="Index" class="btn-secondary btn-block" role="button">
                         Continue Shopping
                     </a>
                 </aside>
+
             </div>
         }
     </div>

@@ -1,54 +1,46 @@
 @model IEnumerable<E_commerce.Models.BasketProduct>
-@* Lists all basket product records. Admin/debug view. *@
+@* Admin/debug view - lists every basket product line across all users and baskets. *@
+@* Not linked from the main navigation; used internally to inspect basket contents. *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Basket Products"; @* Browser tab title *@
 }
 
-<h1>Index</h1>
+<h1>Basket Products</h1>
 
+@* Link to manually create a basket product record (admin use) *@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@* Simple Bootstrap table - this is an admin/debug view so no custom CSS is needed *@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Basket)
-            </th>
-            <th></th>
+            @* DisplayNameFor reads the [Display] attribute from the model property, or the property name if none is set *@
+            <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.TotalPrice)</th>
+            <th>@Html.DisplayNameFor(model => model.Product)</th>
+            <th>@Html.DisplayNameFor(model => model.Basket)</th>
+            <th></th> @* Empty header for the action links column *@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Basket.BasketId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BasketProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BasketProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BasketProductId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalPrice)</td>
+                @* Show the related Product and Basket IDs (navigation properties must be loaded by the controller) *@
+                <td>@Html.DisplayFor(modelItem => item.Product.ProductId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Basket.BasketId)</td>
+                <td>
+                    @* Row-level action links - each passes the primary key as a route value *@
+                    <a asp-action="Edit"    asp-route-id="@item.BasketProductId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.BasketProductId">Details</a> |
+                    <a asp-action="Delete"  asp-route-id="@item.BasketProductId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

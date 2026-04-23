@@ -2,7 +2,7 @@
 @* Form to edit an existing discount code. *@
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Discount"; @* Browser tab title *@
 }
 
 <h1>Edit</h1>
@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DiscountId" />
+            <input type="hidden" asp-for="DiscountId" /> @* Hidden field carries the primary key so the controller updates the correct record *@
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
                 <input asp-for="Code" class="form-control" />

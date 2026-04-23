@@ -2,13 +2,13 @@
 @* Lists all order product lines. Admin view. *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Order Lines"; @* Browser tab title *@
 }
 
-<h1>Index</h1>
+<h1>Order Lines</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New</a> @* Manual creation for admin corrections *@
 </p>
 <table class="table">
     <thead>
@@ -25,7 +25,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Product)
             </th>
-            <th></th>
+            <th></th> @* Actions column header *@
         </tr>
     </thead>
     <tbody>
@@ -44,9 +44,10 @@
                 @Html.DisplayFor(modelItem => item.Product.ProductId)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.OrderProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderProductId">Delete</a>
+                @* Row action links - each passes the primary key as a route value *@
+                    <a asp-action="Edit"    asp-route-id="@item.OrderProductId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.OrderProductId">Details</a> |
+                    <a asp-action="Delete"  asp-route-id="@item.OrderProductId">Delete</a>
             </td>
         </tr>
 }

@@ -1,67 +1,48 @@
 @model E_commerce.Models.Product
-@* Shows full details of a single product including producer information. *@
+@* Shows full details of a single product including the linked producer. Admin/debug view. *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Product Details"; @* Browser tab title *@
 }
 
-<h1>Details</h1>
+<h1>Product Details</h1>
 
 <div>
     <h4>Product</h4>
     <hr />
+
+    @* Definition list - dt is the field label, dd is the value *@
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockQuantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StockQuantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateAdded)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateAdded)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Producer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Producer.ProducerId)
-        </dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ProductName)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ProductName)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Description)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Description)</dd>
+
+        @* ImagePath is the relative URL stored in the database e.g. "/Images/apples.jpg" *@
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ImagePath)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.ImagePath)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Price)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.StockQuantity)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.StockQuantity)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Category)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Category)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DateAdded)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.DateAdded)</dd>
+
+        @* Shows the ProducerId foreign key value - requires the controller to have used .Include(p => p.Producer) *@
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Producer)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Producer.ProducerId)</dd>
     </dl>
 </div>
+
 <div>
+    @* Null-conditional ?. prevents a crash if the model was somehow not loaded *@
     <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

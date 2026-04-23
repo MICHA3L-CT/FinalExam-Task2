@@ -1,53 +1,73 @@
 @model E_commerce.Models.Producer
 @* Form to create a new producer profile. Admin use. *@
+@* The UserId field links the profile to an existing Identity user account. *@
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Producer"; @* Browser tab title *@
 }
 
-<h1>Create</h1>
-
-<h4>Producer</h4>
+<h1>Create Producer</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            @* Show any model-level validation errors at the top of the form *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                @* Must match an existing ASP.NET Identity user ID (GUID string) *@
+                <input asp-for="UserId" class="form-control" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="ProducerName" class="control-label"></label>
                 <input asp-for="ProducerName" class="form-control" />
                 <span asp-validation-for="ProducerName" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="ProductDescription" class="control-label"></label>
+                @* Short blurb shown on the home page producer card *@
                 <input asp-for="ProductDescription" class="form-control" />
                 <span asp-validation-for="ProductDescription" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Location" class="control-label"></label>
+                @* Town or city name shown under the producer's card *@
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="ProducerInfo" class="control-label"></label>
-                <input asp-for="ProducerInfo" class="form-control" />
+                @* Longer about-us paragraph displayed on the producers listing page *@
+                <textarea asp-for="ProducerInfo" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="ProducerInfo" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="DateJoined" class="control-label"></label>
                 <input asp-for="DateJoined" class="form-control" />
                 <span asp-validation-for="DateJoined" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
                 <label class="form-check-label">
+                    @* Checkbox - checked = producer profile is publicly visible and verified *@
                     <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
                 </label>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -59,6 +79,7 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@* Load jQuery validation for client-side field validation *@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

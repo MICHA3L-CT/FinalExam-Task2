@@ -2,7 +2,7 @@
 @* Confirmation page before deleting a discount code. *@
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Discount"; @* Browser tab title *@
 }
 
 <h1>Delete</h1>
@@ -51,7 +51,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="DiscountId" />
+        <input type="hidden" asp-for="DiscountId" /> @* Carries the ID to the controller so it deletes the right record *@
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

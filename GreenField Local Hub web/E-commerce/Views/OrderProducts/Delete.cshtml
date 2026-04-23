@@ -2,7 +2,7 @@
 @* Confirmation page before deleting an order product line. *@
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Order Line"; @* Browser tab title *@
 }
 
 <h1>Delete</h1>
@@ -39,7 +39,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="OrderProductId" />
+        <input type="hidden" asp-for="OrderProductId" /> @* Carries the ID to the controller so it removes the correct line *@
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

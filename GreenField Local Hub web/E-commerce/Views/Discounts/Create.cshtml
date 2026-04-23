@@ -2,7 +2,7 @@
 @* Form to create a new discount code. *@
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Discount"; @* Browser tab title *@
 }
 
 <h1>Create</h1>
@@ -15,32 +15,32 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
+                <input asp-for="Code" class="form-control" /> @* e.g. "SAVE10" - shown to customers when they apply the code *@
                 <span asp-validation-for="Code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DiscountPercentage" class="control-label"></label>
-                <input asp-for="DiscountPercentage" class="form-control" />
+                <input asp-for="DiscountPercentage" class="form-control" /> @* Enter as a number e.g. 10 means 10% off *@
                 <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ExpiryDate" class="control-label"></label>
-                <input asp-for="ExpiryDate" class="form-control" />
+                <input asp-for="ExpiryDate" class="form-control" /> @* Code stops working after this date *@
                 <span asp-validation-for="ExpiryDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    <input class="form-check-input" asp-for="IsActive" /> @* Unchecking this disables the code without deleting it *@ @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="MaxUses" class="control-label"></label>
-                <input asp-for="MaxUses" class="form-control" />
+                <input asp-for="MaxUses" class="form-control" /> @* Optional - leave blank for unlimited uses *@
                 <span asp-validation-for="MaxUses" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UsedCount" class="control-label"></label>
-                <input asp-for="UsedCount" class="form-control" />
+                <input asp-for="UsedCount" class="form-control" /> @* Normally starts at 0 and increments automatically *@
                 <span asp-validation-for="UsedCount" class="text-danger"></span>
             </div>
             <div class="form-group">
