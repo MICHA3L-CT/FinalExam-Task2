@@ -2,111 +2,152 @@
 @* Model is IEnumerable<Product> (for the products table). *@
 @* Summary stats (revenue, order count, stock totals) come from ViewBag values set in the controller. *@
 @* Recent orders come from ViewBag.RecentOrders cast to List<Order>. *@
+@* Strongly-typed model for the products table *@
 @model IEnumerable<E_commerce.Models.Product>
+
 @{
-    ViewData["Title"] = "Producer Dashboard";
-    int totalProducts = (int)(ViewBag.TotalProducts ?? 0);
-    int lowStock = (int)(ViewBag.LowStockCount ?? 0);
-    int totalStock = (int)(ViewBag.TotalStock ?? 0);
-    decimal totalRevenue = (decimal)(ViewBag.TotalRevenue ?? 0m);
-    var recentOrders = ViewBag.RecentOrders as List<E_commerce.Models.Order> ?? new();
-    string producerName = ViewBag.ProducerName as string ?? "Producer";
+    ViewData["Title"] = "Producer Dashboard"; @* Sets the browser tab title *@
+    
+    @* Extract summary metrics from ViewBag with null-coalescing defaults *@
+    int totalProducts = (int)(ViewBag.TotalProducts ?? 0); @* Total number of products listed by this producer *@
+    int lowStock = (int)(ViewBag.LowStockCount ?? 0); @* Count of products with stock below threshold (typically < 5) *@
+    int totalStock = (int)(ViewBag.TotalStock ?? 0); @* Sum of all stock quantities across all products *@
+    decimal totalRevenue = (decimal)(ViewBag.TotalRevenue ?? 0m); @* Total revenue from all orders (lifetime) *@
+    var recentOrders = ViewBag.RecentOrders as List<E_commerce.Models.Order> ?? new(); @* Recent orders, safely cast with fallback to empty list *@
+    string producerName = ViewBag.ProducerName as string ?? "Producer"; @* Display name of the logged-in producer *@
 }
 
+@* Inject page-specific CSS file for producer dashboard styling *@
 @section Styles {
     <link rel="stylesheet" href="~/css/Producer Dashboard/ProducerDashboard.css" asp-append-version="true" />
 }
 
+@* Main dashboard container with ARIA label for screen readers *@
 <div class="dashboard-page" aria-label="Producer Dashboard">
     <div class="dashboard-layout">
 
-        
+        @* ── SIDEBAR NAVIGATION ──────────────────────────────── *@
+        @* Left sidebar with management and account navigation links *@
         <nav class="dashboard-sidebar" aria-label="Dashboard navigation">
+            @* Section header for management links *@
             <p class="sidebar-section-label">MANAGE</p>
-            <ul class="sidebar-links" role="list">
+            <ul class="sidebar-links" role="list"> @* Explicit list role for screen readers *@
                 <li>
+                    @* Dashboard link - active state shown with aria-current="page" *@
                     <a href="#" class="sidebar-link sidebar-link--active" aria-current="page">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+                        @* Grid icon for dashboard *@
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="3" y="3" width="7" height="7" /> @* Top-left grid cell *@
+                            <rect x="14" y="3" width="7" height="7" /> @* Top-right grid cell *@
+                            <rect x="14" y="14" width="7" height="7" /> @* Bottom-right grid cell *@
+                            <rect x="3" y="14" width="7" height="7" /> @* Bottom-left grid cell *@
+                        </svg>
                         Dashboard
                     </a>
                 </li>
                 <li>
+                    @* Stock management link - navigates to products index *@
                     <a asp-controller="Products" asp-action="Index" class="sidebar-link">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" /><path d="M16 3H8l-2 4h12l-2-4z" /></svg>
+                        @* Box/package icon for stock *@
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" /> @* Box body *@
+                            <path d="M16 3H8l-2 4h12l-2-4z" /> @* Box lid *@
+                        </svg>
                         Stock
                     </a>
                 </li>
                 <li>
+                    @* Orders management link - navigates to orders list *@
                     <a asp-controller="Orders" asp-action="Index" class="sidebar-link">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
+                        @* Checkmark/document icon for orders *@
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M9 11l3 3L22 4" /> @* Checkmark *@
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /> @* Document outline *@
+                        </svg>
                         Orders
                     </a>
                 </li>
             </ul>
 
+            @* Section header for account links *@
             <p class="sidebar-section-label">ACCOUNT</p>
             <ul class="sidebar-links" role="list">
                 <li>
+                    @* Back to shop link - returns to the main public site *@
                     <a asp-controller="Home" asp-action="Index" class="sidebar-link">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                        @* House icon for home/shop *@
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> @* House body *@
+                            <polyline points="9 22 9 12 15 12 15 22" /> @* Door *@
+                        </svg>
                         Back to Shop
                     </a>
                 </li>
             </ul>
         </nav>
 
-        
-        <main class="dashboard-main" id="main-content">
+        @* ── MAIN CONTENT AREA ───────────────────────────────── *@
+        @* Right side main content with metrics, orders table, and products table *@
+        <main class="dashboard-main" id="main-content"> @* ID matches skip-link target for accessibility *@
 
+            @* Header section with welcome message and producer name *@
             <div class="dashboard-header">
                 <div>
-                    <h1 class="dashboard-title">Producer Dashboard</h1>
-                    <p class="dashboard-welcome">Welcome back, @producerName 🌿</p>
+                    <h1 class="dashboard-title">Producer Dashboard</h1> @* Main page heading *@
+                    <p class="dashboard-welcome">Welcome back, @producerName 🌿</p> @* Personalised greeting with leaf emoji *@
                 </div>
             </div>
 
-            
+            @* ── METRIC CARDS ────────────────────────────────── *@
+            @* Grid of four summary metric cards showing key business statistics *@
             <div class="metric-grid" role="list" aria-label="Key metrics">
+                @* Revenue card - highlighted with special styling (metric-card--revenue) *@
                 <article class="metric-card metric-card--revenue" role="listitem" aria-label="Total revenue">
-                    <p class="metric-card__label">TOTAL REVENUE</p>
-                    <p class="metric-card__value">£@totalRevenue.ToString("0.00")</p>
-                    <p class="metric-card__sub">All time</p>
+                    <p class="metric-card__label">TOTAL REVENUE</p> @* Uppercase label for metric type *@
+                    <p class="metric-card__value">£@totalRevenue.ToString("0.00")</p> @* Formatted currency value with two decimal places *@
+                    <p class="metric-card__sub">All time</p> @* Subtext indicating time period *@
                 </article>
+                @* Orders card - shows total order count *@
                 <article class="metric-card" role="listitem" aria-label="Total orders: @recentOrders.Count">
                     <p class="metric-card__label">ORDERS</p>
-                    <p class="metric-card__value">@recentOrders.Count</p>
+                    <p class="metric-card__value">@recentOrders.Count</p> @* Count of recent orders *@
                     <p class="metric-card__sub">All time</p>
                 </article>
+                @* Products card - shows total products and low stock count *@
                 <article class="metric-card" role="listitem" aria-label="Products listed: @totalProducts">
                     <p class="metric-card__label">PRODUCTS LISTED</p>
                     <p class="metric-card__value">@totalProducts</p>
-                    <p class="metric-card__sub">@lowStock low stock</p>
+                    <p class="metric-card__sub">@lowStock low stock</p> @* Warning subtext for low stock items *@
                 </article>
+                @* Stock card - shows total inventory units remaining *@
                 <article class="metric-card" role="listitem" aria-label="Total stock units: @totalStock">
                     <p class="metric-card__label">TOTAL STOCK</p>
                     <p class="metric-card__value">@totalStock</p>
-                    <p class="metric-card__sub">Units remaining</p>
+                    <p class="metric-card__sub">Units remaining</p> @* Clarifies this is current inventory count *@
                 </article>
             </div>
 
-            
+            @* ── RECENT ORDERS TABLE ─────────────────────────── *@
+            @* Card section displaying the five most recent orders *@
             <section class="dashboard-card" aria-labelledby="recent-orders-heading">
                 <div class="dashboard-card__header">
-                    <h2 id="recent-orders-heading" class="dashboard-card__title">Recent Orders</h2>
-                    <a asp-controller="Orders" asp-action="Index" class="dashboard-card__link">View All</a>
+                    <h2 id="recent-orders-heading" class="dashboard-card__title">Recent Orders</h2> @* Section heading with ID for ARIA reference *@
+                    <a asp-controller="Orders" asp-action="Index" class="dashboard-card__link">View All</a> @* Link to full orders list *@
                 </div>
 
+                @* Empty state message when no orders exist *@
                 @if (!recentOrders.Any())
                 {
-                    <p class="dashboard-empty" role="status">No recent orders found.</p>
+                    <p class="dashboard-empty" role="status">No recent orders found.</p> @* Status role announces to screen readers *@
                 }
                 else
                 {
+                    @* Scrollable table wrapper for responsive design *@
                     <div class="dash-table-wrap">
                         <table class="dash-table" aria-label="Recent orders">
                             <thead>
                                 <tr>
-                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Order ID</th> @* scope="col" for proper table header semantics *@
                                     <th scope="col">Date</th>
                                     <th scope="col">Items</th>
                                     <th scope="col">Total</th>
@@ -114,33 +155,41 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @* Loop through up to 5 most recent orders *@
                                 @foreach (var order in recentOrders.Take(5))
                                 {
                                     <tr>
-                                        <td><span class="order-id-badge">#GLH-@order.OrderId.ToString("D3")</span></td>
+                                        @* Formatted order ID with prefix - e.g., #GLH-001 *@
+                                        <td><span class="order-id-badge">#GLH-@order.OrderId.ToString("D3")</span></td> @* D3 formats with leading zeros to 3 digits *@
+                                        @* Order date formatted as abbreviated month - e.g., "15 Apr" *@
                                         <td>@order.OrderDate.ToString("d MMM")</td>
                                         <td>
+                                            @* Display order items - show first 2 with product name and quantity *@
                                             @if (order.OrderProducts != null && order.OrderProducts.Any())
                                             {
                                                 @string.Join(" + ", order.OrderProducts.Take(2).Select(op =>
-                                                $"{op.Product?.ProductName} ×{op.Quantity}"))
+                                                $"{op.Product?.ProductName} ×{op.Quantity}")) @* Join items with plus sign *@
                                     @if (order.OrderProducts.Count > 2)
                                                 {
-                                                    <text>…</text>
+                                                    <text>…</text> @* Ellipsis indicates more items not shown *@
                                                 }
                                             }
                                             else
                                             {
-                                                <text>—</text>
+                                                <text>—</text> @* Em dash for no items *@
                                             }
                                         </td>
+                                        @* Order total formatted as currency *@
                                         <td class="dash-total">£@order.TotalAmount.ToString("0.00")</td>
                                         <td>
-                                            <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" aria-label="Status: @order.OrderStatus">
+                                            @* Status badge with dynamic class based on status - e.g., "status-badge--pending" *@
+                                            <span class="status-badge status-badge--@order.OrderStatus?.ToLower()" 
+                                                  aria-label="Status: @order.OrderStatus">
                                                 @order.OrderStatus
                                             </span>
                                         </td>
                                         <td>
+                                            @* Update status button - navigates to order status update page *@
                                             <a asp-controller="Orders" asp-action="UpdateStatus" asp-route-id="@order.OrderId"
                                                class="btn-dash-action" aria-label="Update status for order #@order.OrderId">
                                                 Update Status
@@ -154,54 +203,80 @@
                 }
             </section>
 
-            
+            @* ── PRODUCTS TABLE ──────────────────────────────── *@
+            @* Card section displaying all products with stock levels and status *@
             <section class="dashboard-card" aria-labelledby="products-heading">
                 <div class="dashboard-card__header">
-                    <h2 id="products-heading" class="dashboard-card__title">Your Products</h2>
-                    <a asp-controller="Products" asp-action="Create" class="dashboard-card__link">+ Add Product</a>
+                    <h2 id="products-heading" class="dashboard-card__title">Your Products</h2> @* Section heading with ID for ARIA reference *@
+                    <a asp-controller="Products" asp-action="Create" class="dashboard-card__link">+ Add Product</a> @* Quick link to create new product *@
                 </div>
 
+                @* Empty state message when no products exist yet *@
                 @if (!Model.Any())
                 {
                     <p class="dashboard-empty" role="status">You have no products yet.</p>
                 }
                 else
                 {
+                    @* Scrollable table wrapper for products list *@
                     <div class="dash-table-wrap">
                         <table class="dash-table" aria-label="Your products">
                             <thead>
                                 <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Stock</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col"><span class="sr-only">Actions</span></th>
+                                    <th scope="col">Product</th> @* Product name column *@
+                                    <th scope="col">Price</th> @* Unit price column *@
+                                    <th scope="col">Stock</th> @* Stock quantity column *@
+                                    <th scope="col">Status</th> @* Active/Inactive/Out of Stock status *@
+                                    <th scope="col"><span class="sr-only">Actions</span></th> @* Visually hidden header for action buttons - screen reader only *@
                                 </tr>
                             </thead>
                             <tbody>
+                                @* Loop through all products in the model *@
                                 @foreach (var product in Model)
                                 {
                                     <tr>
+                                        @* Product name with special cell styling *@
                                         <td class="product-name-cell">@product.ProductName</td>
+                                        @* Price formatted as currency with two decimal places *@
                                         <td>£@product.Price.ToString("0.00")</td>
                                         <td>
+                                            @* Show warning badge for low stock (less than 5 units) *@
                                             @if (product.StockQuantity < 5)
                                             {
-                                                <span class="low-stock-badge" aria-label="Low stock: @product.StockQuantity remaining">@product.StockQuantity ⚠</span>
+                                                <span class="low-stock-badge" aria-label="Low stock: @product.StockQuantity remaining">
+                                                    @product.StockQuantity ⚠ @* Warning emoji for visual alert *@
+                                                </span>
                                             }
                                             else
                                             {
-                                                <span>@product.StockQuantity</span>
+                                                <span>@product.StockQuantity</span> @* Normal stock display *@
                                             }
                                         </td>
                                         <td>
-                                            <span class="status-badge @(product.IsActive ? "status-badge--delivered" : "status-badge--cancelled")"
-                                                  aria-label="@(product.IsActive ? "Active" : "Inactive")">
-                                                @(product.IsActive ? "Active" : "Inactive")
-                                            </span>
+                                            @* Status logic: check stock quantity first, then active flag *@
+                                            @if (product.StockQuantity == 0)
+                                            {
+                                                @* Out of stock takes priority over other statuses *@
+                                                <span class="status-badge status-badge--cancelled"
+                                                      aria-label="Out of Stock">Out of Stock</span>
+                                            }
+                                            else if (!product.IsActive)
+                                            {
+                                                @* Product exists but is marked inactive by the producer *@
+                                                <span class="status-badge status-badge--cancelled"
+                                                      aria-label="Inactive">Inactive</span>
+                                            }
+                                            else
+                                            {
+                                                @* Product is active and available for purchase *@
+                                                <span class="status-badge status-badge--delivered"
+                                                      aria-label="Active">Active</span>
+                                            }
                                         </td>
                                         <td>
+                                            @* Action buttons for each product *@
                                             <div class="dash-actions">
+                                                @* Edit button - navigates to product edit page with the product ID *@
                                                 <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.ProductId"
                                                    class="btn-dash-action" aria-label="Edit @product.ProductName">Edit</a>
                                             </div>

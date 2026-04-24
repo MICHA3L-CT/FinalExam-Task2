@@ -1,24 +1,31 @@
-@* Master layout file - wraps every page on the site. *@
 @* Renders: terms update banner, navbar, page body (via RenderBody), footer, *@
 @* cookie consent banner, accessibility panel, and all shared JavaScript. *@
 @* Individual views can inject their own CSS via @section Styles and JS via @section Scripts. *@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+@* data-theme attribute controls light/dark mode via CSS *@
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GreenField Local Hub</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Accessibility/Accessibility.css" asp-append-version="true" />
+    <meta charset="utf-8" /> @* Standard UTF-8 character encoding for proper text rendering *@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> @* Responsive viewport for mobile devices *@
+    <title>@ViewData["Title"] - GreenField Local Hub</title> @* Dynamic page title set by individual views *@
+
+    @* External CSS libraries and custom stylesheets *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> @* Bootstrap framework for responsive grid and components *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> @* Main site stylesheet with cache-busting version parameter *@
+    <link rel="stylesheet" href="~/css/Accessibility/Accessibility.css" asp-append-version="true" /> @* Accessibility panel and feature styles *@
+
+    @* Render section for page-specific CSS that individual views can inject *@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    @* Skip navigation link for keyboard users - visible on focus, hidden otherwise *@
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <!-- Terms update banner -->
+    @* Shows a dismissable notification when terms and conditions have been updated *@
     <div class="terms-banner" id="termsBanner" role="alert" aria-live="polite">
-        <div class="terms-banner__bar"></div>
+        @* ARIA alert role for screen reader announcement *@
+        <div class="terms-banner__bar"></div> @* Decorative colored bar at the top of the banner *@
         <div class="terms-banner__content">
             <p class="terms-banner__title">Our terms and conditions have been updated</p>
             <p class="terms-banner__text">
@@ -29,73 +36,103 @@
                 effective 1 May 2026. By continuing to use Greenfield Local Hub, you agree to these updated terms.
             </p>
         </div>
+        @* Close button with the X icon for dismissing the banner *@
         <button class="terms-banner__close" id="closetermsBanner" aria-label="Dismiss terms update notice">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18" /> @* First diagonal line of X *@
+                <line x1="6" y1="6" x2="18" y2="18" /> @* Second diagonal line of X *@
+            </svg>
         </button>
     </div>
 
+    @* Main site header with navigation *@
     <header role="banner">
+        @* ARIA banner landmark for site header *@
         <nav class="navbar" aria-label="Main navigation">
+            @* ARIA label for navigation landmark *@
             <div class="navbar-container">
+                @* Site logo/brand with home link and SVG icon *@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="GreenField Local Hub – Home">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-                        <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" />
+                        <path d="M12 2a9 9 0 0 1 9 9c0 4.17-2.84 7.67-6.7 8.7L12 22l-2.3-2.3C5.84 18.67 3 15.17 3 11a9 9 0 0 1 9-9z" /> @* Leaf/organic shape SVG path *@
                     </svg>
                     <span>GreenField Local Hub</span>
                 </a>
 
+                @* Mobile hamburger menu button - three stacked lines that animate to X *@
                 <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarMenu">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span> @* Top line *@
+                    <span aria-hidden="true"></span> @* Middle line *@
+                    <span aria-hidden="true"></span> @* Bottom line *@
                 </button>
 
+                @* Main navigation menu - collapsible on mobile *@
                 <div class="navbar-menu" id="navbarMenu" role="navigation">
                     <ul class="navbar-links" role="list">
+                        @* Explicit list role for screen readers *@
                         <li role="listitem"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li role="listitem"><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
                         <li role="listitem"><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
+
+                        @* Conditional navigation based on user authentication and role *@
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Producer"))
                         {
+                            @* Show dashboard link for authenticated producers *@
                             <li role="listitem"><a asp-controller="ProducerDashboard" asp-action="Index" class="navbar-link--dashboard">Dashboard</a></li>
                         }
                         @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Producer"))
                         {
+                            @* Show orders link for authenticated non-producer users (consumers) *@
                             <li role="listitem"><a asp-area="" asp-controller="Orders" asp-action="Index">My Orders</a></li>
                         }
                     </ul>
+
+                    @* Right side of navbar - theme toggle, cart, accessibility, login *@
                     <div class="navbar-right">
+                        @* Dark/light mode toggle button *@
                         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
 
-
+                        @* Cart icon - shows for authenticated users, links to login for guests *@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
+                            @* Authenticated user cart with dynamic badge showing item count *@
                             <a asp-controller="Baskets" asp-action="Index" class="cart-icon-link" aria-label="View basket">
                                 <span class="cart-icon-wrap" aria-hidden="true">
                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false">
-                                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                        <circle cx="9" cy="21" r="1" /> @* Left wheel of cart *@
+                                        <circle cx="20" cy="21" r="1" /> @* Right wheel of cart *@
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /> @* Cart body and handle *@
                                     </svg>
+                                    @* Dynamic badge showing number of items in cart *@
                                     <span class="cart-badge" id="cartBadge" aria-live="polite" aria-label="Items in basket">0</span>
                                 </span>
                             </a>
                         }
                         else
                         {
+                            @* Guest user - cart icon redirects to login page with return URL *@
                             <a href="/Identity/Account/Login?ReturnUrl=%2FBaskets" class="cart-icon-link" aria-label="Log in to view basket">
                                 <span class="cart-icon-wrap" aria-hidden="true">
                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false">
-                                        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                                        <circle cx="9" cy="21" r="1" />
+                                        <circle cx="20" cy="21" r="1" />
                                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                                     </svg>
                                 </span>
                             </a>
                         }
 
-                        <button id="a11y-open-btn" class="a11y-toggle-btn" aria-label="Open accessibility settings" aria-haspopup="dialog" aria-controls="a11y-panel">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><circle cx="12" cy="5" r="2"/><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12"/></svg>
+                        @* Accessibility settings button - opens the accessibility panel *@
+                        <button id="a11y-open-btn" class="a11y-toggle-btn" aria-label="Open accessibility settings"
+                                aria-haspopup="dialog" aria-controls="a11y-panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+                                <circle cx="12" cy="5" r="2" /> @* Head of accessibility figure *@
+                                <path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12" /> @* Body and limbs *@
+                            </svg>
                             Accessibility
                         </button>
+
+                        @* Login/register partial view - shows user menu or login button *@
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -103,19 +140,30 @@
         </nav>
     </header>
 
+    @* Toast notification container for temporary messages - positioned fixed on screen *@
     <div id="toastContainer" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
 
+    @* Main content area where individual page content is rendered *@
+    @* tabindex="-1" allows programmatic focus for skip navigation *@
     <main id="main-content" tabindex="-1" style="min-height:70vh;">
-        @RenderBody()
+        @RenderBody() @* Renders the content from the child view *@
     </main>
 
+    @* Site-wide footer partial view *@
     <partial name="_Footer" />
 
     <!-- Cookie Consent Banner -->
+    @* GDPR-compliant cookie consent dialog with granular preferences *@
     <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie consent" aria-live="polite">
         <div class="cookie-banner__inner">
+            @* Cookie icon for visual identification *@
             <div class="cookie-banner__icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="14" cy="14" r="1" fill="currentColor"/><circle cx="15" cy="9" r="0.5" fill="currentColor"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" /> @* Main cookie shape *@
+                    <circle cx="9" cy="9" r="1" fill="currentColor" /> @* Chocolate chip 1 *@
+                    <circle cx="14" cy="14" r="1" fill="currentColor" /> @* Chocolate chip 2 *@
+                    <circle cx="15" cy="9" r="0.5" fill="currentColor" /> @* Small chocolate chip *@
+                </svg>
             </div>
             <div class="cookie-banner__text">
                 <p class="cookie-banner__title">We use cookies to improve your experience</p>
@@ -124,21 +172,23 @@
                     See our <a asp-controller="Home" asp-action="Privacy">Cookie Policy</a> and
                     <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a> for details.
                 </p>
+                @* Cookie preference toggles for different cookie categories *@
                 <div class="cookie-toggles">
                     <label class="cookie-toggle">
-                        <input type="checkbox" checked disabled id="cookieEssential" /> Essential
+                        <input type="checkbox" checked disabled id="cookieEssential" /> Essential @* Always required - disabled *@
                     </label>
                     <label class="cookie-toggle">
-                        <input type="checkbox" id="cookieAnalytics" /> Analytics
+                        <input type="checkbox" id="cookieAnalytics" /> Analytics @* Optional analytics cookies *@
                     </label>
                     <label class="cookie-toggle">
-                        <input type="checkbox" id="cookieMarketing" /> Marketing
+                        <input type="checkbox" id="cookieMarketing" /> Marketing @* Optional marketing cookies *@
                     </label>
                     <label class="cookie-toggle">
-                        <input type="checkbox" id="cookiePreferences" /> Preferences
+                        <input type="checkbox" id="cookiePreferences" /> Preferences @* Optional preference cookies *@
                     </label>
                 </div>
             </div>
+            @* Action buttons for cookie consent *@
             <div class="cookie-banner__actions">
                 <button class="btn-cookie-accept" id="acceptAllCookies">Accept all</button>
                 <button class="btn-cookie-decline" id="declineAllCookies">Decline all</button>
@@ -147,44 +197,51 @@
         </div>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* Core JavaScript libraries *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script> @* jQuery for DOM manipulation and AJAX *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> @* Bootstrap JS with Popper for tooltips/popovers *@
+    <script src="~/js/site.js" asp-append-version="true"></script> @* Main site JavaScript with cache-busting *@
 
     <script>
         // Theme toggle - reads saved preference from localStorage on load, toggles between light/dark
+        // Retrieves the saved theme preference or defaults to light mode
         const themeToggleBtn = document.getElementById('theme-toggle');
         const htmlEl = document.documentElement;
         const savedTheme = localStorage.getItem('glh-theme') || 'light';
-        htmlEl.setAttribute('data-theme', savedTheme);
+        htmlEl.setAttribute('data-theme', savedTheme); // Apply saved theme immediately
 
+        // Updates the theme toggle button icon and aria-label based on current theme
         function updateToggleIcon(theme) {
             if (themeToggleBtn) {
-                themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙'; // Sun for dark mode, moon for light mode
                 themeToggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
             }
         }
-        updateToggleIcon(savedTheme);
+        updateToggleIcon(savedTheme); // Set initial icon state
 
+        // Theme toggle click handler - switches between light and dark modes
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
                 const current = htmlEl.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
+                const next = current === 'light' ? 'dark' : 'light'; // Toggle theme
                 htmlEl.setAttribute('data-theme', next);
-                localStorage.setItem('glh-theme', next);
-                updateToggleIcon(next);
+                localStorage.setItem('glh-theme', next); // Persist preference
+                updateToggleIcon(next); // Update button appearance
             });
         }
 
         // Mobile navbar - hamburger button toggles the slide-in menu on small screens
+        // Handles the mobile navigation menu open/close functionality
         const navbarToggle = document.getElementById('navbarToggle');
         const navbarMenu = document.getElementById('navbarMenu');
         if (navbarToggle && navbarMenu) {
             navbarToggle.addEventListener('click', () => {
-                const isActive = navbarToggle.classList.toggle('active');
-                navbarMenu.classList.toggle('active');
-                navbarToggle.setAttribute('aria-expanded', isActive.toString());
+                const isActive = navbarToggle.classList.toggle('active'); // Toggle hamburger animation
+                navbarMenu.classList.toggle('active'); // Show/hide menu
+                navbarToggle.setAttribute('aria-expanded', isActive.toString()); // Update ARIA state
             });
+
+            // Close mobile menu when a navigation link is clicked
             document.querySelectorAll('.navbar-links a').forEach(link => {
                 link.addEventListener('click', () => {
                     navbarToggle.classList.remove('active');
@@ -195,90 +252,111 @@
         }
 
         // Active nav link - highlights the current page link by comparing URL paths
+        // Adds active class and aria-current to the navigation link matching the current URL
         const currentPath = window.location.pathname.toLowerCase();
         document.querySelectorAll('.navbar-links a').forEach(link => {
             const href = link.getAttribute('href')?.toLowerCase();
             if (href && (href === currentPath || (currentPath === '/' && href.includes('/home')))) {
                 link.classList.add('active');
-                link.setAttribute('aria-current', 'page');
+                link.setAttribute('aria-current', 'page'); // Indicates current page for screen readers
             }
         });
 
         // Scroll shadow - adds a deeper shadow to the navbar when the user scrolls down
+        // Creates visual depth effect as user scrolls, enhancing the sticky header appearance
         const navbar = document.querySelector('.navbar');
         window.addEventListener('scroll', () => {
             if (navbar) {
                 navbar.style.boxShadow = window.scrollY > 10
-                    ? '0 4px 20px rgba(47, 111, 78, 0.18)'
-                    : '0 4px 16px rgba(47, 111, 78, 0.10)';
+                    ? '0 4px 20px rgba(47, 111, 78, 0.18)' // Stronger shadow when scrolled
+                    : '0 4px 16px rgba(47, 111, 78, 0.10)'; // Lighter shadow at top
             }
         });
 
         // Fade-in animation - uses IntersectionObserver to animate elements as they scroll into view
+        // Efficiently detects when elements enter the viewport and triggers CSS animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+                    entry.target.classList.add('visible'); // Trigger CSS transition
+                    observer.unobserve(entry.target); // Stop observing once animated
                 }
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }); // Trigger when 10% visible, slightly before viewport
+
+        // Observe all elements with the fade-in class
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
         // Cart badge - fetches the item count from /Baskets/Count and updates the number on the basket icon
+        // Updates the cart badge display with the current number of items
         function updateCartBadge(count) {
             const badge = document.getElementById('cartBadge');
             if (!badge) return;
             badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
+            badge.style.display = count > 0 ? 'flex' : 'none'; // Hide badge when cart is empty
         }
+
+        // Fetches the current cart count from the server API
         async function fetchCartCount() {
             try {
-                const res = await fetch('/Baskets/Count');
+                const res = await fetch('/Baskets/Count'); // API endpoint for cart count
                 if (res.ok) {
                     const data = await res.json();
-                    updateCartBadge(data.count || 0);
+                    updateCartBadge(data.count || 0); // Update badge with count or 0
                 }
-            } catch (e) {}
+            } catch (e) {
+                // Silently fail - cart count is non-critical functionality
+            }
         }
-        fetchCartCount();
+        fetchCartCount(); // Initial fetch on page load
+
+        // Expose cart functions globally for use by other scripts (e.g., after adding to cart)
         window.GreenHub = window.GreenHub || {};
         window.GreenHub.updateCartBadge = updateCartBadge;
         window.GreenHub.fetchCartCount = fetchCartCount;
 
         // Cookie consent banner - shows on first visit, saves preferences to localStorage
+        // Manages GDPR cookie consent dialog visibility and preference storage
         const cookieBanner = document.getElementById('cookieBanner');
-        const cookieKey = 'glh-cookie-consent';
+        const cookieKey = 'glh-cookie-consent'; // localStorage key for consent preferences
 
+        // Hides the cookie consent banner with CSS transition
         function hideCookieBanner() {
             if (cookieBanner) cookieBanner.classList.remove('visible');
         }
 
+        // Shows the cookie consent banner with a slight delay for animation
         function showCookieBanner() {
             if (cookieBanner) setTimeout(() => cookieBanner.classList.add('visible'), 800);
         }
 
+        // Show banner only if user hasn't made a choice yet
         if (!localStorage.getItem(cookieKey)) {
             showCookieBanner();
         }
 
+        // Accept all cookies - checks all optional cookie types and saves preference
         document.getElementById('acceptAllCookies')?.addEventListener('click', () => {
+            // Check all optional cookie checkboxes
             ['cookieAnalytics','cookieMarketing','cookiePreferences'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.checked = true;
             });
+            // Save full consent to localStorage
             localStorage.setItem(cookieKey, JSON.stringify({ essential:true, analytics:true, marketing:true, preferences:true }));
             hideCookieBanner();
         });
 
+        // Decline all cookies - only essential cookies remain enabled
         document.getElementById('declineAllCookies')?.addEventListener('click', () => {
             localStorage.setItem(cookieKey, JSON.stringify({ essential:true, analytics:false, marketing:false, preferences:false }));
             hideCookieBanner();
         });
 
+        // Save custom cookie preferences based on user's toggle selections
         document.getElementById('saveCookiePrefs')?.addEventListener('click', () => {
             const prefs = {
-                essential: true,
+                essential: true, // Always required
                 analytics: document.getElementById('cookieAnalytics')?.checked ?? false,
                 marketing: document.getElementById('cookieMarketing')?.checked ?? false,
                 preferences: document.getElementById('cookiePreferences')?.checked ?? false,
@@ -287,54 +365,74 @@
             hideCookieBanner();
         });
 
+        // Footer link to manage cookies - reopens the consent banner
         document.getElementById('manageCookiesFooter')?.addEventListener('click', (e) => {
             e.preventDefault();
             if (cookieBanner) cookieBanner.classList.add('visible');
         });
 
         // Terms update banner - shows once at the top of the page, dismissed via localStorage flag
+        // Manages the terms update notification visibility
         const termsBanner = document.getElementById('termsBanner');
-        const termsKey = 'glh-terms-dismissed';
+        const termsKey = 'glh-terms-dismissed'; // localStorage key for dismissal state
 
+        // Show terms banner if not previously dismissed
         if (termsBanner && !localStorage.getItem(termsKey)) {
             termsBanner.classList.add('visible');
         }
 
+        // Close button handler - hides banner and remembers dismissal
         document.getElementById('closetermsBanner')?.addEventListener('click', () => {
             if (termsBanner) termsBanner.classList.remove('visible');
-            localStorage.setItem(termsKey, '1');
+            localStorage.setItem(termsKey, '1'); // Mark as dismissed so it won't show again
         });
     </script>
 
+    @* Render section for page-specific JavaScript that individual views can inject *@
     @await RenderSectionAsync("Scripts", required: false)
 
     <!-- ── Accessibility Panel ──────────────────────────────── -->
+    @* Overlay backdrop for the accessibility panel - darkens the background *@
     <div id="a11y-overlay" class="a11y-overlay" aria-hidden="true"></div>
 
+    @* Main accessibility settings panel - slide-in from the left *@
     <aside id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Accessibility settings">
+        @* Panel header with title and close button *@
         <div class="a11y-panel__head">
             <div class="a11y-panel__head-text">
                 <h2 class="a11y-panel__title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="5" r="2" /> @* Accessibility icon - head *@
+                        <path d="M12 22V12m0 0l-4-4m4 4l4-4M6 22h12" /> @* Accessibility icon - body *@
+                    </svg>
                     Accessibility Settings
                 </h2>
                 <p class="a11y-panel__desc">Customise your experience. Settings are saved automatically.</p>
             </div>
             <button id="a11y-panel-close" class="a11y-panel__close" aria-label="Close accessibility panel">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" /> @* X close icon *@
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
             </button>
         </div>
 
+        @* Scrollable body containing all accessibility categories and settings *@
         <div class="a11y-panel__body">
 
             <!-- ── AUDITORY ── -->
+            @* Auditory accessibility settings - Text-to-Speech features *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-auditory">
                     <span class="a11y-category__icon a11y-category__icon--auditory" aria-hidden="true">🔊</span>
                     <span class="a11y-category__label">Auditory <span class="a11y-category__badge">Text-to-Speech</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" /> @* Down chevron *@
+                    </svg>
                 </button>
+                @* Auditory settings content - hidden by default, shown when category expanded *@
                 <div id="a11y-cat-auditory" class="a11y-category__content" hidden>
+                    @* Text-to-speech toggle switch *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Read page aloud</span>
@@ -342,37 +440,43 @@
                         </div>
                         <label class="a11y-switch" aria-label="Toggle text to speech">
                             <input type="checkbox" id="a11y-tts-toggle" />
-                            <span class="a11y-switch__track"></span>
+                            <span class="a11y-switch__track"></span> @* Visual toggle switch track *@
                         </label>
                     </div>
+                    @* Reading speed slider control *@
                     <div class="a11y-setting a11y-setting--slider">
                         <div class="a11y-setting__top">
                             <span class="a11y-setting__label">Reading speed</span>
-                            <span class="a11y-setting__value" id="a11y-tts-speed-val">1×</span>
+                            <span class="a11y-setting__value" id="a11y-tts-speed-val">1×</span> @* Shows current speed value *@
                         </div>
                         <input type="range" id="a11y-tts-speed" class="a11y-slider" min="0.5" max="2" step="0.25" value="1" aria-label="Reading speed" />
                         <span class="a11y-setting__desc">Slow (0.5×) to Fast (2×)</span>
                     </div>
+                    @* Voice selection dropdown *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Voice</span>
                             <span class="a11y-setting__desc">Choose from available voices on your device</span>
                         </div>
                         <select id="a11y-tts-voice" class="a11y-select" aria-label="Select voice">
-                            <option value="">Default voice</option>
+                            <option value="">Default voice</option> @* Populated dynamically by JavaScript *@
                         </select>
                     </div>
                 </div>
             </div>
 
             <!-- ── COGNITIVE ── -->
+            @* Cognitive accessibility settings - reading and focus aids *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-cognitive">
                     <span class="a11y-category__icon a11y-category__icon--cognitive" aria-hidden="true">🧠</span>
                     <span class="a11y-category__label">Cognitive <span class="a11y-category__badge">Reading &amp; Focus</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div id="a11y-cat-cognitive" class="a11y-category__content" hidden>
+                    @* Dyslexia-friendly font toggle - switches to Verdana with increased spacing *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Dyslexia-friendly font</span>
@@ -383,6 +487,7 @@
                             <span class="a11y-switch__track"></span>
                         </label>
                     </div>
+                    @* Line spacing adjustment for better readability *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Line spacing</span>
@@ -394,6 +499,7 @@
                             <option value="a11y-line-loose">Loose</option>
                         </select>
                     </div>
+                    @* Letter spacing adjustment for character-level readability *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Letter spacing</span>
@@ -405,6 +511,7 @@
                             <option value="a11y-letter-wider">Wider</option>
                         </select>
                     </div>
+                    @* Word spacing adjustment for word-level readability *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Word spacing</span>
@@ -420,13 +527,17 @@
             </div>
 
             <!-- ── NEUROLOGICAL ── -->
+            @* Neurological accessibility settings - motion reduction and stimulus control *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-neurological">
                     <span class="a11y-category__icon a11y-category__icon--neurological" aria-hidden="true">⚡</span>
                     <span class="a11y-category__label">Neurological <span class="a11y-category__badge">Motion &amp; Stimulus</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div id="a11y-cat-neurological" class="a11y-category__content" hidden>
+                    @* Reduce motion toggle - disables all animations and transitions *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Reduce motion</span>
@@ -437,6 +548,7 @@
                             <span class="a11y-switch__track"></span>
                         </label>
                     </div>
+                    @* Enhanced focus ring for keyboard navigation visibility *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Enhanced focus ring</span>
@@ -451,13 +563,17 @@
             </div>
 
             <!-- ── PHYSICAL ── -->
+            @* Physical accessibility settings - motor control and navigation aids *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-physical">
                     <span class="a11y-category__icon a11y-category__icon--physical" aria-hidden="true">🖱️</span>
                     <span class="a11y-category__label">Physical <span class="a11y-category__badge">Motor &amp; Navigation</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div id="a11y-cat-physical" class="a11y-category__content" hidden>
+                    @* Large cursor toggle for easier mouse pointer visibility *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Large cursor</span>
@@ -468,6 +584,7 @@
                             <span class="a11y-switch__track"></span>
                         </label>
                     </div>
+                    @* Font size adjustment for larger click targets and easier reading *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Font size</span>
@@ -484,20 +601,25 @@
             </div>
 
             <!-- ── SPEECH ── -->
+            @* Speech accessibility settings - voice input and screen reader support *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-speech">
                     <span class="a11y-category__icon a11y-category__icon--speech" aria-hidden="true">🎙️</span>
                     <span class="a11y-category__label">Speech <span class="a11y-category__badge">Voice Input</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div id="a11y-cat-speech" class="a11y-category__content" hidden>
+                    @* Voice navigation hints - always active, informational only *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Voice navigation hints</span>
                             <span class="a11y-setting__desc">All interactive elements have descriptive <code>aria-label</code> attributes compatible with voice control tools like Dragon NaturallySpeaking</span>
                         </div>
-                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span>
+                        <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span> @* Always-on indicator *@
                     </div>
+                    @* Skip to main content - always available feature *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Skip to main content</span>
@@ -505,6 +627,7 @@
                         </div>
                         <span style="font-size:0.78rem;color:#2F6F4E;font-weight:700;">✓ Active</span>
                     </div>
+                    @* Screen reader support - always active, informational only *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Screen reader support</span>
@@ -516,13 +639,17 @@
             </div>
 
             <!-- ── VISUAL ── -->
+            @* Visual accessibility settings - color and contrast adjustments *@
             <div class="a11y-category">
                 <button class="a11y-category__trigger" aria-expanded="false" aria-controls="a11y-cat-visual">
                     <span class="a11y-category__icon a11y-category__icon--visual" aria-hidden="true">👁️</span>
                     <span class="a11y-category__label">Visual <span class="a11y-category__badge">Colour &amp; Contrast</span></span>
-                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="a11y-category__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div id="a11y-cat-visual" class="a11y-category__content" hidden>
+                    @* Color mode selector - high contrast, grayscale, or inverted colors *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Colour mode</span>
@@ -530,11 +657,12 @@
                         </div>
                         <select id="a11y-colour-mode" class="a11y-select" aria-label="Colour mode">
                             <option value="">Default</option>
-                            <option value="a11y-high-contrast">High contrast</option>
-                            <option value="a11y-grayscale">Greyscale</option>
-                            <option value="a11y-invert">Invert colours</option>
+                            <option value="a11y-high-contrast">High contrast</option> @* Maximum contrast for low vision *@
+                            <option value="a11y-grayscale">Greyscale</option> @* Removes all color for color-blind users *@
+                            <option value="a11y-invert">Invert colours</option> @* Dark becomes light and vice versa *@
                         </select>
                     </div>
+                    @* Color saturation adjustment for visual sensitivity *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Colour saturation</span>
@@ -542,10 +670,11 @@
                         </div>
                         <select id="a11y-saturation" class="a11y-select" aria-label="Colour saturation">
                             <option value="">Default</option>
-                            <option value="a11y-saturation-low">Low</option>
-                            <option value="a11y-saturation-high">High</option>
+                            <option value="a11y-saturation-low">Low</option> @* Reduced color intensity *@
+                            <option value="a11y-saturation-high">High</option> @* Increased color intensity *@
                         </select>
                     </div>
+                    @* Dark/light mode indicator - redirects to main theme toggle *@
                     <div class="a11y-setting">
                         <div class="a11y-setting__info">
                             <span class="a11y-setting__label">Dark / light mode</span>
@@ -558,18 +687,25 @@
 
         </div>
 
+        @* Panel footer with reset button to restore all default settings *@
         <div class="a11y-panel__footer">
             <button id="a11y-reset" class="a11y-reset-btn">Reset all settings</button>
         </div>
     </aside>
 
     <!-- TTS reading bar -->
+    @* Floating bar that appears when text-to-speech is active, showing current reading status *@
     <div id="a11y-tts-bar" class="a11y-tts-bar" role="status" aria-live="polite">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        <span id="a11y-tts-bar-text" class="a11y-tts-bar__text">Reading page aloud…</span>
-        <button id="a11y-tts-stop" class="a11y-tts-btn">Stop</button>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /> @* Speaker icon *@
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /> @* Sound waves *@
+        </svg>
+        <span id="a11y-tts-bar-text" class="a11y-tts-bar__text">Reading page aloud…</span> @* Status text updated by JavaScript *@
+        <button id="a11y-tts-stop" class="a11y-tts-btn">Stop</button> @* Button to stop reading *@
     </div>
 
+    @* Accessibility panel JavaScript - handles all accessibility features and settings *@
+    @* Uses cache-busting version parameter for fresh script loading *@
     <script src="~/js/Accessibility/Accessibility.js" asp-append-version="true"></script>
 </body>
 </html>
