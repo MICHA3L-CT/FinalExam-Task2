@@ -1,0 +1,155 @@
+Here is a **critical questionnaire** based on your website’s structure (Home, Login, Register, Products, Orders, Loyalty, Accessibility, etc.), designed for **non-technical users** to uncover usability issues, confusion points, and unmet expectations.  
+
+The questionnaire contains **105 questions** covering:  
+- General experience  
+- Navigation & layout  
+- Authentication (Login/Register)  
+- Product browsing & filtering  
+- Orders & account management  
+- Loyalty program  
+- Accessibility  
+- Errors & recovery  
+
+You can copy this directly into **Microsoft Forms** (using multiple-choice, rating, Yes/No, and open-text where useful).
+
+---
+
+## General First Impressions (1–10)
+
+1. What is your overall impression of the website’s home page? (Very poor – Excellent)  
+2. Did the homepage clearly communicate what the website does? (Yes/No/Unsure)  
+3. How long did it take you to understand the purpose of the site? (Seconds / 1-2 mins / 3-5 mins / 5+ mins)  
+4. Did you feel overwhelmed by information on the homepage? (Yes/No)  
+5. Rate the visual appeal of the homepage (1 = ugly, 5 = beautiful)  
+6. Did the homepage load quickly? (Very slow – Very fast)  
+7. Did any images or text appear broken or misaligned? (Yes/No)  
+8. Did you notice the “Shop Now” button immediately? (Yes/No)  
+9. Did you feel compelled to click “Shop Now”? (Yes/No)  
+10. Did you trust the website based on its design? (Not at all – Completely)  
+
+## Navigation Bar (11–20)
+
+11. Was the navigation bar easy to find? (Yes/No)  
+12. Rate the clarity of the navigation bar labels (Unclear – Very clear)  
+13. Did the navigation bar stay visible as you scrolled? (Yes/No/Not needed)  
+14. Did all navigation bar links work correctly? (Yes/No – if No, which link?)  
+15. Did the navigation bar include a link to “Home” that worked? (Yes/No)  
+16. Did the navigation bar include “Log In” and “Register” links that worked? (Yes/No)  
+17. Did the navigation bar include “Products” and did it work? (Yes/No)  
+18. Did the navigation bar include “Orders” and did it work? (Yes/No)  
+19. Did the navigation bar include “Loyalty” and did it work? (Yes/No)  
+20. If you got lost, could you use the navigation bar to reorient yourself? (Always / Sometimes / Never)  
+
+## Footer Links (21–25)
+
+21. Did you notice the footer links at the bottom of the page? (Yes/No)  
+22. Did the footer contain useful links not found in the navigation bar? (Yes/No)  
+23. Did all footer links work correctly? (Yes/No – if No, which?)  
+24. Did the footer include contact or about information? (Yes/No)  
+25. Did you use the footer at any point? (Yes/No)  
+
+## Register / Sign-Up Process (26–40)
+
+26. How easy was it to find the Register button? (Very hard – Very easy)  
+27. Did the registration form ask for too much information? (Yes/No)  
+28. Were field labels clear (e.g., Email, Password, Confirm Password)? (Yes/No)  
+29. Did the form tell you password requirements upfront? (Yes/No)  
+30. Did you receive real-time validation while typing? (Yes/No/Not sure)  
+31. When you entered mismatched passwords, did you see an error immediately? (Yes/No/N/A)  
+32. When you entered an invalid email format, did you see an error immediately? (Yes/No/N/A)  
+33. Did the error messages tell you exactly how to fix the problem? (Yes/No)  
+34. Did the page refresh unexpectedly on error? (Yes/No)  
+35. Did you successfully register on your first attempt? (Yes/No)  
+36. After registration, were you automatically logged in? (Yes/No)  
+37. After registration, were you redirected to the home page? (Yes/No – if No, where?)  
+38. Did you receive a confirmation email or message? (Yes/No/Not expected)  
+39. Did any error occur during registration that was not explained? (Yes/No)  
+40. Rate your overall satisfaction with the registration process (Very unsatisfied – Very satisfied)  
+
+## Log In Process (41–55)
+
+41. Was the Log In button easy to find? (Yes/No)  
+42. Did the login form ask for email and password only? (Yes/No – if extra fields, which?)  
+43. Was there a “Forgot password” link? (Yes/No)  
+44. Did the “Forgot password” link work? (Yes/No/N/A)  
+45. When you entered wrong credentials, was the error message helpful? (Yes/No)  
+46. Did the error message say “invalid email or password” without revealing which was wrong? (Yes/No)  
+47. Did the login page try to guess your email from previous visits? (Yes/No)  
+48. Did the login form save your email after successful login? (Yes/No/Not sure)  
+49. Did you experience any delay after clicking the login button? (Never / <2 sec / >2 sec)  
+50. After login, did you land on the home page? (Yes/No – if No, where?)  
+51. Did the website clearly show you were logged in (e.g., your name/avatar)? (Yes/No)  
+52. Could you log in with Google as an option? (Yes/No/Not available)  
+53. Did the Google login work correctly? (Yes/No/N/A)  
+54. Did you get logged out unexpectedly during your session? (Yes/No)  
+55. Rate the login process overall (Very poor – Excellent)  
+
+## Log Out (56–60)
+
+56. Was the Log Out button easy to find? (Yes/No)  
+57. Did clicking Log Out log you out immediately? (Yes/No)  
+58. After logout, could you access pages that require login? (Yes/No)  
+59. Were you redirected to a logical page after logout (e.g., home or login)? (Yes/No)  
+60. Did logout work on both desktop and mobile view? (Yes/No/Not tested)  
+
+## Products Page & Browsing (61–75)
+
+61. Was the Products page easy to find from the navigation bar? (Yes/No)  
+62. Did products load quickly? (Very slow – Very fast)  
+63. Could you see product images clearly? (Yes/No)  
+64. Did each product have a clear name, price, and description? (Yes/No/Some missing)  
+65. Rate the product grid/list layout (Confusing – Very clear)  
+66. Did you notice the “Meet our Producers” section? (Yes/No)  
+67. Did “Meet our Producers” link work? (Yes/No/N/A)  
+68. Did “See All Producers” link work? (Yes/No/N/A)  
+69. Could you click on a producer to see their products? (Yes/No/Not available)  
+70. Did the “View respective products” button work for each producer? (Yes/No/Partially)  
+
+## Filter & Search (76–85)
+
+76. Did the Products page include a filter option? (Yes/No)  
+77. Were the filter categories useful (e.g., price, category, producer)? (Yes/No)  
+78. Did filters update results without refreshing the whole page? (Yes/No)  
+79. Could you apply multiple filters at once? (Yes/No)  
+80. Did the clear filters button work? (Yes/No/N/A)  
+81. Was there a search bar on the Products page? (Yes/No)  
+82. Did the search bar return relevant results? (Never – Always)  
+83. Did the search bar handle typos or suggest corrections? (Yes/No)  
+84. Were there any “Sort by” options (e.g., price low to high)? (Yes/No)  
+85. Did the sort options work correctly? (Yes/No/N/A)  
+
+## Buttons & Interaction (86–90)
+
+86. Did all buttons on the site feel clickable (visual feedback)? (Yes/No)  
+87. Were buttons large enough to tap on mobile? (Yes/No)  
+88. Did any button do nothing when clicked? (Yes/No – which?)  
+89. Did the “Add to cart” or similar action button work? (Yes/No/N/A)  
+90. Was there a back button or breadcrumb to return to previous page? (Yes/No)  
+
+## Orders Page (91–96)
+
+91. Could you find the Orders page easily after logging in? (Yes/No)  
+92. Did the Orders page show your order history correctly? (Yes/No/No orders yet)  
+93. Did each order show date, total, and status? (Yes/No)  
+94. Could you click into an order for more details? (Yes/No/N/A)  
+95. Was there a way to reorder or track a previous order? (Yes/No)  
+96. Did the Orders page load without errors? (Yes/No)  
+
+## Loyalty Program (97–100)
+
+97. Did you notice the Loyalty link in navigation? (Yes/No)  
+98. Did the Loyalty page explain how to earn points/rewards? (Yes/No)  
+99. Could you see your current loyalty points balance? (Yes/No/N/A)  
+100. Did loyalty points update after a test purchase? (Yes/No/N/A)  
+
+## Accessibility Settings (101–105)
+
+101. Was there an Accessibility button or link visible on every page? (Yes/No)  
+102. Did the accessibility settings include text size adjustment? (Yes/No)  
+103. Did the accessibility settings include high contrast mode? (Yes/No)  
+104. Did the accessibility settings work correctly (e.g., text resized)? (Yes/No/Partially)  
+105. Could you navigate the entire website using only a keyboard? (Yes/No/Not tested)  
+
+---
+
+This questionnaire covers **functional, visual, navigational, error-handling, and accessibility** aspects. You can shorten it by removing sections not relevant to your current test phase, but as requested, it is **105 questions** long.
