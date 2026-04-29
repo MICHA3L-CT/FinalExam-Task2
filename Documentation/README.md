@@ -22,3 +22,7 @@ Producer3 - Producer3@example.com
 
 User/Customer - User@example.com
 
+
+
+Password for all accounts - Password123!
+
